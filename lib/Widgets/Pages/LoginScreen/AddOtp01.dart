@@ -4,6 +4,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:scrapper/Services/AppUserServices/AppUserServices01.dart';
+import 'package:scrapper/theme/theme_extensions.dart';
 
 import '../../Custome/CenterColumn/CenterColumn01.dart';
 
@@ -21,8 +22,10 @@ class _AddOtp01State extends State<AddOtp01> {
   final _otpController = GlobalKey<FormBuilderState>();
 
   void clear() => _otpController.currentState!.reset();
+  bool isLoading = false;
 
   void submitHandler() async {
+    setState(() => isLoading = true);
     if (_otpController.currentState?.saveAndValidate() ?? false) {
       final otp = _otpController.currentState?.fields['Otp']?.value;
       AppUserServices01()
@@ -34,10 +37,12 @@ class _AddOtp01State extends State<AddOtp01> {
               arguments: e.customer01,
             ),
           )
-          .onError<FirebaseAuthException>(
-            (e, stackTrace) => _otpController.currentState?.fields['Otp']
-                ?.invalidate(e.message.toString()),
-          );
+          .onError<FirebaseAuthException>((e, stackTrace) {
+            _otpController.currentState?.fields['Otp']?.invalidate(
+              e.message.toString(),
+            );
+            setState(() => isLoading = false);
+          });
     }
   }
 
@@ -48,15 +53,14 @@ class _AddOtp01State extends State<AddOtp01> {
       child: CenterColumn01(
         children: [
           Image.asset('assets/Illustrations/otp01.png', height: 256),
-          SizedBox(height: 16),
-
+          context.gapMD,
           Text(
             'Please add otp',
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
 
-          SizedBox(height: 20),
+          context.gapXL,
 
           FormBuilderField(
             name: 'Otp',
@@ -71,7 +75,7 @@ class _AddOtp01State extends State<AddOtp01> {
                     theme: MaterialPinTheme(cellSize: Size(40, 46)),
                   ),
 
-                  const SizedBox(height: 2),
+                  context.gapSM,
                   Text(
                     field.errorText ?? '',
                     style: TextStyle(
@@ -84,24 +88,18 @@ class _AddOtp01State extends State<AddOtp01> {
             },
           ),
 
-          SizedBox(height: 16),
+          context.gapMD,
 
           ElevatedButton(
-            onPressed: submitHandler,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              foregroundColor: Theme.of(context).colorScheme.onPrimary,
-            ),
+            onPressed: isLoading ? null : submitHandler,
             child: Text('Submit'),
           ),
-          SizedBox(height: 8),
+          context.gapMD,
           ElevatedButton(
             onPressed: clear,
             style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(
-                context,
-              ).colorScheme.surfaceContainerHigh,
-              foregroundColor: Theme.of(context).colorScheme.onSurface,
+              backgroundColor: context.colorScheme.surfaceContainerHigh,
+              foregroundColor: context.colorScheme.onSurface,
             ),
             child: Text('Clear'),
           ),

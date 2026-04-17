@@ -28,13 +28,13 @@ class Address02 {
     );
   }
 
-  factory Address02.fromMap(Map<String, dynamic> json) => Address02(
-    place: json['place'] as NominatimResponse,
+  factory Address02.fromJson(Map<String, dynamic> json) => Address02(
+    place: NominatimResponse.fromJson(json['place']),
     houseNo: json['houseNo'],
     phoneNumber: json['phoneNumber'],
   );
 
-  Map<String, dynamic> toMap() => {
+  Map<String, dynamic> toJson() => {
     'place': place.toJson(),
     'houseNo': houseNo,
     'phoneNumber': phoneNumber,

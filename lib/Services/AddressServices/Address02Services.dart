@@ -12,7 +12,7 @@ class Address02Services {
       .collection('addresses02')
       .withConverter<Address02>(
         fromFirestore: Address02.fromFirestore,
-        toFirestore: (model, _) => model.toMap(),
+        toFirestore: (model, _) => model.toJson(),
       );
 
   Future<DocumentReference<Object?>> add(Address02 address02) =>

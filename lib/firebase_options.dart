@@ -54,7 +54,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyD7eObWdxcnI6wjWTaP6ip15fRAeRlv_Oo',
-    appId: '1:326837888335:android:2058464068770da6a2913a',
+    appId: '1:326837888335:android:d7b6f3cc0f57b5e5a2913a',
     messagingSenderId: '326837888335',
     projectId: 'scrapper-079',
     storageBucket: 'scrapper-079.firebasestorage.app',

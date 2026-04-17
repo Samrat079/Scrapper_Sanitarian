@@ -2,10 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:scrapper/Models/Address/Address02.dart';
-import 'package:scrapper/Services/AddressServices/Address01Services.dart';
 import 'package:scrapper/Services/AddressServices/Address02Services.dart';
 
-import '../../../../Models/Address/Address01.dart';
 
 class AddressTile02 extends StatelessWidget {
   final QueryDocumentSnapshot<Address02> doc;

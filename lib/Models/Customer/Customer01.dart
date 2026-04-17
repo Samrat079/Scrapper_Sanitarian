@@ -31,18 +31,16 @@ class Customer01 {
     );
   }
 
-  factory Customer01.fromJson(Map<String, dynamic> json) {
-    return Customer01(
-      uid: json['uid'],
-      displayName: json['displayName'] ?? 'Username not added',
-      phoneNumber: json['phoneNumber'] ?? 'Phone number not verified',
-      email: json['email'] ?? 'Email not varified',
-      createdAt: json['createdAt'] ?? Timestamp.now(),
-      photoUrl:
-          json['photoUrl'] ??
-          'https://placehold.co/256x256/darkgreen/white.png?text=test',
-    );
-  }
+  factory Customer01.fromJson(Map<String, dynamic> json) => Customer01(
+    uid: json['uid'],
+    displayName: json['displayName'] ?? 'Username not added',
+    phoneNumber: json['phoneNumber'] ?? 'Phone number not verified',
+    email: json['email'] ?? 'Email not varified',
+    createdAt: json['createdAt'] ?? Timestamp.now(),
+    photoUrl:
+        json['photoUrl'] ??
+        'https://placehold.co/256x256/darkgreen/white.png?text=test',
+  );
 
   factory Customer01.fromAuth(User user) {
     return Customer01(

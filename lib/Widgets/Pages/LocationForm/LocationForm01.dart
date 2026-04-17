@@ -10,6 +10,7 @@ import 'package:scrapper/Models/Address/Address02.dart';
 import 'package:scrapper/Services/AppUserServices/AppUserServices01.dart';
 import 'package:scrapper/Widgets/Custome/Drawers/Drawer01.dart';
 import 'package:scrapper/Widgets/Custome/SearchDelegate/encodingDelegate01.dart';
+import 'package:scrapper/theme/theme_extensions.dart';
 
 import '../../Custome/CenterColumn/CenterColumb03.dart';
 
@@ -130,11 +131,10 @@ class _LocationForm01State extends State<LocationForm01>
                   prefixIcon: const Icon(Icons.location_pin),
                   suffixIcon: const Icon(Icons.edit_outlined),
                   labelText: 'Area/Locality',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
                 ),
               ),
+
+              context.gapMD,
 
               /// house floor
               FormBuilderTextField(
@@ -144,11 +144,9 @@ class _LocationForm01State extends State<LocationForm01>
                 decoration: InputDecoration(
                   prefixIcon: const Icon(Icons.house_outlined),
                   labelText: 'House no., Flat, Floor',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
                 ),
               ),
+              context.gapMD,
 
               /// Contact number
               FormBuilderField(
@@ -161,23 +159,17 @@ class _LocationForm01State extends State<LocationForm01>
                     initialCountryCode: 'IN',
                     decoration: InputDecoration(
                       labelText: 'Contact number',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
                       helperText:
                           'The sanitation worker will use this to contact you',
                     ),
                   );
                 },
               ),
+              context.gapMD,
 
               /// submit button
               ElevatedButton(
                 onPressed: submitHandler,
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                ),
                 child: const Text('Submit'),
               ),
             ],

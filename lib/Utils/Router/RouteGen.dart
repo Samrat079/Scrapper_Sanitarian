@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scrapper/Models/Address/Address02.dart';
-import 'package:scrapper/Models/AppUser/AppUser01.dart';
 import 'package:scrapper/Models/Customer/Customer01.dart';
 import 'package:scrapper/Services/AppUserServices/AppUserServices01.dart';
-import 'package:scrapper/Services/CustomerServices/CustomerServices01.dart';
 import 'package:scrapper/Widgets/Pages/LocationForm/LocationForm01.dart';
 
 import '../../Widgets/Pages/AddressesScreen/AddressesScreen01.dart';
@@ -41,7 +39,7 @@ class RouteGen {
       // case '/location01':
       //   return MaterialPageRoute(builder: (_) => LocationForm01());
       case '/profile':
-        return router(ProfileScreen01(customer: args as Customer01));
+        return router(ProfileScreen01());
       case '/addresses':
         return router(AddressesScreen01(customer: args as Customer01));
     }

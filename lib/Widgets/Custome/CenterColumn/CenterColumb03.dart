@@ -1,4 +1,7 @@
+import 'dart:ffi';
+
 import 'package:flutter/cupertino.dart';
+import 'package:scrapper/theme/theme_extensions.dart';
 
 class CenterColumb03 extends StatelessWidget {
   final List<Widget> children;
@@ -12,7 +15,6 @@ class CenterColumb03 extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          spacing: 12,
           children: children,
         ),
       ),

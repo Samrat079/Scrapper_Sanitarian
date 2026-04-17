@@ -4,6 +4,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_intl_phone_field/flutter_intl_phone_field.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:scrapper/Services/AppUserServices/AppUserServices01.dart';
+import 'package:scrapper/theme/theme_extensions.dart';
 
 import '../../Custome/CenterColumn/CenterColumn01.dart';
 
@@ -19,10 +20,12 @@ class AddNumber01 extends StatefulWidget {
 
 class _AddNumber01State extends State<AddNumber01> {
   final _addNumberKey = GlobalKey<FormBuilderState>();
+  bool isLoading = false;
 
   void clear() => _addNumberKey.currentState!.reset();
 
   void submitHandler() async {
+    setState(() => isLoading = true);
     if (_addNumberKey.currentState?.saveAndValidate() ?? false) {
       final number = _addNumberKey.currentState?.fields['Phone']?.value;
 
@@ -35,8 +38,12 @@ class _AddNumber01State extends State<AddNumber01> {
             ),
           )
           .onError<FirebaseAuthException>(
-            (e, stackTrace) => _addNumberKey.currentState?.fields['Phone']
-                ?.invalidate(e.message.toString()),
+            (e, stackTrace) {
+              _addNumberKey.currentState?.fields['Phone']?.invalidate(
+                e.message.toString(),
+              );
+              setState(() => isLoading = false);
+            },
           );
     }
   }
@@ -48,14 +55,14 @@ class _AddNumber01State extends State<AddNumber01> {
       child: CenterColumn01(
         children: [
           Image.asset('assets/Illustrations/login02.png', height: 256),
-          SizedBox(height: 16),
+          context.gapMD,
           Text(
             'Verify Phone number',
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
 
-          SizedBox(height: 20),
+          context.gapXL,
 
           FormBuilderField(
             name: 'Phone',
@@ -66,35 +73,25 @@ class _AddNumber01State extends State<AddNumber01> {
                 decoration: InputDecoration(
                   labelText: 'Phone',
                   hintText: '888-444-6464',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(90),
-                  ),
                   errorText: field.errorText,
-                  errorMaxLines: 3,
-                  errorStyle: TextStyle(fontStyle: FontStyle.italic),
+                  errorMaxLines: 2,
                 ),
               );
             },
           ),
 
-          SizedBox(height: 16),
+          context.gapMD,
 
           ElevatedButton(
-            onPressed: submitHandler,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              foregroundColor: Theme.of(context).colorScheme.onPrimary,
-            ),
+            onPressed: isLoading ? null : submitHandler,
             child: Text('Submit'),
           ),
-          SizedBox(height: 8),
+          context.gapMD,
           ElevatedButton(
             onPressed: clear,
             style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(
-                context,
-              ).colorScheme.surfaceContainerHigh,
-              foregroundColor: Theme.of(context).colorScheme.onSurface,
+              backgroundColor: context.colorScheme.surfaceContainerHigh,
+              foregroundColor: context.colorScheme.onSurface,
             ),
             child: Text('Clear'),
           ),

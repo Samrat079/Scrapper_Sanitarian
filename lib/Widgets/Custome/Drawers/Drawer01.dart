@@ -35,6 +35,16 @@ class Drawer01 extends StatelessWidget {
           //   onTap: () => Navigator.pushNamed(context, '/home02'),
           // ),
           ListTile(
+            leading: Icon(Icons.home_outlined),
+            title: Text('Orders01'),
+            onTap: () => Navigator.pushNamed(context, '/orders01'),
+          ),
+          ListTile(
+            leading: Icon(Icons.home_outlined),
+            title: Text('Current Order'),
+            onTap: () => Navigator.pushNamed(context, '/CurrOrder'),
+          ),
+          ListTile(
             iconColor: Theme.of(context).colorScheme.error,
             textColor: Theme.of(context).colorScheme.error,
             leading: Icon(Icons.logout_outlined),
