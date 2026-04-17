@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../Custome/CenterColumn/CenterColumn01.dart';
+import '../../Custome/CenterColumn/CenterColumn04.dart';
 
 class ErrorScreen01 extends StatelessWidget {
   const ErrorScreen01({super.key});
@@ -9,7 +9,10 @@ class ErrorScreen01 extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: CenterColumn01(children: [Text('Something went wrong')]),
+      body: CenterColumn04(
+        centerVertically: true,
+        children: [Text('Something went wrong')],
+      ),
     );
   }
 }

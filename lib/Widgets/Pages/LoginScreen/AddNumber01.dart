@@ -6,7 +6,7 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:scrapper/Services/AppUserServices/AppUserServices01.dart';
 import 'package:scrapper/theme/theme_extensions.dart';
 
-import '../../Custome/CenterColumn/CenterColumn01.dart';
+import '../../Custome/CenterColumn/CenterColumn04.dart';
 
 class AddNumber01 extends StatefulWidget {
   final PageController _controller;
@@ -52,7 +52,9 @@ class _AddNumber01State extends State<AddNumber01> {
   Widget build(BuildContext context) {
     return FormBuilder(
       key: _addNumberKey,
-      child: CenterColumn01(
+      child: CenterColumn04(
+        centerVertically: true,
+        padding: context.paddingXL,
         children: [
           Image.asset('assets/Illustrations/login02.png', height: 256),
           context.gapMD,

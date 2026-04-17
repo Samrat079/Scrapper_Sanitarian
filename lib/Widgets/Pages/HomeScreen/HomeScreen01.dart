@@ -4,7 +4,8 @@ import 'package:scrapper/Services/OrderServices/Order01Service.dart';
 import 'package:scrapper/Widgets/Custome/Drawers/Drawer01.dart';
 import 'package:scrapper/theme/theme_extensions.dart';
 
-import '../../Custome/CenterColumn/CenterColumn01.dart';
+import '../../Custome/CenterColumn/CenterColumn04.dart';
+
 
 class HomeScreen01 extends StatelessWidget {
   const HomeScreen01({super.key});
@@ -21,7 +22,8 @@ class HomeScreen01 extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(),
-      body: CenterColumn01(
+      body: CenterColumn04(
+        centerVertically: true,
         children: [
           Image.asset('assets/Illustrations/home_01.png', height: 300),
 

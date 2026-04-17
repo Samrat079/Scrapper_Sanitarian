@@ -5,8 +5,9 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:scrapper/Models/Orders/Order01.dart';
 import 'package:scrapper/Services/OrderServices/Order01Service.dart';
-import 'package:scrapper/Widgets/Custome/CenterColumn/CenterColumb03.dart';
 import 'package:scrapper/theme/theme_extensions.dart';
+
+import '../../Custome/CenterColumn/CenterColumn04.dart';
 
 class CurrOrderScreen01 extends StatelessWidget {
   const CurrOrderScreen01({super.key});
@@ -62,7 +63,7 @@ class CurrOrderScreen01 extends StatelessWidget {
             builder: (context) {
               /// Temporary testing logic change this to == in prod
               if (order.sanitarian != null) {
-                return CenterColumb03(
+                return CenterColumn04(
                   children: [
                     Center(child: CircularProgressIndicator()),
                     context.gapMD,
@@ -71,7 +72,7 @@ class CurrOrderScreen01 extends StatelessWidget {
                 );
               }
 
-              return CenterColumb03(
+              return CenterColumn04(
                 children: [
                   Text(order.address.place.displayName!),
                   context.gapMD,

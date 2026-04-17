@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:scrapper/Models/Address/Address02.dart';
 import 'package:scrapper/Models/Customer/Customer01.dart';
 import 'package:scrapper/Services/AddressServices/Address02Services.dart';
-import 'package:scrapper/Widgets/Custome/CenterColumn/ScrollColumn01.dart';
+import 'package:scrapper/Widgets/Custome/CenterColumn/CenterColumn04.dart';
 import 'package:scrapper/Widgets/Pages/AddressesScreen/Widget/AddressTile02.dart';
 
 class AddressesScreen01 extends StatelessWidget {
@@ -29,7 +29,7 @@ class AddressesScreen01 extends StatelessWidget {
           }
           final docs = snapshot.data!.docs;
 
-          return ScrollColumn01(
+          return CenterColumn04(
             children: [
               /// List of addresses
               ListView.builder(

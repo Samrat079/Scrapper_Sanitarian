@@ -2,9 +2,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:scrapper/Services/AppUserServices/AppUserServices01.dart';
 import 'package:scrapper/Widgets/Custome/CardList01/CardList01.dart';
-import 'package:scrapper/Widgets/Custome/CenterColumn/ScrollColumn01.dart';
 import 'package:scrapper/theme/theme_extensions.dart';
 import 'package:timeago/timeago.dart' as timeago;
+
+import '../../Custome/CenterColumn/CenterColumn04.dart';
 
 class ProfileScreen01 extends StatelessWidget {
   const ProfileScreen01({super.key});
@@ -22,25 +23,25 @@ class ProfileScreen01 extends StatelessWidget {
             return const Center(child: Text('Not logged in'));
           }
 
-          return ScrollColumn01(
+          return CenterColumn04(
             children: [
               context.gapMD,
 
               /// User profile section
               Row(
-                spacing: 12,
                 children: [
                   CachedNetworkImage(
                     imageUrl: customer.photoUrl,
                     imageBuilder: (context, imageProvider) => CircleAvatar(
-                      radius: 30,
+                      radius: 54,
                       backgroundImage: imageProvider,
                     ),
                     placeholder: (context, url) => const CircleAvatar(
-                      radius: 30,
+                      radius: 54,
                       child: Icon(Icons.person_outline),
                     ),
                   ),
+                  context.gapMD,
 
                   Text(
                     customer.displayName,
@@ -51,6 +52,8 @@ class ProfileScreen01 extends StatelessWidget {
                   ),
                 ],
               ),
+
+              context.gapXL,
 
               /// User customer card
               CardList01(
@@ -85,7 +88,11 @@ class ProfileScreen01 extends StatelessWidget {
                     title: const Text('Saved address'),
                     leading: const Icon(Icons.house_outlined),
                     trailing: const Icon(Icons.arrow_forward_ios_outlined),
-                    onTap: () => Navigator.pushNamed(context, '/addresses', arguments: customer),
+                    onTap: () => Navigator.pushNamed(
+                      context,
+                      '/addresses',
+                      arguments: customer,
+                    ),
                   ),
                 ],
               ),

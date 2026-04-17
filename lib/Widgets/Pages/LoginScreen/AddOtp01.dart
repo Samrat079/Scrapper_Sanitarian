@@ -6,7 +6,7 @@ import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:scrapper/Services/AppUserServices/AppUserServices01.dart';
 import 'package:scrapper/theme/theme_extensions.dart';
 
-import '../../Custome/CenterColumn/CenterColumn01.dart';
+import '../../Custome/CenterColumn/CenterColumn04.dart';
 
 class AddOtp01 extends StatefulWidget {
   final PageController _controller;
@@ -50,7 +50,9 @@ class _AddOtp01State extends State<AddOtp01> {
   Widget build(BuildContext context) {
     return FormBuilder(
       key: _otpController,
-      child: CenterColumn01(
+      child: CenterColumn04(
+        centerVertically: true,
+        padding: context.paddingXL,
         children: [
           Image.asset('assets/Illustrations/otp01.png', height: 256),
           context.gapMD,
