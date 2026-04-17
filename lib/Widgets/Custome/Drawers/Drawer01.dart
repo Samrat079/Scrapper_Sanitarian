@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:scrapper/Services/AppUserServices/AppUserServices01.dart';
 
+import '../../../theme/theme_extensions.dart';
+
 class Drawer01 extends StatelessWidget {
   const Drawer01({super.key});
 
@@ -20,33 +22,9 @@ class Drawer01 extends StatelessWidget {
               arguments: AppUserServices01().current.customer01,
             ),
           ),
-          // ListTile(
-          //   title: Text('Login'),
-          //   onTap: () => Navigator.pushNamed(context, '/login'),
-          // ),
-          // ListTile(
-          //   leading: Icon(Icons.error_outline),
-          //   title: Text('Error'),
-          //   onTap: () => Navigator.pushNamed(context, '/error'),
-          // ),
-          // ListTile(
-          //   leading: Icon(Icons.home_outlined),
-          //   title: Text('Home02'),
-          //   onTap: () => Navigator.pushNamed(context, '/home02'),
-          // ),
           ListTile(
-            leading: Icon(Icons.home_outlined),
-            title: Text('Orders01'),
-            onTap: () => Navigator.pushNamed(context, '/orders01'),
-          ),
-          ListTile(
-            leading: Icon(Icons.home_outlined),
-            title: Text('Current Order'),
-            onTap: () => Navigator.pushNamed(context, '/CurrOrder'),
-          ),
-          ListTile(
-            iconColor: Theme.of(context).colorScheme.error,
-            textColor: Theme.of(context).colorScheme.error,
+            iconColor: context.colorScheme.error,
+            textColor: context.colorScheme.error,
             leading: Icon(Icons.logout_outlined),
             title: Text('Logout'),
             onTap: () => AppUserServices01().logout(),

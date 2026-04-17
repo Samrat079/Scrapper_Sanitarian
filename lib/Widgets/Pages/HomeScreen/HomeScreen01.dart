@@ -6,24 +6,16 @@ import 'package:scrapper/theme/theme_extensions.dart';
 
 import '../../Custome/CenterColumn/CenterColumn04.dart';
 
-
 class HomeScreen01 extends StatelessWidget {
   const HomeScreen01({super.key});
 
   @override
   Widget build(BuildContext context) {
-
-    void placeOrder() async {
-      final address = await Navigator.pushNamed(context, '/location01');
-      if (address == null || address is! Address02) return;
-      Order01Service().placeOrder(23, address);
-      Navigator.pushNamed(context, '/CurrOrder');
-    }
-
     return Scaffold(
       appBar: AppBar(),
       body: CenterColumn04(
         centerVertically: true,
+        padding: context.paddingXL,
         children: [
           Image.asset('assets/Illustrations/home_01.png', height: 300),
 
@@ -33,7 +25,7 @@ class HomeScreen01 extends StatelessWidget {
             text: TextSpan(
               children: [
                 TextSpan(
-                  text: 'Too tired to',
+                  text: 'Ready to make ',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 30,
@@ -41,7 +33,7 @@ class HomeScreen01 extends StatelessWidget {
                   ),
                 ),
                 TextSpan(
-                  text: ' take the trash out? ',
+                  text: ' your city spotless? ',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 30,
@@ -49,7 +41,7 @@ class HomeScreen01 extends StatelessWidget {
                   ),
                 ),
                 TextSpan(
-                  text: 'We will do it for you!!!',
+                  text: 'Go on duty now!!!',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 30,
@@ -62,7 +54,10 @@ class HomeScreen01 extends StatelessWidget {
 
           context.gapMD,
 
-          ElevatedButton(onPressed: placeOrder, child: Text('Book now')),
+          ElevatedButton(
+            onPressed: () => Navigator.pushNamed(context, '/orders'),
+            child: Text('Go on duty'),
+          ),
         ],
       ),
       drawer: Drawer01(),

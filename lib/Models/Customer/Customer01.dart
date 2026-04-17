@@ -57,14 +57,12 @@ class Customer01 {
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'uid': uid,
-      'displayName': displayName,
-      'phoneNumber': phoneNumber,
-      'email': email,
-      'createdAt': createdAt,
-      'photoUrl': photoUrl,
-    };
-  }
+  Map<String, dynamic> toJson() => {
+    'uid': uid,
+    'displayName': displayName,
+    'phoneNumber': phoneNumber,
+    'email': email,
+    'createdAt': createdAt,
+    'photoUrl': photoUrl,
+  };
 }
