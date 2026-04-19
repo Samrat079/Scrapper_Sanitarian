@@ -23,9 +23,7 @@ class Sanitarian01 {
     phoneNumber: snapshot.data()!['phoneNumber'] ?? 'Number not added',
     email: snapshot.data()!['email'] ?? 'Email not verified',
     createdAt: snapshot.data()!['createdAt'] ?? Timestamp.now(),
-    photoUrl:
-        snapshot.data()!['photoUrl'] ??
-        'https://placehold.co/256x256/darkgreen/white.png?text=test',
+    photoUrl: snapshot.data()!['photoUrl'],
   );
 
   factory Sanitarian01.fromJson(Map<String, dynamic> json) => Sanitarian01(

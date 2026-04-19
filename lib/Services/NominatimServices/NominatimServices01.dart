@@ -1,3 +1,4 @@
+import 'package:latlong2/latlong.dart';
 import 'package:nominatim_flutter/model/request/request.dart';
 import 'package:nominatim_flutter/model/response/nominatim_response.dart';
 import 'package:nominatim_flutter/nominatim_flutter.dart';
@@ -29,4 +30,10 @@ class NominatimServices01 {
           .where((query) => query.isNotEmpty)
           .distinct()
           .asyncMap((query) => searchByString(query));
+
+  Future<NominatimResponse> searchByLatLng(LatLng latLng) => nominatim.reverse(
+    reverseRequest: ReverseRequest(lat: latLng.latitude, lon: latLng.longitude),
+  );
+
+
 }

@@ -4,7 +4,6 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_intl_phone_field/flutter_intl_phone_field.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:scrapper/Services/AppUserServices/AppUserService02.dart';
-import 'package:scrapper/Services/AppUserServices/AppUserServices01.dart';
 import 'package:scrapper/theme/theme_extensions.dart';
 
 import '../../Custome/CenterColumn/CenterColumn04.dart';
@@ -38,14 +37,12 @@ class _AddNumber01State extends State<AddNumber01> {
               curve: Curves.easeInOut,
             ),
           )
-          .onError<FirebaseAuthException>(
-            (e, stackTrace) {
-              _addNumberKey.currentState?.fields['Phone']?.invalidate(
-                e.message.toString(),
-              );
-              setState(() => isLoading = false);
-            },
-          );
+          .onError<FirebaseAuthException>((e, stackTrace) {
+            _addNumberKey.currentState?.fields['Phone']?.invalidate(
+              e.message.toString(),
+            );
+            setState(() => isLoading = false);
+          });
     }
   }
 
@@ -74,10 +71,24 @@ class _AddNumber01State extends State<AddNumber01> {
                 onChanged: (phone) => field.didChange(phone.completeNumber),
                 initialCountryCode: 'IN',
                 decoration: InputDecoration(
+                  filled: true,
+                  fillColor: context.colorScheme.surfaceContainer,
                   labelText: 'Phone',
                   hintText: '888-444-6464',
                   errorText: field.errorText,
                   errorMaxLines: 2,
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: context.radiusMD,
+                    borderSide: BorderSide(color: context.colorScheme.outline),
+                  ),
+
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: context.radiusMD,
+                    borderSide: BorderSide(
+                      color: context.colorScheme.primary,
+                      width: 2,
+                    ),
+                  ),
                 ),
               );
             },

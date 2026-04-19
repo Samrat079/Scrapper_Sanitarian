@@ -1,8 +1,10 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:scrapper/Models/Address/Address02.dart';
 import 'package:scrapper/Models/Customer/Customer01.dart';
 import 'package:scrapper/Models/Sanitarian/Sanitarian01.dart';
+import 'package:scrapper/Services/GeoLocatorService/GeoLocator01.dart';
+import 'package:scrapper/Services/OSRMServices/OSRMService01.dart';
 
 class Order01 {
   String? uid;
@@ -12,6 +14,7 @@ class Order01 {
   Sanitarian01? sanitarian;
   Order01Status status;
   Timestamp createdAt;
+  double? distance;
 
   Order01({
     this.uid,
@@ -21,6 +24,7 @@ class Order01 {
     this.sanitarian,
     this.status = Order01Status.requested,
     required this.createdAt,
+    this.distance = 0.0,
   });
 
   factory Order01.fromFirestore(
@@ -37,6 +41,7 @@ class Order01 {
     sanitarian: snapshot.data()!['sanitarian'],
     createdAt: snapshot.data()!['createdAt'],
   );
+
 
   Map<String, dynamic> toJson() => {
     'price': price,

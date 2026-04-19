@@ -25,39 +25,43 @@ class ProfileScreen01 extends StatelessWidget {
           }
 
           return CenterColumn04(
+            padding: context.paddingSM,
             children: [
               context.gapMD,
 
               /// Sanitarian profile section
-              Row(
-                children: [
-                  CachedNetworkImage(
-                    imageUrl: sanitarian.photoUrl,
-                    imageBuilder: (context, imageProvider) => CircleAvatar(
-                      radius: 54,
-                      backgroundImage: imageProvider,
+              Padding(
+                padding: context.paddingMD,
+                child: Row(
+                  children: [
+                    CachedNetworkImage(
+                      imageUrl: sanitarian.photoUrl,
+                      imageBuilder: (context, imageProvider) => CircleAvatar(
+                        radius: 36,
+                        backgroundImage: imageProvider,
+                      ),
+                      placeholder: (context, url) => const CircleAvatar(
+                        radius: 36,
+                        child: Icon(Icons.person),
+                      ),
                     ),
-                    placeholder: (context, url) => const CircleAvatar(
-                      radius: 54,
-                      child: Icon(Icons.person_outline),
-                    ),
-                  ),
-                  context.gapMD,
 
-                  Text(
-                    sanitarian.displayName,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+                    context.gapMD,
+
+                    Text(
+                      sanitarian.displayName,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-
-              context.gapXL,
 
               /// User sanitarian card
               CardList01(
+                padding: context.paddingSM,
                 children: [
                   ListTile(
                     leading: const Icon(Icons.phone_outlined),
@@ -72,13 +76,16 @@ class ProfileScreen01 extends StatelessWidget {
                   ListTile(
                     leading: const Icon(Icons.timer_outlined),
                     title: const Text('Member since'),
-                    subtitle: Text(timeago.format(sanitarian.createdAt.toDate())),
+                    subtitle: Text(
+                      timeago.format(sanitarian.createdAt.toDate()),
+                    ),
                   ),
                 ],
               ),
 
               /// My orders card
               CardList01(
+                padding: context.paddingSM,
                 children: [
                   const ListTile(
                     title: Text('My Orders'),
@@ -90,6 +97,7 @@ class ProfileScreen01 extends StatelessWidget {
 
               /// Profile options
               CardList01(
+                padding: context.paddingSM,
                 children: [
                   const ListTile(
                     leading: Icon(Icons.edit_outlined),
@@ -111,7 +119,10 @@ class ProfileScreen01 extends StatelessWidget {
                     iconColor: context.colorScheme.error,
                     leading: const Icon(Icons.delete_outline),
                     title: const Text('Delete profile'),
-                    onTap: () => AppUserService02().delete(),
+                    onTap: () async {
+                      await AppUserService02().delete();
+                      Navigator.pop(context);
+                    },
                   ),
                 ],
               ),

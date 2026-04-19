@@ -30,10 +30,8 @@ class AppUserService02 extends ValueNotifier<AppUser02> {
   Sanitarian01? _sanitarian;
 
   AppUser02 get current => AppUser02(auth: _authUser, sanitarian: _sanitarian);
-
   bool get isLoggedIn => _authUser != null && _sanitarian != null;
-
-  bool get isReady => current.exists;
+  bool get exists => current.exists;
 
   /// init
   Future<void> init() async {
@@ -47,9 +45,7 @@ class AppUserService02 extends ValueNotifier<AppUser02> {
       }
 
       final doc = await _users.doc(user.uid).get();
-
       _sanitarian = doc.exists ? doc.data() : null;
-
       value = current;
 
       /// listeners
@@ -91,16 +87,12 @@ class AppUserService02 extends ValueNotifier<AppUser02> {
 
     final result = await _auth.signInWithCredential(credential);
     final user = result.user!;
-
     _authUser = user;
 
     final doc = await _users.doc(user.uid).get();
-
     if (!doc.exists) {
       final newSanitarian = Sanitarian01.fromAuth(user);
-
       await _users.doc(user.uid).set(newSanitarian, SetOptions(merge: true));
-
       _sanitarian = newSanitarian;
     } else {
       _sanitarian = doc.data();
@@ -120,16 +112,14 @@ class AppUserService02 extends ValueNotifier<AppUser02> {
   /// 🚪 Logout
   Future<void> logout() async {
     await _auth.signOut();
-
     _authUser = null;
     _sanitarian = null;
-
     value = current;
 
-    Order01Service02().dispose();
+    Order01Service02().stop();
   }
 
-  /// ❌ Delete user
+  /// Delete user
   Future<void> delete() async {
     await _users.doc(_authUser?.uid).delete();
     await _authUser?.delete();

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:nominatim_flutter/model/response/nominatim_response.dart';
 
 import 'NominatimResponse02.dart';
@@ -39,4 +40,7 @@ class Address02 {
     'houseNo': houseNo,
     'phoneNumber': phoneNumber,
   };
+
+  LatLng get latLng =>
+      LatLng(double.parse(place.lat!), double.parse(place.lon!));
 }

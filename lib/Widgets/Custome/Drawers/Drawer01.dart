@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:scrapper/Services/AppUserServices/AppUserServices01.dart';
+import 'package:scrapper/Services/AppUserServices/AppUserService02.dart';
 
 import '../../../theme/theme_extensions.dart';
 
@@ -19,7 +19,7 @@ class Drawer01 extends StatelessWidget {
             onTap: () => Navigator.pushNamed(
               context,
               '/profile',
-              arguments: AppUserServices01().current.customer01,
+              arguments: AppUserService02().current.sanitarian,
             ),
           ),
           ListTile(
@@ -27,7 +27,7 @@ class Drawer01 extends StatelessWidget {
             textColor: context.colorScheme.error,
             leading: Icon(Icons.logout_outlined),
             title: Text('Logout'),
-            onTap: () => AppUserServices01().logout(),
+            onTap: () => AppUserService02().logout(),
           ),
         ],
       ),

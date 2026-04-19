@@ -2,9 +2,21 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CardList01 extends StatelessWidget {
+  /// Widgets
   final List<Widget> children;
 
-  const CardList01({super.key, this.children = const []});
+  /// Layout
+  final EdgeInsetsGeometry padding;
+
+  /// Behaviour
+  final ScrollPhysics physics;
+
+  const CardList01({
+    super.key,
+    this.children = const [],
+    this.padding = const EdgeInsetsGeometry.all(16),
+    this.physics = const NeverScrollableScrollPhysics(),
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +24,8 @@ class CardList01 extends StatelessWidget {
       child: SingleChildScrollView(
         child: Card(
           child: ListView(
-            padding: EdgeInsets.all(0),
+            physics: physics,
+            padding: padding,
             shrinkWrap: true,
             children: children,
           ),
