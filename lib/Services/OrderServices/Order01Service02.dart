@@ -67,4 +67,6 @@ class Order01Service02 extends ValueNotifier<List<Order01>> {
     newList.removeAt(index);
     value = newList;
   }
+
+  void deleteById(String uid) => _ref.doc(uid).delete();
 }

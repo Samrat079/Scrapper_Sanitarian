@@ -35,5 +35,4 @@ class NominatimServices01 {
     reverseRequest: ReverseRequest(lat: latLng.latitude, lon: latLng.longitude),
   );
 
-
 }

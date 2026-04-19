@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:nominatim_flutter/model/response/nominatim_response.dart';
 import 'package:scrapper/Services/GeoLocatorService/GeoLocator01.dart';
 import 'package:scrapper/Services/NominatimServices/NominatimServices01.dart';
@@ -8,20 +9,25 @@ class CurrAddTest01 extends StatelessWidget {
   const CurrAddTest01({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<NominatimResponse?>(
-      future: GeoLocator01().getCurrAddress(),
+  Widget build(BuildContext context) => ValueListenableBuilder(
+    valueListenable: GeoLocator01().currPos,
+    builder: (context, position, _) => FutureBuilder(
+      future: NominatimServices01().searchByLatLng(
+        LatLng(position?.latitude ?? 0, position?.longitude ?? 0),
+      ),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
+          return Text('Loading...');
         }
 
-        if (snapshot.hasError) {
-          return Center(child: Text('error:${snapshot.error}'));
+        if (!snapshot.hasData || snapshot.data?.name == null) {
+          return const Text('No address');
         }
-        final data = snapshot.data!.name;
-        return Text('Curr Address: ${data}');
+
+        final name = snapshot.data!.name!;
+        final data = name.length > 10 ? name.substring(0, 10) : name;
+        return Text('$data...', overflow: TextOverflow.ellipsis, maxLines: 1);
       },
-    );
-  }
+    ),
+  );
 }

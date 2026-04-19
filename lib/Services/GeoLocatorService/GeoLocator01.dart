@@ -50,11 +50,6 @@ class GeoLocator01 {
     ).listen((Position position) => currPos.value = position);
   }
 
-  Future<NominatimResponse?> getCurrAddress() =>
-      NominatimServices01().searchByLatLng(
-        LatLng(currPos.value?.latitude ?? 0.0, currPos.value?.longitude ?? 0.0),
-      );
-
   LatLng getCurrLatLng() =>
-      LatLng(currPos.value!.latitude, currPos.value!.longitude);
+      LatLng(currPos.value?.latitude ?? 0, currPos.value?.longitude ?? 0);
 }

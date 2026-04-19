@@ -14,48 +14,18 @@ class HomeScreen01 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        actionsPadding: context.paddingMD,
+        actions: [CurrAddTest01()],
+      ),
       body: CenterColumn04(
         centerVertically: true,
         padding: context.paddingXL,
         children: [
-          Image.asset('assets/Illustrations/home_01.png', height: 300),
+          Image.asset('assets/Illustrations/waste_03.png', height: 300),
           context.gapMD,
 
-          CurrAddTest01(),
-
           context.gapMD,
-          // RichText(
-          //   textAlign: TextAlign.center,
-          //   text: TextSpan(
-          //     children: [
-          //       TextSpan(
-          //         text: 'Ready to make ',
-          //         style: TextStyle(
-          //           fontWeight: FontWeight.bold,
-          //           fontSize: 30,
-          //           color: context.colorScheme.onSurface,
-          //         ),
-          //       ),
-          //       TextSpan(
-          //         text: ' your city spotless? ',
-          //         style: TextStyle(
-          //           fontWeight: FontWeight.bold,
-          //           fontSize: 30,
-          //           color: context.colorScheme.primary,
-          //         ),
-          //       ),
-          //       TextSpan(
-          //         text: 'Go on duty now!!!',
-          //         style: TextStyle(
-          //           fontWeight: FontWeight.bold,
-          //           fontSize: 30,
-          //           color: context.colorScheme.onSurface,
-          //         ),
-          //       ),
-          //     ],
-          //   ),
-          // ),
 
           RichText01(
             text1: 'Ready to make ',
