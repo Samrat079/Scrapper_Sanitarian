@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:nominatim_flutter/model/response/nominatim_response.dart';
-import 'package:scrapper/Services/NominatimServices/NominatimServices01.dart';
 
 class GeoLocator01 {
   /// Have to go for singleton
@@ -41,13 +40,16 @@ class GeoLocator01 {
 
   /// Init calls the listeners
   Future<void> init() async {
-    checkPermission();
-    Geolocator.getPositionStream(
-      locationSettings: const LocationSettings(
-        accuracy: LocationAccuracy.high,
-        distanceFilter: 10,
-      ),
-    ).listen((Position position) => currPos.value = position);
+    checkPermission()
+        .then(
+          (_) => Geolocator.getPositionStream(
+            locationSettings: const LocationSettings(
+              accuracy: LocationAccuracy.high,
+              distanceFilter: 10,
+            ),
+          ).listen((Position position) => currPos.value = position),
+        )
+        .catchError((e) => throw e);
   }
 
   LatLng getCurrLatLng() =>

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:scrapper/Services/AppUserServices/AppUserService02.dart';
 
@@ -27,7 +26,9 @@ class Drawer01 extends StatelessWidget {
             textColor: context.colorScheme.error,
             leading: Icon(Icons.logout_outlined),
             title: Text('Logout'),
-            onTap: () => AppUserService02().logout(),
+            onTap: () => AppUserService02().logout().then(
+              (_) => Navigator.pushReplacementNamed(context, '/login'),
+            ),
           ),
         ],
       ),

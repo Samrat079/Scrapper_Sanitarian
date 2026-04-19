@@ -51,11 +51,13 @@ class EncodingDelegate01 extends SearchDelegate<NominatimResponse?> {
     return StreamBuilder<List<NominatimResponse>>(
       stream: _resultsStream,
       builder: (context, snapshot) {
-        if (query.isEmpty)
+        if (query.isEmpty) {
           return const Center(child: Text('Start typing to search'));
+        }
 
-        if (!snapshot.hasData && query.length > 2)
+        if (!snapshot.hasData && query.length > 2) {
           return Center(child: CircularProgressIndicator());
+        }
 
         final data = snapshot.data ?? [];
 

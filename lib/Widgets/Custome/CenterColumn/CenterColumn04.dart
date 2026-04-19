@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 
-import 'package:flutter/cupertino.dart';
 
 class CenterColumn04 extends StatelessWidget {
   final List<Widget> children;

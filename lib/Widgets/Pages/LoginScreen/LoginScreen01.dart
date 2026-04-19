@@ -1,8 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:scrapper/Widgets/Pages/LoginScreen/Widget/EditProfileForm01.dart';
+import 'package:scrapper/Widgets/Pages/LoginScreen/Widget/Welcome01.dart';
+import 'package:scrapper/Widgets/Pages/LoginScreen/Widget/Welcome02.dart';
 
-import 'AddNumber01.dart';
-import 'AddOtp01.dart';
+import 'Widget/AddNumber01.dart';
+import 'Widget/AddOtp01.dart';
 
 class LoginScreen01 extends StatelessWidget {
   const LoginScreen01({super.key});
@@ -13,11 +15,12 @@ class LoginScreen01 extends StatelessWidget {
     return Scaffold(
       body: PageView(
         controller: controller,
-        physics: NeverScrollableScrollPhysics(),
-        scrollDirection: Axis.vertical,
         children: [
+          Welcome01(controller: controller),
+          Welcome02(controller: controller),
           AddNumber01(controller: controller),
           AddOtp01(controller: controller),
+          EditProfileForm01()
         ],
       ),
     );

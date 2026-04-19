@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:scrapper/Models/Orders/Order01.dart';
 import 'package:scrapper/Services/OrderServices/Order01Service02.dart';
@@ -40,11 +39,10 @@ class OrdersScreen01 extends StatelessWidget {
                 Text(data.address.place.name.toString()),
                 Text(data.address.place.displayName.toString()),
                 Text(data.status.name),
-                // Text(data.uid!),
-                TextButton(
-                  onPressed: () => Order01Service02().deleteById(data.uid!),
-                  child: Text('delete'),
-                ),
+                // TextButton(
+                //   onPressed: () => Order01Service02().deleteById(data.uid!),
+                //   child: Text('delete'),
+                // ),
               ],
             );
           },

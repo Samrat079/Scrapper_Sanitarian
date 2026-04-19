@@ -103,7 +103,17 @@ class AppUserService02 extends ValueNotifier<AppUser02> {
     return current;
   }
 
-  /// 👤 Get user by ID
+  Future<void> updateAppUser(String displayName) async {
+    await _authUser?.updateDisplayName(displayName);
+    await _authUser?.reload();
+    _authUser = _auth.currentUser;
+    await _users.doc(current.uid).update({'displayName': displayName});
+    _sanitarian?.displayName = displayName;
+    value = current;
+  }
+
+
+  /// Get user by ID
   Future<Sanitarian01> getUserById(String uid) async {
     final doc = await _users.doc(uid).get();
     return doc.data()!;

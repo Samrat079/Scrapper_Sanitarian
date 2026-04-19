@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:scrapper/Services/AppUserServices/AppUserService02.dart';
-import 'package:scrapper/Services/AppUserServices/AppUserService02.dart';
 import 'package:scrapper/Widgets/Custome/CardList01/CardList01.dart';
 import 'package:scrapper/theme/theme_extensions.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -99,10 +98,11 @@ class ProfileScreen01 extends StatelessWidget {
               CardList01(
                 padding: context.paddingSM,
                 children: [
-                  const ListTile(
-                    leading: Icon(Icons.edit_outlined),
-                    title: Text('Edit Profile'),
-                    trailing: Icon(Icons.arrow_forward_ios_outlined),
+                  ListTile(
+                    leading: const Icon(Icons.edit_outlined),
+                    title: const Text('Edit Profile'),
+                    trailing: const Icon(Icons.arrow_forward_ios_outlined),
+                    onTap: () => Navigator.pushNamed(context, '/edit_profile'),
                   ),
                   ListTile(
                     textColor: context.colorScheme.error,

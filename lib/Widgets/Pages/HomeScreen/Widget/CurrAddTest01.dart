@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:nominatim_flutter/model/response/nominatim_response.dart';
 import 'package:scrapper/Services/GeoLocatorService/GeoLocator01.dart';
 import 'package:scrapper/Services/NominatimServices/NominatimServices01.dart';
 

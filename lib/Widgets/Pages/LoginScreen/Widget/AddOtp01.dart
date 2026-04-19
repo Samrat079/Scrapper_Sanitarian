@@ -1,12 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:scrapper/Services/AppUserServices/AppUserService02.dart';
 import 'package:scrapper/theme/theme_extensions.dart';
 
-import '../../Custome/CenterColumn/CenterColumn04.dart';
+import '../../../Custome/CenterColumn/CenterColumn04.dart';
 
 class AddOtp01 extends StatefulWidget {
   final PageController _controller;
@@ -30,7 +29,13 @@ class _AddOtp01State extends State<AddOtp01> {
       final otp = _otpController.currentState?.fields['Otp']?.value;
       AppUserService02()
           .verifyOtp(otp)
-          .then((e) => Navigator.pushReplacementNamed(context, '/profile'))
+          // .then((e) => Navigator.pushReplacementNamed(context, '/'))
+          .then(
+            (_) => widget._controller.nextPage(
+              duration: Duration(milliseconds: 500),
+              curve: Curves.easeInOut,
+            ),
+          )
           .onError<FirebaseAuthException>((e, stackTrace) {
             _otpController.currentState?.fields['Otp']?.invalidate(
               e.message.toString(),

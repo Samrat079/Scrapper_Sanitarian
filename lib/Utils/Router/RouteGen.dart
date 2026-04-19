@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scrapper/Services/AppUserServices/AppUserService02.dart';
+import 'package:scrapper/Widgets/Pages/EditProfileScreen/EditProfileScreen01.dart';
 import 'package:scrapper/Widgets/Pages/OrdersScreen/OrdersScreen01.dart';
 
 import '../../Widgets/Pages/ErrorScreen/ErrorScreen01.dart';
@@ -27,12 +28,15 @@ class RouteGen {
         return router(ErrorScreen01());
     }
 
-    /// Protected route
     if (!isLoggedIn) return router(LoginScreen01());
+
+    /// Protected route
 
     switch (name) {
       case '/profile':
         return router(ProfileScreen01());
+      case '/edit_profile':
+        return router(EditProfileScreen01());
       case '/orders':
         return router(OrdersScreen01());
     }

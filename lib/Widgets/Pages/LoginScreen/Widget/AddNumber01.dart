@@ -2,11 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_intl_phone_field/flutter_intl_phone_field.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:scrapper/Services/AppUserServices/AppUserService02.dart';
 import 'package:scrapper/theme/theme_extensions.dart';
 
-import '../../Custome/CenterColumn/CenterColumn04.dart';
+import '../../../Custome/CenterColumn/CenterColumn04.dart';
 
 class AddNumber01 extends StatefulWidget {
   final PageController _controller;
@@ -33,7 +32,7 @@ class _AddNumber01State extends State<AddNumber01> {
           .sendOtp(number)
           .then(
             (_) => widget._controller.nextPage(
-              duration: Duration(seconds: 1),
+              duration: Duration(milliseconds: 500),
               curve: Curves.easeInOut,
             ),
           )
