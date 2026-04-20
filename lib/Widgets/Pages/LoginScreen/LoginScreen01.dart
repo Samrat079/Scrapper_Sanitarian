@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:scrapper/Widgets/Pages/LoginScreen/Widget/EditProfileForm01.dart';
+import 'package:scrapper/Widgets/Custome/Forms/EditProfileForm01.dart';
+import 'package:scrapper/Widgets/Pages/LoginScreen/Widget/EditProfileView01.dart';
 import 'package:scrapper/Widgets/Pages/LoginScreen/Widget/Welcome01.dart';
 import 'package:scrapper/Widgets/Pages/LoginScreen/Widget/Welcome02.dart';
 
@@ -15,12 +16,13 @@ class LoginScreen01 extends StatelessWidget {
     return Scaffold(
       body: PageView(
         controller: controller,
+        physics: NeverScrollableScrollPhysics(),
         children: [
           Welcome01(controller: controller),
           Welcome02(controller: controller),
           AddNumber01(controller: controller),
           AddOtp01(controller: controller),
-          EditProfileForm01()
+          EditProfileView01(controller: controller)
         ],
       ),
     );

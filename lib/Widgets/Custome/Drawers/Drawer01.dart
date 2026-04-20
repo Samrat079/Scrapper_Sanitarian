@@ -27,7 +27,7 @@ class Drawer01 extends StatelessWidget {
             leading: Icon(Icons.logout_outlined),
             title: Text('Logout'),
             onTap: () => AppUserService02().logout().then(
-              (_) => Navigator.pushReplacementNamed(context, '/login'),
+              (_) => Navigator.pushNamed(context, '/login'),
             ),
           ),
         ],

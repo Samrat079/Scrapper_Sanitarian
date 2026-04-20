@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:scrapper/Services/AppUserServices/AppUserService02.dart';
 
 import '../../Models/Orders/Order01.dart';
 import '../GeoLocatorService/GeoLocator01.dart';
@@ -28,7 +29,14 @@ class Order01Service02 extends ValueNotifier<List<Order01>> {
     if (_orderSub != null) return;
 
     _orderSub = _ref
-        .where('status', whereIn: [Order01Status.requested.name])
+        .where(
+          'status',
+          whereIn: [
+            Order01Status.requested.name,
+            Order01Status.cancelled.name,
+          ],
+        )
+        .orderBy('createdAt', descending: true)
         .snapshots()
         .listen((snapshot) async {
           final orders = snapshot.docs.map((doc) => doc.data()).toList();
@@ -67,6 +75,12 @@ class Order01Service02 extends ValueNotifier<List<Order01>> {
     newList.removeAt(index);
     value = newList;
   }
+
+  /// Accept by id
+  void acceptById(String uid) => _ref.doc(uid).update({
+    'status': Order01Status.assigned.name,
+    'sanitarian': AppUserService02().current.sanitarian?.toJson(),
+  });
 
   void deleteById(String uid) => _ref.doc(uid).delete();
 }

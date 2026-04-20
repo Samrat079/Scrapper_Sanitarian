@@ -29,7 +29,6 @@ class _AddOtp01State extends State<AddOtp01> {
       final otp = _otpController.currentState?.fields['Otp']?.value;
       AppUserService02()
           .verifyOtp(otp)
-          // .then((e) => Navigator.pushReplacementNamed(context, '/'))
           .then(
             (_) => widget._controller.nextPage(
               duration: Duration(milliseconds: 500),

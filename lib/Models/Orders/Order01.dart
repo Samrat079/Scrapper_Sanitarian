@@ -35,10 +35,11 @@ class Order01 {
     status: Order01Status.values.firstWhere(
       (e) => e.name == snapshot.data()!['status'],
     ),
-    sanitarian: snapshot.data()!['sanitarian'],
+    sanitarian: snapshot.data()!['sanitarian'] != null
+        ? Sanitarian01.fromJson(snapshot.data()!['sanitarian'])
+        : null,
     createdAt: snapshot.data()!['createdAt'],
   );
-
 
   Map<String, dynamic> toJson() => {
     'price': price,

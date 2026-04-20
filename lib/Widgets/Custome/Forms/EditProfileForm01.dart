@@ -7,7 +7,9 @@ import 'package:scrapper/Widgets/Custome/CenterColumn/CenterColumn04.dart';
 import 'package:scrapper/theme/theme_extensions.dart';
 
 class EditProfileForm01 extends StatefulWidget {
-  const EditProfileForm01({super.key});
+  final Function(Map<String, dynamic>) onSubmit;
+
+  const EditProfileForm01({super.key, required this.onSubmit});
 
   @override
   State<EditProfileForm01> createState() => _EditProfileForm01State();
@@ -21,15 +23,12 @@ class _EditProfileForm01State extends State<EditProfileForm01> {
   void clear() => _formKey.currentState!.reset();
 
   void submitHandler() async {
-    setState(() => isLoading = true);
     if (_formKey.currentState?.saveAndValidate() ?? false) {
-      final currState = _formKey.currentState!;
-      final displayName = currState.fields['displayName']?.value;
-      await AppUserService02()
-          .updateAppUser(displayName)
-          .then((_) => setState(() => isLoading = false))
-          // .then((_) => Navigator.pop(context))
-          .catchError((e) => print(e));
+      setState(() => isLoading = true);
+      final currState = _formKey.currentState!.value;
+      await widget.onSubmit(currState);
+
+      if (mounted) setState(() => isLoading = false);
     }
   }
 
@@ -37,8 +36,9 @@ class _EditProfileForm01State extends State<EditProfileForm01> {
   Widget build(BuildContext context) {
     return FormBuilder(
       key: _formKey,
-      child: CenterColumn04(
-        centerVertically: true,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           /// Photo URL
           // FormBuilderTextField(

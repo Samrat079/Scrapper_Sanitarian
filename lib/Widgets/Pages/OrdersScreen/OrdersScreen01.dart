@@ -6,6 +6,7 @@ import 'package:scrapper/Widgets/Custome/CenterColumn/CenterColumn04.dart';
 import 'package:scrapper/Widgets/Custome/Intl/KmText01.dart';
 import 'package:scrapper/Widgets/Custome/Intl/PriceText01.dart';
 import 'package:scrapper/theme/theme_extensions.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class OrdersScreen01 extends StatelessWidget {
   const OrdersScreen01({super.key});
@@ -38,7 +39,17 @@ class OrdersScreen01 extends StatelessWidget {
                 KmText01(meters: data.distance!),
                 Text(data.address.place.name.toString()),
                 Text(data.address.place.displayName.toString()),
+                Text(data.address.houseNo),
                 Text(data.status.name),
+                Text(timeago.format(data.createdAt.toDate())),
+                IconButton(
+                  onPressed: () => Order01Service02().rejectById(index),
+                  icon: Icon(Icons.cancel_outlined),
+                ),
+                IconButton(
+                  onPressed: () => Order01Service02().acceptById(data.uid!),
+                  icon: Icon(Icons.verified_outlined),
+                ),
                 // TextButton(
                 //   onPressed: () => Order01Service02().deleteById(data.uid!),
                 //   child: Text('delete'),
