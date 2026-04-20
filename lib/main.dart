@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:scrapper/Services/AppUserServices/AppUserService02.dart';
 import 'package:scrapper/Services/GeoLocatorService/GeoLocator01.dart';
+import 'package:scrapper/Services/OrderServices/CurrOrderService01.dart';
 import 'package:scrapper/Utils/Router/RouteGen.dart';
 import 'package:scrapper/firebase_options.dart';
 import 'package:scrapper/theme/app_theme.dart';
@@ -11,6 +12,7 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await AppUserService02().init();
   await GeoLocator01().init();
+  CurrOrderService01().init();
   runApp(const MyApp());
 }
 

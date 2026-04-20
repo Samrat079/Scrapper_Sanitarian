@@ -54,4 +54,8 @@ class GeoLocator01 {
 
   LatLng getCurrLatLng() =>
       LatLng(currPos.value?.latitude ?? 0, currPos.value?.longitude ?? 0);
+
+  Stream<LatLng> get positionStream => Geolocator.getPositionStream().map(
+    (pos) => LatLng(pos.latitude, pos.longitude),
+  );
 }

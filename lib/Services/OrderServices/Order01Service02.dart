@@ -33,7 +33,6 @@ class Order01Service02 extends ValueNotifier<List<Order01>> {
           'status',
           whereIn: [
             Order01Status.requested.name,
-            Order01Status.cancelled.name,
           ],
         )
         .orderBy('createdAt', descending: true)

@@ -58,4 +58,25 @@ class OSRMService01 {
 
     return distances.skip(1).map((d) => (d as num).toDouble()).toList();
   }
+
+  /// Returns waypoints
+  Future<List<LatLng>> getRoutePolylineGeoJSON(LatLng start, LatLng end) async {
+    final url = Uri.parse(
+      '$_routeUrl/driving/'
+      '${start.longitude},${start.latitude};'
+      '${end.longitude},${end.latitude}'
+      '?overview=full&geometries=geojson',
+    );
+
+    final res = await http.get(url);
+    final data = jsonDecode(res.body);
+
+    if (data['routes'] == null || data['routes'].isEmpty) {
+      throw Exception("No route found");
+    }
+
+    final List coords = data['routes'][0]['geometry']['coordinates'];
+
+    return coords.map<LatLng>((c) => LatLng(c[1], c[0])).toList();
+  }
 }

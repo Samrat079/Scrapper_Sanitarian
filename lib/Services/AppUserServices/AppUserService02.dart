@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:scrapper/Models/AppUser/AppUser02.dart';
 import 'package:scrapper/Models/Sanitarian/Sanitarian01.dart';
+import 'package:scrapper/Services/OrderServices/CurrOrderService01.dart';
 import 'package:scrapper/Services/OrderServices/Order01Service02.dart';
 
 class AppUserService02 extends ValueNotifier<AppUser02> {
