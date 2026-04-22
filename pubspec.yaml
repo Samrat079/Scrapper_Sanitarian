@@ -106,15 +106,21 @@ flutter:
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
 
+# Green on black for sanitarian app
+# Black on green on customer app
 flutter_launcher_icons:
-  android: 'launcher_icon'
-  image_path: assets/logo/Light/logo_light_640.png
+  android: true
+  image_path: assets/logo/Light/logo_light_1152.png
+  adaptive_icon_background: '#000000'
+  adaptive_icon_foreground: assets/logo/Light/logo_light_1152.png
 
+
+# it's better to stick to same splash screen for
+# both apps
 flutter_native_splash:
-  color: '#FFFFFF'
-  color_dark: '#000000'
+  color: '#19EC06'
+  color_dark: '#19EC06'
 
   android_12:
-    image: assets/logo/Light/logo_light_1152.png
-    branding: assets/branding/branding_dark_01.png
-    branding_dark: assets/branding/branding_light_01.png
+    image: assets/logo/Dark/logo_dark_1152.png
+    branding: assets/branding/branding_01.png
