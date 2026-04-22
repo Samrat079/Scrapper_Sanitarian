@@ -20,10 +20,15 @@ class CurrOrderScreen01 extends StatefulWidget {
 }
 
 class _CurrOrderScreen01State extends State<CurrOrderScreen01> {
+
+  /// Looks like it is not easy to make this simpler
+  /// any simpler and we loose stuff, also to make it
+  /// better we have to make a nav engine, which i dont
+  /// wnat to do as of now
+
   final service = CurrOrderService01();
   final _mapController = MapController();
   List<LatLng> routePoints = [];
-  bool isLoadingRoute = true;
 
   StreamSubscription? _locSub;
   StreamSubscription? _locCameraSub;
@@ -53,61 +58,41 @@ class _CurrOrderScreen01State extends State<CurrOrderScreen01> {
     if (start == null) return;
     final end = order.destination;
 
-    setState(() => isLoadingRoute = true);
-
     final points = await OSRMService01().getRoutePolylineGeoJSON(start, end);
 
     if (!mounted) return;
 
-    setState(() {
-      routePoints = points;
-      isLoadingRoute = false;
-    });
+    setState(() => routePoints = points);
 
     _lastFetched = start;
   }
 
   Future<void> _updateRoute(LatLng current, LatLng end) async {
-    /// First time OR no route
-    if (routePoints.isEmpty || _lastFetched == null) {
+    final shouldFetch =
+        routePoints.isEmpty ||
+        _lastFetched == null ||
+        CurrOrderService01().distanceFromRoute(current, routePoints) > 30 ||
+        Distance().as(LengthUnit.Meter, _lastFetched!, current) > 50;
+
+    if (shouldFetch) {
       await _fetchRoute(current, end);
       return;
     }
 
-    /// Check deviation
-    final deviation = service.distanceFromRoute(current, routePoints);
-
-    if (deviation > 30) {
-      await _fetchRoute(current, end);
-      return;
-    }
-
-    /// Trim route
-    final closestIndex = service.getClosestIndex(current, routePoints);
+    final closestIndex = CurrOrderService01().getClosestIndex(
+      current,
+      routePoints,
+    );
 
     if (closestIndex > 0) {
-      setState(() {
-        routePoints = routePoints.sublist(closestIndex);
-      });
-    }
-
-    /// Throttle refresh
-    final moved = Distance().as(LengthUnit.Meter, _lastFetched!, current);
-
-    if (moved > 50) {
-      await _fetchRoute(current, end);
+      setState(() => routePoints = routePoints.sublist(closestIndex));
     }
   }
 
   Future<void> _fetchRoute(LatLng start, LatLng end) async {
     final points = await OSRMService01().getRoutePolylineGeoJSON(start, end);
-
     if (!mounted) return;
-
-    setState(() {
-      routePoints = points;
-    });
-
+    setState(() => routePoints = points);
     _lastFetched = start;
   }
 
@@ -115,9 +100,7 @@ class _CurrOrderScreen01State extends State<CurrOrderScreen01> {
     _locSub = currPosStream.listen((current) async {
       final order = service.value;
       if (order == null) return;
-
       final end = order.destination;
-
       await _updateRoute(current, end);
     });
   }
