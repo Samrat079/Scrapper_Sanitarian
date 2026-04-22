@@ -12,7 +12,6 @@ class CurrOrderService01 extends ValueNotifier<Order01?> {
   CurrOrderService01._internal() : super(null);
   factory CurrOrderService01() => _instance;
 
-  
 
   StreamSubscription<QuerySnapshot<Order01>>? _currOrderSub;
 

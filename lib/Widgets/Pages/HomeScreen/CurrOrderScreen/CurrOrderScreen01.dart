@@ -10,7 +10,11 @@ import 'package:scrapper/Services/OSRMServices/OSRMService01.dart';
 import 'package:scrapper/Services/OrderServices/CurrOrderService01.dart';
 import 'package:scrapper/Widgets/Custome/CenterColumn/CenterColumn04.dart';
 import 'package:scrapper/Widgets/Custome/Drawers/Drawer01.dart';
+import 'package:scrapper/Widgets/Custome/Intl/KmText01.dart';
+import 'package:scrapper/Widgets/Custome/Intl/PriceText01.dart';
 import 'package:scrapper/theme/theme_extensions.dart';
+
+import '../../../Custome/CardList01/CardList01.dart';
 
 class CurrOrderScreen01 extends StatefulWidget {
   const CurrOrderScreen01({super.key});
@@ -20,12 +24,10 @@ class CurrOrderScreen01 extends StatefulWidget {
 }
 
 class _CurrOrderScreen01State extends State<CurrOrderScreen01> {
-
   /// Looks like it is not easy to make this simpler
   /// any simpler and we loose stuff, also to make it
   /// better we have to make a nav engine, which i dont
-  /// wnat to do as of now
-
+  /// want to do as of now
   final service = CurrOrderService01();
   final _mapController = MapController();
   List<LatLng> routePoints = [];
@@ -114,70 +116,128 @@ class _CurrOrderScreen01State extends State<CurrOrderScreen01> {
 
   @override
   Widget build(BuildContext context) {
-    final service = CurrOrderService01();
     return ValueListenableBuilder(
       valueListenable: service,
       builder: (context, order, _) => Scaffold(
         drawer: Drawer01(),
         appBar: AppBar(),
-        body: FlutterMap(
-          mapController: _mapController,
-          options: MapOptions(
-            initialCenter: GeoLocator01().getCurrLatLng() ?? LatLng(0, 0),
-            initialZoom: 16,
-          ),
+        body: Stack(
           children: [
-            /// The tile itself
-            TileLayer(
-              urlTemplate: "https://mt.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
-              userAgentPackageName: "com.example.scrapper_sanitarian",
-            ),
-
-            /// Current location
-            CurrentLocationLayer(),
-
-            /// Destination
-            MarkerLayer(
-              markers: [
-                Marker(
-                  point: order!.destination,
-                  width: 40,
-                  height: 40,
-                  child: Icon(
-                    Icons.location_on_outlined,
-                    color: context.colorScheme.secondary,
-                  ),
+            FlutterMap(
+              mapController: _mapController,
+              options: MapOptions(
+                initialCenter: GeoLocator01().getCurrLatLng() ?? LatLng(0, 0),
+                initialZoom: 16,
+              ),
+              children: [
+                /// The tile itself
+                TileLayer(
+                  urlTemplate:
+                      "https://mt.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
+                  userAgentPackageName: "com.example.scrapper_sanitarian",
                 ),
+
+                /// Current location
+                CurrentLocationLayer(),
+
+                /// Destination
+                MarkerLayer(
+                  markers: [
+                    Marker(
+                      point: order!.destination,
+                      width: 40,
+                      height: 40,
+                      child: Icon(
+                        Icons.location_on_outlined,
+                        color: context.colorScheme.secondary,
+                      ),
+                    ),
+                  ],
+                ),
+
+                /// Polylines
+                if (routePoints.isNotEmpty)
+                  PolylineLayer(
+                    polylines: [
+                      Polyline(
+                        points: routePoints,
+                        strokeWidth: 4,
+                        color: context.colorScheme.secondary,
+                      ),
+                    ],
+                  ),
               ],
             ),
 
-            /// Polylines
-            if (routePoints.isNotEmpty)
-              PolylineLayer(
-                polylines: [
-                  Polyline(
-                    points: routePoints,
-                    strokeWidth: 4,
-                    color: context.colorScheme.secondary,
-                  ),
-                ],
-              ),
-          ],
-        ),
+            DraggableScrollableSheet(
+              initialChildSize: 0.25,
+              maxChildSize: 0.80,
+              minChildSize: 0.20,
+              snap: true,
+              snapSizes: [0.6],
+              builder: (context, scrollController) => Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                  color: context.colorScheme.surfaceContainer,
+                ),
+                child: CenterColumn04(
+                  padding: context.paddingSM,
+                  scrollController: scrollController,
+                  children: [
 
-        bottomSheet: CenterColumn04(
-          padding: context.paddingLG,
-          children: [
-            context.gapMD,
-            Text(order.address.place.displayName.toString()),
-            context.gapMD,
-            Text(order.address.houseNo),
-            context.gapMD,
-            Text(order.customer.displayName),
-            context.gapMD,
-            ElevatedButton(
-              onPressed: service.cancelCurrOrder,
-              child: Text('Cancle'),
+                    /// Location card
+                    CardList01(
+                      children: [
+                        ListTile(
+                          contentPadding: context.paddingSM,
+                          leading: const Icon(Icons.location_pin),
+                          title: Text(order.address.place.name!),
+                          subtitle: Text(order.address.place.displayName!),
+                        ),
+                        ListTile(
+                          contentPadding: context.paddingSM,
+                          leading: const Icon(Icons.house_outlined),
+                          title: const Text("House No"),
+                          subtitle: Text(order.address.houseNo),
+                        ),
+                      ],
+                    ),
+
+                    /// Customer card
+                    CardList01(
+                      children: [
+                        ListTile(
+                          leading: const CircleAvatar(
+                            child: Icon(Icons.person_2_outlined),
+                          ),
+                          title: Text(order.customer.displayName),
+                          trailing: const Icon(Icons.call),
+                        ),
+                      ],
+                    ),
+
+                    /// price distance
+                    CardList01(
+                      children: [
+                        ListTile(
+                          title: PriceText01(price: order.price),
+                          subtitle: KmText01(
+                            meters: order.distance!.toDouble(),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    context.gapMD,
+
+                    /// Cancel
+                    ElevatedButton(
+                      onPressed: service.cancelCurrOrder,
+                      child: const Text('Cancel Order'),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ],
         ),
