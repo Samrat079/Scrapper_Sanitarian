@@ -60,7 +60,29 @@ class OSRMService01 {
   }
 
   /// Returns waypoints
-  Future<List<LatLng>> getRoutePolylineGeoJSON(LatLng start, LatLng end) async {
+  // Future<List<LatLng>> getRoutePolylineGeoJSON(LatLng start, LatLng end) async {
+  //   final url = Uri.parse(
+  //     '$_routeUrl/driving/'
+  //     '${start.longitude},${start.latitude};'
+  //     '${end.longitude},${end.latitude}'
+  //     '?overview=full&geometries=geojson',
+  //   );
+  //
+  //   print(url);
+  //
+  //   final res = await http.get(url);
+  //   final data = jsonDecode(res.body);
+  //
+  //   if (data['routes'] == null || data['routes'].isEmpty) {
+  //     throw Exception("No route found");
+  //   }
+  //
+  //   final List coords = data['routes'][0]['geometry']['coordinates'];
+  //
+  //   return coords.map<LatLng>((c) => LatLng(c[1], c[0])).toList();
+  // }
+
+  Future<RoutesResponse> getRouteGeoJson(LatLng start, LatLng end) async {
     final url = Uri.parse(
       '$_routeUrl/driving/'
       '${start.longitude},${start.latitude};'
@@ -68,6 +90,7 @@ class OSRMService01 {
       '?overview=full&geometries=geojson',
     );
 
+    print(url);
     final res = await http.get(url);
     final data = jsonDecode(res.body);
 
@@ -75,8 +98,27 @@ class OSRMService01 {
       throw Exception("No route found");
     }
 
-    final List coords = data['routes'][0]['geometry']['coordinates'];
+    return RoutesResponse.fromJson(data['routes'][0]);
+  }
+}
 
-    return coords.map<LatLng>((c) => LatLng(c[1], c[0])).toList();
+class RoutesResponse {
+  double distance, duration;
+  List<LatLng> coordinates;
+
+  RoutesResponse({
+    this.distance = 0,
+    this.duration = 0,
+    this.coordinates = const [],
+  });
+
+  factory RoutesResponse.fromJson(Map<String, dynamic> json) {
+    return RoutesResponse(
+      distance: json['distance'] / 1000,
+      duration: json['duration'],
+      coordinates: json['geometry']['coordinates']
+          .map<LatLng>((c) => LatLng(c[1], c[0]))
+          .toList(),
+    );
   }
 }

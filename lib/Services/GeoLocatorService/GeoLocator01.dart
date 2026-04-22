@@ -15,7 +15,7 @@ class GeoLocator01 {
   factory GeoLocator01() => _instance;
 
   /// Listenable values
-  late final Stream<LatLng> positionStream;
+  late final Stream<Position> positionStream;
   final ValueNotifier<Position?> currPos = ValueNotifier<Position?>(null);
 
   /// Init calls the listeners
@@ -24,7 +24,7 @@ class GeoLocator01 {
     final stream = Geolocator.getPositionStream(
       locationSettings: const LocationSettings(distanceFilter: 30),
     );
-    positionStream = stream.map((pos) => LatLng(pos.latitude, pos.longitude));
+    positionStream = stream;
     updateCurrLocation();
     stream.listen((pos) {
       currPos.value = pos;
