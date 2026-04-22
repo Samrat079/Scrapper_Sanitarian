@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:scrapper/Models/Address/Address02.dart';
 import 'package:scrapper/Models/Customer/Customer01.dart';
 import 'package:scrapper/Models/Sanitarian/Sanitarian01.dart';
@@ -49,6 +50,13 @@ class Order01 {
     'status': status.name,
     'sanitarian': sanitarian?.toJson(),
   };
+
+  /// Simple getter for latlan for the destination
+  LatLng get destination {
+    final lat = double.parse(address.place.lat!);
+    final lon = double.parse(address.place.lon!);
+    return LatLng(lat, lon);
+  }
 }
 
 enum Order01Status { requested, assigned, completed, cancelled, expired }

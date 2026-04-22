@@ -8,6 +8,8 @@ import 'package:scrapper/Models/Sanitarian/Sanitarian01.dart';
 import 'package:scrapper/Services/OrderServices/CurrOrderService01.dart';
 import 'package:scrapper/Services/OrderServices/Order01Service02.dart';
 
+import '../GeoLocatorService/GeoLocator01.dart';
+
 class AppUserService02 extends ValueNotifier<AppUser02> {
   /// is a singleton but only for having the current value
   static final AppUserService02 _instance = AppUserService02._internal();
@@ -31,7 +33,9 @@ class AppUserService02 extends ValueNotifier<AppUser02> {
   Sanitarian01? _sanitarian;
 
   AppUser02 get current => AppUser02(auth: _authUser, sanitarian: _sanitarian);
+
   bool get isLoggedIn => _authUser != null && _sanitarian != null;
+
   bool get exists => current.exists;
 
   /// init
@@ -49,9 +53,12 @@ class AppUserService02 extends ValueNotifier<AppUser02> {
       _sanitarian = doc.exists ? doc.data() : null;
       value = current;
 
+      await GeoLocator01().init();
+
       /// listeners
       if (isLoggedIn) {
         Order01Service02().init();
+        CurrOrderService01().init();
       }
     });
   }
@@ -112,7 +119,6 @@ class AppUserService02 extends ValueNotifier<AppUser02> {
     _sanitarian?.displayName = displayName;
     value = current;
   }
-
 
   /// Get user by ID
   Future<Sanitarian01> getUserById(String uid) async {

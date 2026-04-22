@@ -11,8 +11,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await AppUserService02().init();
-  await GeoLocator01().init();
-  CurrOrderService01().init();
   runApp(const MyApp());
 }
 

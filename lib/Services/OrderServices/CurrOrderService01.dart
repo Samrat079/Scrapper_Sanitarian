@@ -9,10 +9,10 @@ import 'package:scrapper/Services/AppUserServices/AppUserService02.dart';
 
 class CurrOrderService01 extends ValueNotifier<Order01?> {
   static final CurrOrderService01 _instance = CurrOrderService01._internal();
-
   CurrOrderService01._internal() : super(null);
-
   factory CurrOrderService01() => _instance;
+
+  
 
   StreamSubscription<QuerySnapshot<Order01>>? _currOrderSub;
 
@@ -47,8 +47,38 @@ class CurrOrderService01 extends ValueNotifier<Order01?> {
     });
   }
 
-  LatLng latLngFromPlace(NominatimResponse place) {
-    if (place.lat == null || place.lon == null) return LatLng(0, 0);
-    return LatLng(double.parse(place.lat!), double.parse(place.lon!));
+  int getClosestIndex(LatLng current, List<LatLng> routePoints) {
+    double minDist = double.infinity;
+    int closestIndex = 0;
+
+    for (int i = 0; i < routePoints.length; i++) {
+      final dist = Distance().as(LengthUnit.Meter, current, routePoints[i]);
+
+      if (dist < minDist) {
+        minDist = dist;
+        closestIndex = i;
+      }
+    }
+
+    return closestIndex;
+  }
+
+
+  /// This iterates through the routePoints and checks for
+  /// the highest distance between the curr point and the
+  /// points in the list, this is to check if the user
+  /// if going off track or not
+  double distanceFromRoute(LatLng current, List<LatLng> routePoints) {
+    double minDist = double.infinity;
+
+    for (final point in routePoints) {
+      final dist = Distance().as(LengthUnit.Meter, current, point);
+
+      if (dist < minDist) {
+        minDist = dist;
+      }
+    }
+
+    return minDist;
   }
 }

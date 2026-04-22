@@ -29,12 +29,7 @@ class Order01Service02 extends ValueNotifier<List<Order01>> {
     if (_orderSub != null) return;
 
     _orderSub = _ref
-        .where(
-          'status',
-          whereIn: [
-            Order01Status.requested.name,
-          ],
-        )
+        .where('status', whereIn: [Order01Status.requested.name])
         .orderBy('createdAt', descending: true)
         .snapshots()
         .listen((snapshot) async {
@@ -46,8 +41,9 @@ class Order01Service02 extends ValueNotifier<List<Order01>> {
   }
 
   /// Calculates the distance from curr to destination
-  Future<void> _attachDistances2(List<Order01> orders) {
+  Future<void> _attachDistances2(List<Order01> orders) async {
     final current = GeoLocator01().getCurrLatLng();
+    if (current == null) return;
 
     final destinations = orders.map((o) => o.address.latLng).toList();
 

@@ -1,7 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:nominatim_flutter/model/response/nominatim_response.dart';
+import 'package:rxdart/rxdart.dart';
+import 'package:scrapper/Services/AppUserServices/AppUserService02.dart';
 
 class GeoLocator01 {
   /// Have to go for singleton
@@ -12,9 +15,44 @@ class GeoLocator01 {
   factory GeoLocator01() => _instance;
 
   /// Listenable values
+  late final Stream<LatLng> positionStream;
   final ValueNotifier<Position?> currPos = ValueNotifier<Position?>(null);
-  final ValueNotifier<NominatimResponse?> currAdd =
-      ValueNotifier<NominatimResponse?>(null);
+
+  /// Init calls the listeners
+  Future<void> init() async {
+    await checkPermission();
+    final stream = Geolocator.getPositionStream(
+      locationSettings: const LocationSettings(distanceFilter: 30),
+    );
+    positionStream = stream.map((pos) => LatLng(pos.latitude, pos.longitude));
+    updateCurrLocation();
+    stream.listen((pos) {
+      currPos.value = pos;
+    });
+  }
+
+  void updateCurrLocation() {
+    final stream = Geolocator.getPositionStream(
+      locationSettings: const LocationSettings(distanceFilter: 1000),
+    );
+
+    stream
+        .interval(Duration(seconds: 5))
+        .listen(
+          (data) => FirebaseFirestore.instance
+              .collection('sanitarians')
+              .doc(AppUserService02().current.uid)
+              .update({
+                'currLocation': GeoPoint(data.latitude, data.longitude),
+              }),
+        );
+  }
+
+  LatLng? getCurrLatLng() {
+    final pos = currPos.value;
+    if (pos == null) return null;
+    return LatLng(pos.latitude, pos.longitude);
+  }
 
   /// Function to check permissions called on init
   Future<void> checkPermission() async {
@@ -22,6 +60,7 @@ class GeoLocator01 {
     LocationPermission permission;
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
+      Geolocator.openLocationSettings();
       return Future.error('Location services are disabled.');
     }
     permission = await Geolocator.checkPermission();
@@ -37,25 +76,4 @@ class GeoLocator01 {
       );
     }
   }
-
-  /// Init calls the listeners
-  Future<void> init() async {
-    checkPermission()
-        .then(
-          (_) => Geolocator.getPositionStream(
-            locationSettings: const LocationSettings(
-              accuracy: LocationAccuracy.high,
-              distanceFilter: 10,
-            ),
-          ).listen((Position position) => currPos.value = position),
-        )
-        .catchError((e) => throw e);
-  }
-
-  LatLng getCurrLatLng() =>
-      LatLng(currPos.value?.latitude ?? 0, currPos.value?.longitude ?? 0);
-
-  Stream<LatLng> get positionStream => Geolocator.getPositionStream().map(
-    (pos) => LatLng(pos.latitude, pos.longitude),
-  );
 }

@@ -20,27 +20,38 @@ class CurrOrderScreen01 extends StatefulWidget {
 }
 
 class _CurrOrderScreen01State extends State<CurrOrderScreen01> {
+  final service = CurrOrderService01();
+  final _mapController = MapController();
   List<LatLng> routePoints = [];
   bool isLoadingRoute = true;
 
   StreamSubscription? _locSub;
+  StreamSubscription? _locCameraSub;
   LatLng? _lastFetched;
+  final currPosStream = GeoLocator01().positionStream;
 
   @override
   void initState() {
     super.initState();
-    _initRoute(); // 👈 ADD THIS
+    _initRoute();
     _listenToLocation();
+    updateCamera();
+  }
+
+  void updateCamera() {
+    _locCameraSub = currPosStream.listen(
+      (data) => _mapController.move(data, 16),
+    );
   }
 
   Future<void> _initRoute() async {
-    final service = CurrOrderService01();
     final order = service.value;
 
     if (order == null) return;
 
     final start = GeoLocator01().getCurrLatLng();
-    final end = service.latLngFromPlace(order.address.place);
+    if (start == null) return;
+    final end = order.destination;
 
     setState(() => isLoadingRoute = true);
 
@@ -56,118 +67,65 @@ class _CurrOrderScreen01State extends State<CurrOrderScreen01> {
     _lastFetched = start;
   }
 
-  void _listenToLocation() {
-    final service = CurrOrderService01();
+  Future<void> _updateRoute(LatLng current, LatLng end) async {
+    /// First time OR no route
+    if (routePoints.isEmpty || _lastFetched == null) {
+      await _fetchRoute(current, end);
+      return;
+    }
 
-    _locSub = GeoLocator01().positionStream.listen((current) async {
+    /// Check deviation
+    final deviation = service.distanceFromRoute(current, routePoints);
+
+    if (deviation > 30) {
+      await _fetchRoute(current, end);
+      return;
+    }
+
+    /// Trim route
+    final closestIndex = service.getClosestIndex(current, routePoints);
+
+    if (closestIndex > 0) {
+      setState(() {
+        routePoints = routePoints.sublist(closestIndex);
+      });
+    }
+
+    /// Throttle refresh
+    final moved = Distance().as(LengthUnit.Meter, _lastFetched!, current);
+
+    if (moved > 50) {
+      await _fetchRoute(current, end);
+    }
+  }
+
+  Future<void> _fetchRoute(LatLng start, LatLng end) async {
+    final points = await OSRMService01().getRoutePolylineGeoJSON(start, end);
+
+    if (!mounted) return;
+
+    setState(() {
+      routePoints = points;
+    });
+
+    _lastFetched = start;
+  }
+
+  void _listenToLocation() {
+    _locSub = currPosStream.listen((current) async {
       final order = service.value;
       if (order == null) return;
 
-      final end = service.latLngFromPlace(order.address.place);
+      final end = order.destination;
 
-      /// First time → fetch route
-      if (routePoints.isEmpty) {
-        final points = await OSRMService01().getRoutePolylineGeoJSON(
-          current,
-          end,
-        );
-
-        if (!mounted) return;
-
-        setState(() {
-          routePoints = points;
-        });
-
-        _lastFetched = current;
-        return;
-      }
-
-      /// 🧠 Check how far user is from route
-      final deviation = _distanceFromRoute(current);
-
-      /// 🚨 If user is OFF route → refetch
-      if (deviation > 30) {
-        final points = await OSRMService01().getRoutePolylineGeoJSON(
-          current,
-          end,
-        );
-
-        if (!mounted) return;
-
-        setState(() {
-          routePoints = points;
-        });
-
-        _lastFetched = current;
-        return;
-      }
-
-      /// ✅ User is ON route → just trim
-      final closestIndex = _getClosestIndex(current);
-
-      if (closestIndex > 0) {
-        setState(() {
-          routePoints = routePoints.sublist(closestIndex);
-        });
-      }
-
-      /// 🚨 Optional throttle for full refresh
-      if (_lastFetched != null) {
-        final moved = Distance().as(LengthUnit.Meter, _lastFetched!, current);
-
-        if (moved > 50) {
-          final points = await OSRMService01().getRoutePolylineGeoJSON(
-            current,
-            end,
-          );
-
-          if (!mounted) return;
-
-          setState(() {
-            routePoints = points;
-          });
-
-          _lastFetched = current;
-        }
-      } else {
-        _lastFetched = current;
-      }
+      await _updateRoute(current, end);
     });
-  }
-
-  int _getClosestIndex(LatLng current) {
-    double minDist = double.infinity;
-    int closestIndex = 0;
-
-    for (int i = 0; i < routePoints.length; i++) {
-      final dist = Distance().as(LengthUnit.Meter, current, routePoints[i]);
-
-      if (dist < minDist) {
-        minDist = dist;
-        closestIndex = i;
-      }
-    }
-
-    return closestIndex;
-  }
-
-  double _distanceFromRoute(LatLng current) {
-    double minDist = double.infinity;
-
-    for (final point in routePoints) {
-      final dist = Distance().as(LengthUnit.Meter, current, point);
-
-      if (dist < minDist) {
-        minDist = dist;
-      }
-    }
-
-    return minDist;
   }
 
   @override
   void dispose() {
     _locSub?.cancel();
+    _locCameraSub?.cancel();
     super.dispose();
   }
 
@@ -180,8 +138,9 @@ class _CurrOrderScreen01State extends State<CurrOrderScreen01> {
         drawer: Drawer01(),
         appBar: AppBar(),
         body: FlutterMap(
+          mapController: _mapController,
           options: MapOptions(
-            initialCenter: GeoLocator01().getCurrLatLng(),
+            initialCenter: GeoLocator01().getCurrLatLng() ?? LatLng(0, 0),
             initialZoom: 16,
           ),
           children: [
@@ -198,7 +157,7 @@ class _CurrOrderScreen01State extends State<CurrOrderScreen01> {
             MarkerLayer(
               markers: [
                 Marker(
-                  point: service.latLngFromPlace(order!.address.place),
+                  point: order!.destination,
                   width: 40,
                   height: 40,
                   child: Icon(

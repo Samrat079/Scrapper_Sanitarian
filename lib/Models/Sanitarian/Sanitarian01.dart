@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:latlong2/latlong.dart';
 
 class Sanitarian01 {
   final String uid, phoneNumber, email, photoUrl;
   final Timestamp createdAt;
   String displayName;
+  GeoPoint? currLocation;
 
   Sanitarian01({
     required this.uid,
@@ -13,6 +15,7 @@ class Sanitarian01 {
     required this.email,
     required this.createdAt,
     required this.photoUrl,
+    this.currLocation,
   });
 
   factory Sanitarian01.fromFirestore(
@@ -24,7 +27,8 @@ class Sanitarian01 {
     phoneNumber: snapshot.data()!['phoneNumber'] ?? 'Number not added',
     email: snapshot.data()!['email'] ?? 'Email not verified',
     createdAt: snapshot.data()!['createdAt'] ?? Timestamp.now(),
-    photoUrl: snapshot.data()!['photoUrl'],
+    photoUrl: snapshot.data()!['photoUrl'] ?? '',
+    currLocation: snapshot.data()!['currLocation'] as GeoPoint?,
   );
 
   factory Sanitarian01.fromJson(Map<String, dynamic> json) => Sanitarian01(
@@ -34,6 +38,9 @@ class Sanitarian01 {
     email: json['email'] ?? 'client default value',
     createdAt: json['createdAt'],
     photoUrl: json['photoUrl'],
+    currLocation: json['currLocation'] is GeoPoint
+        ? json['currLocation']
+        : null,
   );
 
   factory Sanitarian01.fromAuth(User user) => Sanitarian01(
@@ -50,11 +57,17 @@ class Sanitarian01 {
   );
 
   Map<String, dynamic> toJson() => {
-    'uid': uid,
     'displayName': displayName,
     'phoneNumber': phoneNumber,
     'email': email,
     'photoUrl': photoUrl,
     'createdAt': createdAt,
+    'currLocation': currLocation,
   };
+
+  /// Getters
+  LatLng? get latLng {
+    if (currLocation == null) return null;
+    return LatLng(currLocation!.latitude, currLocation!.longitude);
+  }
 }
