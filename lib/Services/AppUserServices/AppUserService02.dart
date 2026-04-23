@@ -108,6 +108,7 @@ class AppUserService02 extends ValueNotifier<AppUser02> {
 
     value = current;
     Order01Service02().init();
+    CurrOrderService01().init();
     return current;
   }
 
@@ -128,12 +129,18 @@ class AppUserService02 extends ValueNotifier<AppUser02> {
 
   /// 🚪 Logout
   Future<void> logout() async {
+    /// Needs before or else they will be reinitialized
+    Order01Service02().stop();
+    CurrOrderService01().stop();
+
+    /// This will call the reinitialise init
     await _auth.signOut();
+
+    /// removes local state
     _authUser = null;
     _sanitarian = null;
     value = current;
 
-    Order01Service02().stop();
   }
 
   /// Delete user

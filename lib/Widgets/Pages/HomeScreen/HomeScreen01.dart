@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:scrapper/Services/OrderServices/CurrOrderService01.dart';
-import 'package:scrapper/Widgets/Pages/HomeScreen/CurrOrderScreen/CurrOrderScreen01.dart';
 import 'package:scrapper/Widgets/Pages/HomeScreen/OnDutyScreen/OnDutyScreen01.dart';
+
+import 'CurrOrderScreen/CurrOrderScreen02.dart';
 
 class HomeScreen01 extends StatelessWidget {
   const HomeScreen01({super.key});
@@ -12,7 +13,7 @@ class HomeScreen01 extends StatelessWidget {
       valueListenable: CurrOrderService01(),
       builder: (context, order, _) {
         if (order == null) return OnDutyScreen01();
-        return CurrOrderScreen01();
+        return CurrOrderScreen02();
       },
     );
   }

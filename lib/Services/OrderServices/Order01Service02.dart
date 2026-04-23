@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:scrapper/Services/AppUserServices/AppUserService02.dart';
 
 import '../../Models/Orders/Order01.dart';
@@ -15,7 +16,11 @@ class Order01Service02 extends ValueNotifier<List<Order01>> {
 
   factory Order01Service02() => _instance;
 
+  /// Subscriptions
   StreamSubscription<QuerySnapshot<Order01>>? _orderSub;
+  StreamSubscription? _locSub;
+
+  List<Order01> _cachedOrders = [];
 
   CollectionReference<Order01> get _ref => FirebaseFirestore.instance
       .collection('order01')
@@ -28,16 +33,29 @@ class Order01Service02 extends ValueNotifier<List<Order01>> {
   void init() {
     if (_orderSub != null) return;
 
+    /// Listen to orders
     _orderSub = _ref
         .where('status', whereIn: [Order01Status.requested.name])
         .orderBy('createdAt', descending: true)
         .snapshots()
         .listen((snapshot) async {
-          final orders = snapshot.docs.map((doc) => doc.data()).toList();
-          value = orders;
-          await _attachDistances2(orders);
-          value = List.from(orders);
+          _cachedOrders = snapshot.docs.map((doc) => doc.data()).toList();
+          await _attachDistances2(_cachedOrders);
+          value = List.of(_cachedOrders);
         });
+
+    /// Listen to location updates
+    _locSub = GeoLocator01().positionStream
+        .throttleTime(const Duration(seconds: 5))
+        .listen((_) => _onLocationUpdate());
+  }
+
+  void _onLocationUpdate() {
+    if (_cachedOrders.isEmpty) return;
+
+    _attachDistances2(_cachedOrders).then((_) {
+      value = List.of(_cachedOrders);
+    });
   }
 
   /// Calculates the distance from curr to destination
@@ -47,20 +65,19 @@ class Order01Service02 extends ValueNotifier<List<Order01>> {
 
     final destinations = orders.map((o) => o.address.latLng).toList();
 
-    return OSRMService01()
-        .distanceFromTable(current, destinations)
-        .then(
-          (distances) => orders.asMap().forEach((i, order) {
-            order.distance = distances[i];
-          }),
-        )
-        .catchError((_) => orders.forEach((order) => order.distance = null));
+    final data = await OSRMService01().distanceFromTable(current, destinations);
+
+    for (int i = 0; i < orders.length; i++) {
+      orders[i].routesRes = data[i];
+    }
   }
 
   /// stop listener
   void stop() {
     _orderSub?.cancel();
+    GeoLocator01().currPos.removeListener(_onLocationUpdate);
     _orderSub = null;
+    _locSub = null;
     value = [];
   }
 

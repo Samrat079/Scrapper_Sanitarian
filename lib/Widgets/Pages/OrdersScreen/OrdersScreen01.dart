@@ -1,5 +1,7 @@
+import 'package:duration/duration.dart';
 import 'package:flutter/material.dart';
 import 'package:scrapper/Models/Orders/Order01.dart';
+import 'package:scrapper/Services/GeoLocatorService/GeoLocator01.dart';
 import 'package:scrapper/Services/OrderServices/Order01Service02.dart';
 import 'package:scrapper/Widgets/Custome/CardList01/CardList01.dart';
 import 'package:scrapper/Widgets/Custome/CenterColumn/CenterColumn04.dart';
@@ -36,24 +38,40 @@ class OrdersScreen01 extends StatelessWidget {
               padding: context.paddingMD,
               children: [
                 PriceText01(price: data.price),
-                KmText01(meters: data.distance!),
+                SizedBox(
+                  height: 32,
+                  child: Row(
+                    children: [
+                      Text('${(data.routesRes.distance / 1000).toStringAsFixed(2)}Km'),
+                      VerticalDivider(),
+                      Text(
+                        data.routesRes.duration.pretty(
+                          abbreviated: true,
+                          tersity: DurationTersity.minute,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
                 Text(data.address.place.name.toString()),
                 Text(data.address.place.displayName.toString()),
                 Text(data.address.houseNo),
-                Text(data.status.name),
-                Text(timeago.format(data.createdAt.toDate())),
-                IconButton(
-                  onPressed: () => Order01Service02().rejectById(index),
-                  icon: Icon(Icons.cancel_outlined),
+                Row(
+                  children: [
+                    IconButton(
+                      onPressed: () => Order01Service02().rejectById(index),
+                      icon: Icon(Icons.cancel_outlined),
+                    ),
+                    IconButton(
+                      onPressed: () => Order01Service02().acceptById(data.uid!),
+                      icon: Icon(Icons.check_circle_outline),
+                    ),
+                    IconButton(
+                      onPressed: () => Order01Service02().deleteById(data.uid!),
+                      icon: Icon(Icons.delete_outline),
+                    ),
+                  ],
                 ),
-                IconButton(
-                  onPressed: () => Order01Service02().acceptById(data.uid!),
-                  icon: Icon(Icons.verified_outlined),
-                ),
-                // TextButton(
-                //   onPressed: () => Order01Service02().deleteById(data.uid!),
-                //   child: Text('delete'),
-                // ),
               ],
             );
           },

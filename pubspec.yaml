@@ -52,6 +52,8 @@ dependencies:
   rxdart: ^0.28.0
   http: ^1.6.0
   intl: ^0.20.2
+  sliding_up_panel: ^2.0.0+1
+  duration: ^4.0.3
 
 dev_dependencies:
   flutter_test:

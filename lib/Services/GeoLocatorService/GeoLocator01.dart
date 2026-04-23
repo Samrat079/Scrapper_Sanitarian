@@ -5,6 +5,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:nominatim_flutter/model/response/nominatim_response.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:scrapper/Services/AppUserServices/AppUserService02.dart';
+import 'package:scrapper/Services/OrderServices/CurrOrderService01.dart';
 
 class GeoLocator01 {
   /// Have to go for singleton
@@ -37,7 +38,7 @@ class GeoLocator01 {
     );
 
     stream
-        .interval(Duration(seconds: 5))
+        .throttleTime(Duration(seconds: 5))
         .listen(
           (data) => FirebaseFirestore.instance
               .collection('sanitarians')

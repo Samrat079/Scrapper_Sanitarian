@@ -3,6 +3,9 @@ import 'package:latlong2/latlong.dart';
 import 'package:scrapper/Models/Address/Address02.dart';
 import 'package:scrapper/Models/Customer/Customer01.dart';
 import 'package:scrapper/Models/Sanitarian/Sanitarian01.dart';
+import 'package:scrapper/Services/OSRMServices/OSRMService01.dart';
+
+import '../RouteResponse/RouteResponse.dart';
 
 class Order01 {
   String? uid;
@@ -12,7 +15,7 @@ class Order01 {
   Sanitarian01? sanitarian;
   Order01Status status;
   Timestamp createdAt;
-  double? distance;
+  RoutesResponse routesRes;
 
   Order01({
     this.uid,
@@ -22,8 +25,9 @@ class Order01 {
     this.sanitarian,
     this.status = Order01Status.requested,
     required this.createdAt,
-    this.distance = 0.0,
-  });
+
+    RoutesResponse? routesRes,
+  }) : routesRes = routesRes ?? RoutesResponse();
 
   factory Order01.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
@@ -51,7 +55,7 @@ class Order01 {
     'sanitarian': sanitarian?.toJson(),
   };
 
-  /// Simple getter for latlan for the destination
+  /// Simple getter for flatland for the destination
   LatLng get destination {
     final lat = double.parse(address.place.lat!);
     final lon = double.parse(address.place.lon!);
