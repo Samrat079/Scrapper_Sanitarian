@@ -57,6 +57,7 @@ class Sanitarian01 {
   );
 
   Map<String, dynamic> toJson() => {
+    'uid': uid,
     'displayName': displayName,
     'phoneNumber': phoneNumber,
     'email': email,

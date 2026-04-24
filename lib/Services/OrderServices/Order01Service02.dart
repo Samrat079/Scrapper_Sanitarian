@@ -89,7 +89,7 @@ class Order01Service02 extends ValueNotifier<List<Order01>> {
   }
 
   /// Accept by id
-  void acceptById(String uid) => _ref.doc(uid).update({
+  Future<void> acceptById(String uid) => _ref.doc(uid).update({
     'status': Order01Status.assigned.name,
     'sanitarian': AppUserService02().current.sanitarian?.toJson(),
   });

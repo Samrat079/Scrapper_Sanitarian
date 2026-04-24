@@ -42,7 +42,9 @@ class OrdersScreen01 extends StatelessWidget {
                   height: 32,
                   child: Row(
                     children: [
-                      Text('${(data.routesRes.distance / 1000).toStringAsFixed(2)}Km'),
+                      Text(
+                        '${(data.routesRes.distance / 1000).toStringAsFixed(2)}Km',
+                      ),
                       VerticalDivider(),
                       Text(
                         data.routesRes.duration.pretty(
@@ -63,13 +65,15 @@ class OrdersScreen01 extends StatelessWidget {
                       icon: Icon(Icons.cancel_outlined),
                     ),
                     IconButton(
-                      onPressed: () => Order01Service02().acceptById(data.uid!),
+                      onPressed: () => Order01Service02()
+                          .acceptById(data.uid!)
+                          .then((_) => Navigator.pop(context)),
                       icon: Icon(Icons.check_circle_outline),
                     ),
-                    IconButton(
-                      onPressed: () => Order01Service02().deleteById(data.uid!),
-                      icon: Icon(Icons.delete_outline),
-                    ),
+                    // IconButton(
+                    //   onPressed: () => Order01Service02().deleteById(data.uid!),
+                    //   icon: Icon(Icons.delete_outline),
+                    // ),
                   ],
                 ),
               ],
