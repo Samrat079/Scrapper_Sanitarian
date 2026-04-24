@@ -66,10 +66,6 @@ class CurrOrderService01 extends ValueNotifier<Order01?> {
     if (current == null) return;
 
     final destination = order.address.latLng;
-
-    // final res = await OSRMService01().distanceFromTable(current, [destination]);
-    //
-    // order.routesRes = res.first;
     final res = await OSRMService01().getRouteGeoJson(current, destination);
 
     order.routesRes = res;
@@ -92,39 +88,5 @@ class CurrOrderService01 extends ValueNotifier<Order01?> {
     _locSub = null;
 
     value = null;
-  }
-
-  int getClosestIndex(LatLng current, List<LatLng> routePoints) {
-    double minDist = double.infinity;
-    int closestIndex = 0;
-
-    for (int i = 0; i < routePoints.length; i++) {
-      final dist = Distance().as(LengthUnit.Meter, current, routePoints[i]);
-
-      if (dist < minDist) {
-        minDist = dist;
-        closestIndex = i;
-      }
-    }
-
-    return closestIndex;
-  }
-
-  /// This iterates through the routePoints and checks for
-  /// the highest distance between the curr point and the
-  /// points in the list, this is to check if the user
-  /// if going off track or not
-  double distanceFromRoute(LatLng current, List<LatLng> routePoints) {
-    double minDist = double.infinity;
-
-    for (final point in routePoints) {
-      final dist = Distance().as(LengthUnit.Meter, current, point);
-
-      if (dist < minDist) {
-        minDist = dist;
-      }
-    }
-
-    return minDist;
   }
 }

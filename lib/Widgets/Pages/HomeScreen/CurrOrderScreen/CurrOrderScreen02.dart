@@ -36,7 +36,7 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02> {
   final packageName = "com.example.scrapper_sanitarian";
 
   /// Services
-  final service = CurrOrderService01();
+  // final service = CurrOrderService01();
   final _mapController = MapController();
 
   /// Subscriptions find dispose below
@@ -68,7 +68,7 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02> {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: service,
+      valueListenable: CurrOrderService01(),
       builder: (context, order, _) {
         if (order == null || order.routesRes.coordinates.isEmpty) {
           return Center(child: CircularProgressIndicator());
@@ -222,7 +222,7 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02> {
 
                 /// Cancel
                 ElevatedButton(
-                  onPressed: service.cancelCurrOrder,
+                  onPressed: CurrOrderService01().cancelCurrOrder,
                   child: const Text('Cancel Order'),
                 ),
               ],
