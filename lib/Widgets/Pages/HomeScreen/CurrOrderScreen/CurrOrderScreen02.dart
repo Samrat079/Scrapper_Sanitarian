@@ -37,7 +37,6 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02> {
   final packageName = "com.example.scrapper_sanitarian";
 
   /// Services
-  // final service = CurrOrderService01();
   final _mapController = MapController();
 
   /// Subscriptions find dispose below
@@ -181,8 +180,8 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02> {
                 /// Location card
                 ListTile(
                   leading: const Icon(Icons.location_pin),
-                  title: Text(order.address.place.name!),
-                  subtitle: Text(order.address.place.displayName!),
+                  title: Text(order.address.place.name ?? '' ),
+                  subtitle: Text(order.address.place.displayName ?? ''),
                   trailing: IconButton(
                     onPressed: () => MapLaunch().openMapTo(
                       order.destination,

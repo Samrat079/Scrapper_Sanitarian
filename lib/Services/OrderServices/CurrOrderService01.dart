@@ -69,6 +69,9 @@ class CurrOrderService01 extends ValueNotifier<Order01?> {
     final res = await OSRMService01().getRouteGeoJson(current, destination);
 
     order.routesRes = res;
+    await _ref.doc(value?.uid).update({
+      'sanitarian.currLocation': GeoPoint(current.latitude, current.longitude),
+    });
   }
 
   Future<void> cancelCurrOrder() async {
