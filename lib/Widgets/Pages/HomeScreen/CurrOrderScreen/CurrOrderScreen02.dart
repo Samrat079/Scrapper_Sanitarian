@@ -7,6 +7,7 @@ import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:scrapper/Services/GeoLocatorService/GeoLocator01.dart';
+import 'package:scrapper/Services/MapLauncher/MapLauncher.dart';
 import 'package:scrapper/Services/OSRMServices/OSRMService01.dart';
 import 'package:scrapper/Services/OrderServices/CurrOrderService01.dart';
 import 'package:scrapper/Widgets/Custome/CenterColumn/CenterColumn04.dart';
@@ -118,15 +119,6 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02> {
                         color: context.colorScheme.secondary,
                       ),
                     ),
-
-                    /// Have to stick to relocation
-                    /// coz this is null for some reason
-                    // Marker(
-                    //   point: order.sanitarian!.latLng ?? LatLng(0, 0),
-                    //   width: 40,
-                    //   height: 40,
-                    //   child: Icon(Icons.person_outline, color: Colors.red),
-                    // ),
                   ],
                 ),
 
@@ -145,6 +137,7 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02> {
 
             /// Bottom sheet options
             parallaxEnabled: true,
+            maxHeight: MediaQuery.of(context).size.height * 0.6,
             borderRadius: BorderRadius.vertical(top: context.radiusMD.topLeft),
             color: context.colorScheme.surface,
             panelBuilder: (ScrollController controller) => CenterColumn04(
@@ -189,14 +182,19 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02> {
                 ListTile(
                   leading: const Icon(Icons.location_pin),
                   title: Text(order.address.place.name!),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(order.address.place.displayName!),
-                      context.gapSM,
-                      Text(order.address.houseNo),
-                    ],
+                  subtitle: Text(order.address.place.displayName!),
+                  trailing: IconButton(
+                    onPressed: () => MapLaunch().openMapTo(
+                      order.destination,
+                      order.address.place.name,
+                    ),
+                    icon: const Icon(Icons.near_me_outlined),
                   ),
+                ),
+                Divider(),
+                ListTile(
+                  leading: const Icon(Icons.house_outlined),
+                  title: Text(order.address.houseNo),
                 ),
 
                 Divider(),
@@ -207,6 +205,7 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02> {
                     child: Icon(Icons.person_2_outlined),
                   ),
                   title: Text(order.customer.displayName),
+                  subtitle: Text(order.address.phoneNumber),
                   trailing: const Icon(Icons.call),
                 ),
 
@@ -225,6 +224,7 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02> {
                   onPressed: CurrOrderService01().cancelCurrOrder,
                   child: const Text('Cancel Order'),
                 ),
+                context.gapLG,
               ],
             ),
           ),

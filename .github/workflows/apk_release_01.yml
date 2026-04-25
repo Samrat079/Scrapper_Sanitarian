@@ -30,20 +30,6 @@ jobs:
         run: |
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/upload-keystore.jks
 
-      - name: Verify keystore
-        run: |
-          keytool -list -v \
-            -keystore android/app/upload-keystore.jks \
-            -storepass "${{ secrets.KEYSTORE_PASSWORD }}"
-
-#      - name: Verify key access
-#        run: |
-#          keytool -keypasswd \
-#            -alias "${{ secrets.KEY_ALIAS }}" \
-#            -keystore android/app/upload-keystore.jks \
-#            -storepass "${{ secrets.KEYSTORE_PASSWORD }}" \
-#            -keypass "${{ secrets.KEYSTORE_PASSWORD }}"
-
       - name: Create key.properties
         run: |
           echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" > android/key.properties
