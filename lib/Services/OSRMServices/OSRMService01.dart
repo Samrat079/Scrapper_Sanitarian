@@ -99,7 +99,6 @@ class OSRMService01 {
       '${end.longitude},${end.latitude}'
       '?overview=full&geometries=geojson',
     );
-    print(url);
 
     final res = await http.get(url);
     final data = jsonDecode(res.body);

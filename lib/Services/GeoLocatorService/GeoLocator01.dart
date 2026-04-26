@@ -23,7 +23,7 @@ class GeoLocator01 {
   Future<void> init() async {
     await checkPermission();
     final stream = Geolocator.getPositionStream(
-      locationSettings: const LocationSettings(distanceFilter: 500),
+      locationSettings: const LocationSettings(distanceFilter: 50),
     );
     positionStream = stream;
     updateCurrLocation();
@@ -34,7 +34,7 @@ class GeoLocator01 {
 
   void updateCurrLocation() {
     final stream = Geolocator.getPositionStream(
-      locationSettings: const LocationSettings(distanceFilter: 500),
+      locationSettings: const LocationSettings(distanceFilter: 1000),
     );
 
     stream

@@ -41,9 +41,11 @@ class CurrOrderService01 extends ValueNotifier<Order01?> {
         .where('status', isEqualTo: Order01Status.assigned.name)
         .limit(1)
         .snapshots()
-        .listen((snapshot) {
+        .listen((snapshot) async {
           if (snapshot.docs.isEmpty) return value = null;
           value = snapshot.docs.first.data();
+          await _attachDistance(value!);
+          notifyListeners();
         });
 
     _locSub = GeoLocator01().positionStream
@@ -65,12 +67,59 @@ class CurrOrderService01 extends ValueNotifier<Order01?> {
     final current = GeoLocator01().getCurrLatLng();
     if (current == null) return;
 
-    final destination = order.address.latLng;
-    final res = await OSRMService01().getRouteGeoJson(current, destination);
+    final shouldRefetch = _shouldRefetch(order, current);
 
-    order.routesRes = res;
-    await _ref.doc(value?.uid).update({
-      'sanitarian.currLocation': GeoPoint(current.latitude, current.longitude),
+    if (!shouldRefetch) return;
+
+    await OSRMService01()
+        .getRouteGeoJson(current, order.address.latLng)
+        .then((data) => order.routesRes = data);
+
+    /// 🔥 Move this out (don’t do every time)
+    _updateFirestoreLocation(current);
+  }
+
+  bool _shouldRefetch(Order01 order, LatLng current) {
+    final coords = order.routesRes.coordinates;
+    if (coords.isEmpty) return true;
+
+    final distanceCalc = Distance();
+
+    double minDistance = double.infinity;
+    int closestIndex = 0;
+
+    for (int i = 0; i < coords.length; i++) {
+      final d = distanceCalc.as(LengthUnit.Meter, current, coords[i]);
+
+      if (d < minDistance) {
+        minDistance = d;
+        closestIndex = i;
+      }
+    }
+
+    /// If close to route → reuse
+    if (minDistance < 50) {
+      order.routesRes.coordinates = coords.sublist(closestIndex);
+      return false;
+    }
+
+    /// Too far → refetch
+    print("$minDistance m Refetching");
+    return true;
+  }
+
+  Timer? _firestoreTimer;
+
+  void _updateFirestoreLocation(LatLng current) {
+    _firestoreTimer?.cancel();
+
+    _firestoreTimer = Timer(const Duration(seconds: 15), () {
+      _ref.doc(value?.uid).update({
+        'sanitarian.currLocation': GeoPoint(
+          current.latitude,
+          current.longitude,
+        ),
+      });
     });
   }
 

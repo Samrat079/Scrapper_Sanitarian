@@ -56,7 +56,9 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02> {
   void updateCamera() {
     _locCameraSub = currPosStream.listen((data) {
       _mapController.move(LatLng(data.latitude, data.longitude), 16);
-      _mapController.rotateAroundPoint(data.heading);
+      if (data.heading != null && data.heading! > 0) {
+        _mapController.rotateAroundPoint(data.heading);
+      }
     });
   }
 
@@ -71,8 +73,16 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02> {
     return ValueListenableBuilder(
       valueListenable: CurrOrderService01(),
       builder: (context, order, _) {
-        if (order == null || order.routesRes.coordinates.isEmpty) {
-          return Center(child: CircularProgressIndicator());
+        if (order == null) {
+          return Scaffold(
+            appBar: AppBar(),
+            body: CenterColumn04(
+              children: [
+                LinearProgressIndicator(),
+                Text('Looking for the best route'),
+              ],
+            ),
+          );
         }
         return Scaffold(
           key: _scaffoldKey,
