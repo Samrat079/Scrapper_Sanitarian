@@ -11,7 +11,12 @@ import '../../../../Custome/Intl/PriceText01.dart';
 class CurrOrderBottomSheet01 extends StatelessWidget {
   final Order01 order;
   final ScrollController controller;
-  const CurrOrderBottomSheet01({super.key, required this.order, required this.controller});
+
+  const CurrOrderBottomSheet01({
+    super.key,
+    required this.order,
+    required this.controller,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -95,6 +100,10 @@ class CurrOrderBottomSheet01 extends StatelessWidget {
         /// Cancel
         ElevatedButton(
           onPressed: CurrOrderService01().cancelCurrOrder,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: context.colorScheme.errorContainer,
+            foregroundColor: context.colorScheme.onErrorContainer,
+          ),
           child: const Text('Cancel Order'),
         ),
         context.gapLG,
