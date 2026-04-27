@@ -8,8 +8,13 @@ import 'package:scrapper/theme/theme_extensions.dart';
 
 class EditProfileForm01 extends StatefulWidget {
   final Function(Map<String, dynamic>) onSubmit;
+  final VoidCallback onCancel;
 
-  const EditProfileForm01({super.key, required this.onSubmit});
+  const EditProfileForm01({
+    super.key,
+    required this.onSubmit,
+    required this.onCancel,
+  });
 
   @override
   State<EditProfileForm01> createState() => _EditProfileForm01State();
@@ -19,8 +24,6 @@ class _EditProfileForm01State extends State<EditProfileForm01> {
   final _formKey = GlobalKey<FormBuilderState>();
   bool isLoading = false;
   final AppUser02 currUser = AppUserService02().current;
-
-  void clear() => _formKey.currentState!.reset();
 
   void submitHandler() async {
     if (_formKey.currentState?.saveAndValidate() ?? false) {
@@ -146,12 +149,12 @@ class _EditProfileForm01State extends State<EditProfileForm01> {
           ),
           context.gapMD,
           ElevatedButton(
-            onPressed: clear,
+            onPressed: widget.onCancel,
             style: ElevatedButton.styleFrom(
               backgroundColor: context.colorScheme.surfaceContainerHigh,
               foregroundColor: context.colorScheme.onSurface,
             ),
-            child: Text('Clear'),
+            child: Text('Cancel'),
           ),
         ],
       ),

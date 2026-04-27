@@ -81,13 +81,15 @@ class _AddOtp01State extends State<AddOtp01> {
                     field.errorText ?? '',
                     style: TextStyle(
                       fontStyle: FontStyle.italic,
-                      color: Theme.of(context).colorScheme.error,
+                      color: context.colorScheme.error,
                     ),
                   ),
                 ],
               );
             },
           ),
+          if (isLoading)
+            Column(children: [context.gapMD, LinearProgressIndicator()]),
 
           context.gapMD,
 

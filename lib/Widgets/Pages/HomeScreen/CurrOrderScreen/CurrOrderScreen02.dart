@@ -14,6 +14,7 @@ import 'package:scrapper/Widgets/Custome/CenterColumn/CenterColumn04.dart';
 import 'package:scrapper/Widgets/Custome/Drawers/Drawer01.dart';
 import 'package:scrapper/Widgets/Custome/Intl/PriceText01.dart';
 import 'package:scrapper/Widgets/Pages/HomeScreen/CurrOrderScreen/Widgets/CurrOrderBottomSheet01.dart';
+import 'package:scrapper/Widgets/Pages/HomeScreen/CurrOrderScreen/Widgets/CurrOrderMap01.dart';
 import 'package:scrapper/theme/theme_extensions.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
@@ -94,66 +95,73 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02> {
           drawer: Drawer01(),
 
           body: SlidingUpPanel(
-            body: FlutterMap(
+            ///  widget for the maps, needs to be stateful else flicker
+            body: CurrOrderMap01(
+              order: order,
               mapController: _mapController,
-              options: MapOptions(
-                onMapReady: updateCamera,
-                initialCenter: GeoLocator01().getCurrLatLng() ?? LatLng(0, 0),
-                initialZoom: 16,
-              ),
-              children: [
-                /// The tile itself
-                TileLayer(
-                  urlTemplate: tileUrl,
-                  userAgentPackageName: packageName,
-                ),
-
-                /// Current location
-                // CurrentLocationLayer(),
-
-                /// Destination
-                MarkerLayer(
-                  markers: [
-                    Marker(
-                      point: order.destination,
-                      width: 40,
-                      height: 40,
-                      child: Icon(
-                        Icons.location_on_outlined,
-                        color: context.colorScheme.secondary,
-                      ),
-                    ),
-                    Marker(
-                      point: GeoLocator01().getCurrLatLng() ?? LatLng(0, 0),
-                      child: Icon(
-                        Icons.car_rental_outlined,
-                        color: context.colorScheme.surface,
-                        size: 54,
-                      ),
-                    ),
-                  ],
-                ),
-
-                /// Polylines
-                if (order.routesRes.coordinates.isNotEmpty)
-                  PolylineLayer(
-                    polylines: [
-                      Polyline(
-                        points: order.routesRes.coordinates,
-                        strokeWidth: 4,
-                        color: context.colorScheme.surface,
-                      ),
-                    ],
-                  ),
-              ],
+              onMapReady: updateCamera,
             ),
 
-            /// Bottom sheet options
+            /// Bottom sheet and its options
             parallaxEnabled: true,
             borderRadius: BorderRadius.vertical(top: context.radiusMD.topLeft),
             color: context.colorScheme.surface,
             panelBuilder: (ScrollController controller) =>
                 OrderAcceptBottomSheet01(order: order, controller: controller),
+
+            //   body: FlutterMap(
+            //     mapController: _mapController,
+            //     options: MapOptions(
+            //       onMapReady: updateCamera,
+            //       initialCenter: GeoLocator01().getCurrLatLng() ?? LatLng(0, 0),
+            //       initialZoom: 16,
+            //     ),
+            //     children: [
+            //       /// The tile itself
+            //       TileLayer(
+            //         urlTemplate: tileUrl,
+            //         userAgentPackageName: packageName,
+            //       ),
+            //
+            //       /// Current location
+            //       CurrentLocationLayer(),
+            //
+            //       /// Destination
+            //       MarkerLayer(
+            //         markers: [
+            //           Marker(
+            //             point: order.destination,
+            //             width: 40,
+            //             height: 40,
+            //             child: Icon(
+            //               Icons.location_on_outlined,
+            //               color: context.colorScheme.secondary,
+            //             ),
+            //           ),
+            //           Marker(
+            //             point: GeoLocator01().getCurrLatLng() ?? LatLng(0, 0),
+            //             child: Icon(
+            //               Icons.car_rental_outlined,
+            //               color: context.colorScheme.surface,
+            //               size: 54,
+            //             ),
+            //           ),
+            //         ],
+            //       ),
+            //
+            //       /// Polylines
+            //       if (order.routesRes.coordinates.isNotEmpty)
+            //         PolylineLayer(
+            //           polylines: [
+            //             Polyline(
+            //               points: order.routesRes.coordinates,
+            //               strokeWidth: 4,
+            //               color: context.colorScheme.surface,
+            //             ),
+            //           ],
+            //         ),
+            //     ],
+            //   ),
           ),
         );
       },

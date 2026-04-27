@@ -25,27 +25,32 @@ class GeoLocator01 extends ValueNotifier<Position?> {
     /// Keep this under 10 as we are handling
     /// api throttling from maps
     final stream = Geolocator.getPositionStream(
-      locationSettings: const LocationSettings(distanceFilter: 10),
+      locationSettings: const LocationSettings(
+        distanceFilter: 10,
+        accuracy: LocationAccuracy.high,
+      ),
     ).share();
 
     positionStream = stream;
-    updateCurrLocation();
     stream.listen((pos) {
       value = pos;
     });
   }
 
-  void updateCurrLocation() {
+  void updateCurrLocation(String uid) {
     final stream = Geolocator.getPositionStream(
-      locationSettings: const LocationSettings(distanceFilter: 1000),
+      locationSettings: const LocationSettings(
+        distanceFilter: 1000,
+        accuracy: LocationAccuracy.high,
+      ),
     );
 
     stream
-        .throttleTime(Duration(seconds: 5))
+        .throttleTime(Duration(seconds: 10))
         .listen(
           (data) => FirebaseFirestore.instance
               .collection('sanitarians')
-              .doc(AppUserService02().current.uid)
+              .doc(uid)
               .update({
                 'currLocation': GeoPoint(data.latitude, data.longitude),
               }),

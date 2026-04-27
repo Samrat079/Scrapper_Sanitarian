@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:scrapper/Models/AppUser/AppUser02.dart';
 import 'package:scrapper/Models/Sanitarian/Sanitarian01.dart';
 import 'package:scrapper/Services/OrderServices/CurrOrderService01.dart';
@@ -38,8 +40,12 @@ class AppUserService02 extends ValueNotifier<AppUser02> {
 
   bool get exists => current.exists;
 
+  /// Position stream subscription
+  Stream<Position>? geo;
+
   /// init
   Future<void> init() async {
+    await GeoLocator01().init();
     _auth.authStateChanges().listen((user) async {
       _authUser = user;
 
@@ -53,12 +59,11 @@ class AppUserService02 extends ValueNotifier<AppUser02> {
       _sanitarian = doc.exists ? doc.data() : null;
       value = current;
 
-      await GeoLocator01().init();
-
       /// listeners
       if (isLoggedIn) {
         Order01Service02().init();
         CurrOrderService01().init();
+        GeoLocator01().updateCurrLocation(user.uid);
       }
     });
   }
@@ -109,6 +114,7 @@ class AppUserService02 extends ValueNotifier<AppUser02> {
     value = current;
     Order01Service02().init();
     CurrOrderService01().init();
+    GeoLocator01().updateCurrLocation(user.uid);
     return current;
   }
 
@@ -135,12 +141,12 @@ class AppUserService02 extends ValueNotifier<AppUser02> {
 
     /// This will call the reinitialise init
     await _auth.signOut();
+    geo = null;
 
     /// removes local state
     _authUser = null;
     _sanitarian = null;
     value = current;
-
   }
 
   /// Delete user

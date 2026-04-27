@@ -15,7 +15,7 @@ class OnDutyScreen01 extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         actionsPadding: context.paddingMD,
-        // actions: [CurrAddTest01()],
+        actions: [CurrAddTest01()],
       ),
       body: CenterColumn04(
         centerVertically: true,

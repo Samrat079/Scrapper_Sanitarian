@@ -93,6 +93,8 @@ class _AddNumber01State extends State<AddNumber01> {
             },
           ),
 
+          if (isLoading)
+            Column(children: [context.gapMD, LinearProgressIndicator()]),
           context.gapMD,
 
           ElevatedButton(

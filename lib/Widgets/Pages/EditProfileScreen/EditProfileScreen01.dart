@@ -21,6 +21,7 @@ class EditProfileScreen01 extends StatelessWidget {
           onSubmit: (data) => AppUserService02()
               .updateAppUser(data['displayName'])
               .then((_) => Navigator.pop(context)),
+          onCancel: () => Navigator.pop(context),
         ),
       ],
     ),
