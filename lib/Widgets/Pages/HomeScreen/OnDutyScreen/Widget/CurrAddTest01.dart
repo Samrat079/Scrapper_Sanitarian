@@ -9,7 +9,7 @@ class CurrAddTest01 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ValueListenableBuilder(
-    valueListenable: GeoLocator01().currPos,
+    valueListenable: GeoLocator01(),
     builder: (context, position, _) => FutureBuilder(
       future: NominatimServices01().searchByLatLng(
         LatLng(position?.latitude ?? 0, position?.longitude ?? 0),

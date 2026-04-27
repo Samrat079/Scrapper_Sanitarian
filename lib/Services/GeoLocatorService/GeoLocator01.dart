@@ -17,7 +17,6 @@ class GeoLocator01 extends ValueNotifier<Position?> {
 
   /// Listenable values
   late final Stream<Position> positionStream;
-  final ValueNotifier<Position?> currPos = ValueNotifier<Position?>(null);
 
   /// Init calls the listeners
   Future<void> init() async {
@@ -29,7 +28,6 @@ class GeoLocator01 extends ValueNotifier<Position?> {
     updateCurrLocation();
     stream.listen((pos) {
       value = pos;
-      currPos.value = pos;
     });
   }
 
@@ -52,7 +50,6 @@ class GeoLocator01 extends ValueNotifier<Position?> {
 
   LatLng? getCurrLatLng() {
     final pos = value;
-    // final pos = currPos.value;
     if (pos == null) return null;
     return LatLng(pos.latitude, pos.longitude);
   }

@@ -75,7 +75,7 @@ class Order01Service02 extends ValueNotifier<List<Order01>> {
   /// stop listener
   void stop() {
     _orderSub?.cancel();
-    GeoLocator01().currPos.removeListener(_onLocationUpdate);
+    GeoLocator01().removeListener(_onLocationUpdate);
     _orderSub = null;
     _locSub = null;
     value = [];
