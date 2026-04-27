@@ -48,6 +48,12 @@ class GeoLocator01 extends ValueNotifier<Position?> {
         );
   }
 
+  double calDistance(List<LatLng> coordinates) {
+    final path = Path.from(coordinates);
+
+    return path.distance;
+  }
+
   LatLng? getCurrLatLng() {
     final pos = value;
     if (pos == null) return null;

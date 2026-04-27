@@ -1,6 +1,7 @@
 import 'package:duration/duration.dart';
 import 'package:flutter/material.dart';
 import 'package:scrapper/Models/Orders/Order01.dart';
+import 'package:scrapper/Services/GeoLocatorService/GeoLocator01.dart';
 
 import '../../../../../Services/MapLauncher/MapLauncher.dart';
 import '../../../../../Services/OrderServices/CurrOrderService01.dart';
@@ -8,11 +9,11 @@ import '../../../../../theme/theme_extensions.dart';
 import '../../../../Custome/CenterColumn/CenterColumn04.dart';
 import '../../../../Custome/Intl/PriceText01.dart';
 
-class CurrOrderBottomSheet01 extends StatelessWidget {
+class OrderAcceptBottomSheet01 extends StatelessWidget {
   final Order01 order;
   final ScrollController controller;
 
-  const CurrOrderBottomSheet01({
+  const OrderAcceptBottomSheet01({
     super.key,
     required this.order,
     required this.controller,
@@ -33,7 +34,7 @@ class CurrOrderBottomSheet01 extends StatelessWidget {
                   leading: Icon(Icons.add_road),
                   title: Text('Distance'),
                   subtitle: Text(
-                    '${(order.routesRes.distance / 1000).toStringAsFixed(2)} Km',
+                    '${(GeoLocator01().calDistance(order.routesRes.coordinates) / 1000).toStringAsFixed(2)} Km',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),

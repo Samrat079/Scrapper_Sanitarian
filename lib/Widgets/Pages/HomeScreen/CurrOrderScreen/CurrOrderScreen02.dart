@@ -151,7 +151,7 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02> {
             borderRadius: BorderRadius.vertical(top: context.radiusMD.topLeft),
             color: context.colorScheme.surface,
             panelBuilder: (ScrollController controller) =>
-                CurrOrderBottomSheet01(order: order, controller: controller),
+                OrderAcceptBottomSheet01(order: order, controller: controller),
           ),
         );
       },

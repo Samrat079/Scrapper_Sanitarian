@@ -52,7 +52,6 @@ class CurrOrderService01 extends ValueNotifier<Order01?> {
           notifyListeners();
         });
 
-    // _locSub = GeoLocator01().positionStream.listen((_) => _onLocationUpdate());
     GeoLocator01().addListener(_onLocationUpdate);
   }
 
@@ -85,13 +84,11 @@ class CurrOrderService01 extends ValueNotifier<Order01?> {
     final coords = order.routesRes.coordinates;
     if (coords.isEmpty) return true;
 
-    final distanceCalc = Distance();
-
     double minDistance = double.infinity;
     int closestIndex = 0;
 
     for (int i = 0; i < coords.length; i++) {
-      final d = distanceCalc.as(LengthUnit.Meter, current, coords[i]);
+      final d = Distance().as(LengthUnit.Meter, current, coords[i]);
 
       if (d < minDistance) {
         minDistance = d;
@@ -106,7 +103,7 @@ class CurrOrderService01 extends ValueNotifier<Order01?> {
     }
 
     /// Too far → refetch
-    print("$minDistance m Refetching");
+    // print("$minDistance m Refetching");
     return true;
   }
 
