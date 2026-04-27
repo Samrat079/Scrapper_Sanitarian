@@ -109,7 +109,7 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02> {
                 ),
 
                 /// Current location
-                CurrentLocationLayer(),
+                // CurrentLocationLayer(),
 
                 /// Destination
                 MarkerLayer(
@@ -121,6 +121,14 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02> {
                       child: Icon(
                         Icons.location_on_outlined,
                         color: context.colorScheme.secondary,
+                      ),
+                    ),
+                    Marker(
+                      point: GeoLocator01().getCurrLatLng() ?? LatLng(0, 0),
+                      child: Icon(
+                        Icons.car_rental_outlined,
+                        color: context.colorScheme.surface,
+                        size: 54,
                       ),
                     ),
                   ],

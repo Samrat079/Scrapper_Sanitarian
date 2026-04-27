@@ -25,7 +25,7 @@ class GeoLocator01 extends ValueNotifier<Position?> {
     /// Keep this under 10 as we are handling
     /// api throttling from maps
     final stream = Geolocator.getPositionStream(
-      locationSettings: const LocationSettings(distanceFilter: 0),
+      locationSettings: const LocationSettings(distanceFilter: 10),
     ).share();
 
     positionStream = stream;
