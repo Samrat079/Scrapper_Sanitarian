@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:duration/duration.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_animations/flutter_map_animations.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
@@ -28,39 +29,37 @@ class CurrOrderScreen02 extends StatefulWidget {
   State<CurrOrderScreen02> createState() => _CurrOrderScreen02State();
 }
 
-class _CurrOrderScreen02State extends State<CurrOrderScreen02> {
-  /// Looks like it is not easy to make this simpler
-  /// any simpler and we loose stuff, also to make it
-  /// better we have to make a nav engine, which i dont
-  /// want to do as of now
+class _CurrOrderScreen02State extends State<CurrOrderScreen02>
+    with TickerProviderStateMixin {
+  /// was able to make this simpler check currorderservice to know more
 
   /// Tile Layer
   final tileUrl = "https://mt.google.com/vt/lyrs=m&x={x}&y={y}&z={z}";
   final packageName = "com.example.scrapper_sanitarian";
 
-  /// Services
-  final _mapController = MapController();
-
   /// Global key
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
-  @override
-  void initState() {
-    super.initState();
-  }
+  /// Moved on to animation controller which improved animations
+  late final _animatedMapController = AnimatedMapController(
+    vsync: this,
+    duration: const Duration(milliseconds: 300),
+    curve: Curves.easeIn,
+    cancelPreviousAnimations: true,
+  );
 
-  void updateCamera() {
-    GeoLocator01().addListener(() {
-      final loc = GeoLocator01().value!;
-      _mapController.move(LatLng(loc.latitude, loc.longitude), 16);
-      _mapController.rotateAroundPoint(loc.heading);
-    });
-  }
+  void updateCamera() => GeoLocator01().addListener(() {
+    final loc = GeoLocator01().value;
+    if (loc == null) return;
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
+    final latLng = LatLng(loc.latitude, loc.longitude);
+
+    _animatedMapController.animateTo(
+      dest: latLng,
+      zoom: 16,
+      rotation: 360 - loc.heading,
+    );
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +97,7 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02> {
             ///  widget for the maps, needs to be stateful else flicker
             body: CurrOrderMap01(
               order: order,
-              mapController: _mapController,
+              mapController: _animatedMapController.mapController,
               onMapReady: updateCamera,
             ),
 
@@ -108,60 +107,6 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02> {
             color: context.colorScheme.surface,
             panelBuilder: (ScrollController controller) =>
                 OrderAcceptBottomSheet01(order: order, controller: controller),
-
-            //   body: FlutterMap(
-            //     mapController: _mapController,
-            //     options: MapOptions(
-            //       onMapReady: updateCamera,
-            //       initialCenter: GeoLocator01().getCurrLatLng() ?? LatLng(0, 0),
-            //       initialZoom: 16,
-            //     ),
-            //     children: [
-            //       /// The tile itself
-            //       TileLayer(
-            //         urlTemplate: tileUrl,
-            //         userAgentPackageName: packageName,
-            //       ),
-            //
-            //       /// Current location
-            //       CurrentLocationLayer(),
-            //
-            //       /// Destination
-            //       MarkerLayer(
-            //         markers: [
-            //           Marker(
-            //             point: order.destination,
-            //             width: 40,
-            //             height: 40,
-            //             child: Icon(
-            //               Icons.location_on_outlined,
-            //               color: context.colorScheme.secondary,
-            //             ),
-            //           ),
-            //           Marker(
-            //             point: GeoLocator01().getCurrLatLng() ?? LatLng(0, 0),
-            //             child: Icon(
-            //               Icons.car_rental_outlined,
-            //               color: context.colorScheme.surface,
-            //               size: 54,
-            //             ),
-            //           ),
-            //         ],
-            //       ),
-            //
-            //       /// Polylines
-            //       if (order.routesRes.coordinates.isNotEmpty)
-            //         PolylineLayer(
-            //           polylines: [
-            //             Polyline(
-            //               points: order.routesRes.coordinates,
-            //               strokeWidth: 4,
-            //               color: context.colorScheme.surface,
-            //             ),
-            //           ],
-            //         ),
-            //     ],
-            //   ),
           ),
         );
       },

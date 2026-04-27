@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:nominatim_flutter/model/response/nominatim_response.dart';
@@ -17,6 +18,8 @@ class GeoLocator01 extends ValueNotifier<Position?> {
 
   /// Listenable values
   late final Stream<Position> positionStream;
+  late final Stream<LocationMarkerPosition> locationPositionStream;
+  late final Stream<LocationMarkerHeading> locationHeadingStream;
 
   /// Init calls the listeners
   Future<void> init() async {
@@ -26,15 +29,34 @@ class GeoLocator01 extends ValueNotifier<Position?> {
     /// api throttling from maps
     final stream = Geolocator.getPositionStream(
       locationSettings: const LocationSettings(
-        distanceFilter: 10,
+        distanceFilter: 5,
         accuracy: LocationAccuracy.high,
       ),
     ).share();
 
+    /// the normal stream
     positionStream = stream;
-    stream.listen((pos) {
-      value = pos;
-    });
+
+    /// the position stream for location marker
+    locationPositionStream = stream.map(
+      (data) => LocationMarkerPosition(
+        latitude: data.latitude,
+        longitude: data.longitude,
+        accuracy: data.accuracy,
+      ),
+    );
+
+    /// the heading stream for location marker
+    locationHeadingStream = stream.map(
+      (data) => LocationMarkerHeading(
+        heading: degToRadian(data.heading + 180),
+        accuracy: data.accuracy,
+      ),
+    );
+
+
+    /// This updates the valueNotifier
+    stream.listen((pos) => value = pos);
   }
 
   void updateCurrLocation(String uid) {

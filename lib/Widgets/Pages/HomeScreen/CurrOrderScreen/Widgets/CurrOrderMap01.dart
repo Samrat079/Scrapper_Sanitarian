@@ -8,7 +8,7 @@ import 'package:scrapper/Models/Orders/Order01.dart';
 import '../../../../../Services/GeoLocatorService/GeoLocator01.dart';
 import '../../../../../theme/theme_extensions.dart';
 
-class CurrOrderMap01 extends StatefulWidget {
+class CurrOrderMap01 extends StatelessWidget {
   final Order01 order;
   final MapController _mapController;
   final VoidCallback onMapReady;
@@ -21,18 +21,13 @@ class CurrOrderMap01 extends StatefulWidget {
   }) : _mapController = mapController;
 
   @override
-  State<CurrOrderMap01> createState() => _CurrOrderMap01State();
-}
-
-class _CurrOrderMap01State extends State<CurrOrderMap01> {
-  @override
   Widget build(BuildContext context) {
     final tileUrl = "https://mt.google.com/vt/lyrs=m&x={x}&y={y}&z={z}";
     final packageName = "com.example.scrapper_sanitarian";
     return FlutterMap(
-      mapController: widget._mapController,
+      mapController: _mapController,
       options: MapOptions(
-        onMapReady: widget.onMapReady,
+        onMapReady: onMapReady,
         initialCenter: GeoLocator01().getCurrLatLng() ?? LatLng(0, 0),
         initialZoom: 16,
       ),
@@ -43,31 +38,31 @@ class _CurrOrderMap01State extends State<CurrOrderMap01> {
         /// Destination
         MarkerLayer(
           markers: [
+            /// Destination marker
             Marker(
-              point: widget.order.destination,
+              point: order.destination,
               child: Icon(
                 Icons.location_on_outlined,
                 color: context.colorScheme.secondary,
                 size: 54,
               ),
             ),
-            Marker(
-              point: GeoLocator01().getCurrLatLng() ?? LatLng(0, 0),
-              child: Icon(
-                Icons.car_rental_outlined,
-                color: context.colorScheme.surface,
-                size: 54,
-              ),
-            ),
           ],
         ),
 
+        /// This is the curr location marker and uses
+        /// the geolocator streams
+        CurrentLocationLayer(
+          positionStream: GeoLocator01().locationPositionStream,
+          headingStream: GeoLocator01().locationHeadingStream,
+        ),
+
         /// Polylines
-        if (widget.order.routesRes.coordinates.isNotEmpty)
+        if (order.routesRes.coordinates.isNotEmpty)
           PolylineLayer(
             polylines: [
               Polyline(
-                points: widget.order.routesRes.coordinates,
+                points: order.routesRes.coordinates,
                 strokeWidth: 4,
                 color: context.colorScheme.surface,
               ),
