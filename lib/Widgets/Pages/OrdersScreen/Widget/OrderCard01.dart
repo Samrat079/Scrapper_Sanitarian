@@ -42,14 +42,24 @@ class OrderCard01 extends StatelessWidget {
       Text(data.address.place.name.toString()),
       Text(data.address.place.displayName.toString()),
       Text(data.address.houseNo),
+      context.gapMD,
       Row(
         children: [
-          IconButton(onPressed: onReject, icon: Icon(Icons.cancel_outlined)),
           IconButton(
-            onPressed: onAccept,
-            icon: Icon(Icons.check_circle_outline),
+            onPressed: onReject,
+            icon: Icon(Icons.cancel_outlined, size: 32),
+            color: Colors.red,
           ),
+          // context.gapMD,
           // IconButton(onPressed: onDelete, icon: Icon(Icons.delete_outline)),
+          context.gapMD,
+          Expanded(
+            child: ElevatedButton.icon(
+              onPressed: onAccept,
+              icon: Icon(Icons.check_circle_outline),
+              label: Text('Accept'),
+            ),
+          ),
         ],
       ),
     ],

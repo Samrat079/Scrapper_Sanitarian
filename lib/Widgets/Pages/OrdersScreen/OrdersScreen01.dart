@@ -32,6 +32,8 @@ class OrdersScreen01 extends StatelessWidget {
             return CenterColumn04(
               centerVertically: true,
               children: [
+                Image.asset('assets/Illustrations/search_01.png', width: 180),
+                context.gapMD,
                 LinearProgressIndicator(),
                 context.gapMD,
                 Text("Searching for orders", textAlign: TextAlign.center),

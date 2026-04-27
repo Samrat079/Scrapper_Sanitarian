@@ -139,7 +139,7 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02> {
                       Polyline(
                         points: order.routesRes.coordinates,
                         strokeWidth: 4,
-                        color: context.colorScheme.primary,
+                        color: context.colorScheme.surface,
                       ),
                     ],
                   ),
