@@ -8,6 +8,8 @@ import 'package:rxdart/rxdart.dart';
 import 'package:scrapper/Services/AppUserServices/AppUserService02.dart';
 import 'package:scrapper/Services/OrderServices/CurrOrderService01.dart';
 
+import '../NominatimServices/NominatimServices01.dart';
+
 class GeoLocator01 extends ValueNotifier<Position?> {
   /// Have to go for singleton
   static final GeoLocator01 _instance = GeoLocator01._internal();
@@ -16,10 +18,12 @@ class GeoLocator01 extends ValueNotifier<Position?> {
 
   factory GeoLocator01() => _instance;
 
-  /// Listenable values
+  /// Listenable values for some reason all of them
+  /// are late, might need to change later
   late final Stream<Position> positionStream;
   late final Stream<LocationMarkerPosition> locationPositionStream;
   late final Stream<LocationMarkerHeading> locationHeadingStream;
+  late final Stream<String> locationLabelStream;
 
   /// Init calls the listeners
   Future<void> init() async {
@@ -54,9 +58,53 @@ class GeoLocator01 extends ValueNotifier<Position?> {
       ),
     );
 
-
     /// This updates the valueNotifier
     stream.listen((pos) => value = pos);
+
+    locationLabelStream = positionStream
+        .switchMap((pos) async* {
+          // GPS check
+          if (!await Geolocator.isLocationServiceEnabled()) {
+            yield "GPS is turned OFF";
+            return;
+          }
+
+          // Permission check
+          var permission = await Geolocator.checkPermission();
+
+          if (permission == LocationPermission.denied) {
+            yield "Location permission denied";
+            return;
+          }
+
+          if (permission == LocationPermission.deniedForever) {
+            yield "Permission permanently denied";
+            return;
+          }
+
+          // If position is null (shouldn't happen but safe)
+          if (pos == null) {
+            yield "Fetching location...";
+            return;
+          }
+
+          yield "Fetching place...";
+
+          try {
+            final place = await NominatimServices01().searchByLatLng(
+              LatLng(pos.latitude, pos.longitude),
+            );
+
+            if (place == null) {
+              yield "Unable to find location";
+            } else {
+              yield place.name ?? "Unknown location";
+            }
+          } catch (_) {
+            yield "Error fetching location";
+          }
+        })
+        .shareReplay(maxSize: 1);
   }
 
   void updateCurrLocation(String uid) {

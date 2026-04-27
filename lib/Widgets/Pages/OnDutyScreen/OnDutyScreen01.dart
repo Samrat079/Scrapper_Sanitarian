@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:scrapper/Services/OrderServices/CurrOrderService01.dart';
 import 'package:scrapper/Widgets/Custome/Drawers/Drawer01.dart';
 import 'package:scrapper/Widgets/Custome/RichText/RichText01.dart';
+import 'package:scrapper/Widgets/Pages/OnDutyScreen/Widget/LocationCard01.dart';
 import 'package:scrapper/theme/theme_extensions.dart';
 
-import '../../../Custome/CenterColumn/CenterColumn04.dart';
+import '../../Custome/CenterColumn/CenterColumn04.dart';
 import 'Widget/CurrAddTest01.dart';
 
 class OnDutyScreen01 extends StatelessWidget {
@@ -15,7 +16,7 @@ class OnDutyScreen01 extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         actionsPadding: context.paddingMD,
-        actions: [CurrAddTest01()],
+        // actions: [CurrAddTest01()],
       ),
       body: CenterColumn04(
         centerVertically: true,
@@ -30,7 +31,9 @@ class OnDutyScreen01 extends StatelessWidget {
             text3: 'Go on duty now!!!',
             highlight: context.colorScheme.primary,
           ),
+          context.gapMD,
 
+          LocationCard01(),
           context.gapMD,
 
           ElevatedButton(

@@ -14,13 +14,12 @@ import 'package:scrapper/Services/OrderServices/CurrOrderService01.dart';
 import 'package:scrapper/Widgets/Custome/CenterColumn/CenterColumn04.dart';
 import 'package:scrapper/Widgets/Custome/Drawers/Drawer01.dart';
 import 'package:scrapper/Widgets/Custome/Intl/PriceText01.dart';
-import 'package:scrapper/Widgets/Pages/HomeScreen/CurrOrderScreen/Widgets/CurrOrderBottomSheet01.dart';
-import 'package:scrapper/Widgets/Pages/HomeScreen/CurrOrderScreen/Widgets/CurrOrderMap01.dart';
 import 'package:scrapper/theme/theme_extensions.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 import '../../../../Models/RouteResponse/RouteResponse.dart';
-import '../../../Custome/CardList01/CardList01.dart';
+import 'Widgets/CurrOrderBottomSheet01.dart';
+import 'Widgets/CurrOrderMap01.dart';
 
 class CurrOrderScreen02 extends StatefulWidget {
   const CurrOrderScreen02({super.key});

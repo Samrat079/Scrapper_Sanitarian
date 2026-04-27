@@ -32,7 +32,7 @@ class _AddNumber01State extends State<AddNumber01> {
           .sendOtp(number)
           .then(
             (_) => widget._controller.nextPage(
-              duration: Duration(milliseconds: 500),
+              duration: Duration(milliseconds: 300),
               curve: Curves.easeInOut,
             ),
           )

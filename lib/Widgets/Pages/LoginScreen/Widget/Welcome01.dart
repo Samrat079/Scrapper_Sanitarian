@@ -30,7 +30,7 @@ class Welcome01 extends StatelessWidget {
 
         ElevatedButton(
           onPressed: () => _controller.nextPage(
-            duration: Duration(seconds: 1),
+            duration: Duration(milliseconds: 300),
             curve: Curves.easeInOut,
           ),
           style: ElevatedButton.styleFrom(

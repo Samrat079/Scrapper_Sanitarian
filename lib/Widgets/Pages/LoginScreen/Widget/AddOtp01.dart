@@ -31,7 +31,7 @@ class _AddOtp01State extends State<AddOtp01> {
           .verifyOtp(otp)
           .then(
             (_) => widget._controller.nextPage(
-              duration: Duration(milliseconds: 500),
+              duration: Duration(milliseconds: 300),
               curve: Curves.easeInOut,
             ),
           )

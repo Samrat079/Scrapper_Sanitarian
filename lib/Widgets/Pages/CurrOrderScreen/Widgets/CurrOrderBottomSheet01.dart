@@ -6,8 +6,8 @@ import 'package:scrapper/Services/GeoLocatorService/GeoLocator01.dart';
 import '../../../../../Services/MapLauncher/MapLauncher.dart';
 import '../../../../../Services/OrderServices/CurrOrderService01.dart';
 import '../../../../../theme/theme_extensions.dart';
-import '../../../../Custome/CenterColumn/CenterColumn04.dart';
-import '../../../../Custome/Intl/PriceText01.dart';
+import '../../../Custome/CenterColumn/CenterColumn04.dart';
+import '../../../Custome/Intl/PriceText01.dart';
 
 class OrderAcceptBottomSheet01 extends StatelessWidget {
   final Order01 order;

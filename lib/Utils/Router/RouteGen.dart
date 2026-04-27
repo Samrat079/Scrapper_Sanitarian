@@ -5,7 +5,6 @@ import 'package:scrapper/Widgets/Pages/HomeScreen/HomeScreen01.dart';
 import 'package:scrapper/Widgets/Pages/OrdersScreen/OrdersScreen01.dart';
 
 import '../../Widgets/Pages/ErrorScreen/ErrorScreen01.dart';
-import '../../Widgets/Pages/HomeScreen/OnDutyScreen/OnDutyScreen01.dart';
 import '../../Widgets/Pages/LoginScreen/LoginScreen01.dart';
 import '../../Widgets/Pages/ProfileScreen/ProfileScreen01.dart';
 
