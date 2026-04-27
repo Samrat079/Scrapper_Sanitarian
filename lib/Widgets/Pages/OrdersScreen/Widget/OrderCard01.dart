@@ -54,11 +54,7 @@ class OrderCard01 extends StatelessWidget {
           // IconButton(onPressed: onDelete, icon: Icon(Icons.delete_outline)),
           context.gapMD,
           Expanded(
-            child: ElevatedButton.icon(
-              onPressed: onAccept,
-              icon: Icon(Icons.check_circle_outline),
-              label: Text('Accept'),
-            ),
+            child: ElevatedButton(onPressed: onAccept, child: Text('Accept')),
           ),
         ],
       ),

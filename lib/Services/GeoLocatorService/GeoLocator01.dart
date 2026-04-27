@@ -7,11 +7,11 @@ import 'package:rxdart/rxdart.dart';
 import 'package:scrapper/Services/AppUserServices/AppUserService02.dart';
 import 'package:scrapper/Services/OrderServices/CurrOrderService01.dart';
 
-class GeoLocator01 {
+class GeoLocator01 extends ValueNotifier<Position?> {
   /// Have to go for singleton
   static final GeoLocator01 _instance = GeoLocator01._internal();
 
-  GeoLocator01._internal();
+  GeoLocator01._internal() : super(null);
 
   factory GeoLocator01() => _instance;
 
@@ -28,6 +28,7 @@ class GeoLocator01 {
     positionStream = stream;
     updateCurrLocation();
     stream.listen((pos) {
+      value = pos;
       currPos.value = pos;
     });
   }
@@ -50,7 +51,8 @@ class GeoLocator01 {
   }
 
   LatLng? getCurrLatLng() {
-    final pos = currPos.value;
+    final pos = value;
+    // final pos = currPos.value;
     if (pos == null) return null;
     return LatLng(pos.latitude, pos.longitude);
   }

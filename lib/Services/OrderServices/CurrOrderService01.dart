@@ -48,9 +48,7 @@ class CurrOrderService01 extends ValueNotifier<Order01?> {
           notifyListeners();
         });
 
-    _locSub = GeoLocator01().positionStream
-        .throttleTime(const Duration(seconds: 5))
-        .listen((_) => _onLocationUpdate());
+    _locSub = GeoLocator01().positionStream.listen((_) => _onLocationUpdate());
   }
 
   void _onLocationUpdate() {
@@ -75,7 +73,6 @@ class CurrOrderService01 extends ValueNotifier<Order01?> {
         .getRouteGeoJson(current, order.address.latLng)
         .then((data) => order.routesRes = data);
 
-    /// 🔥 Move this out (don’t do every time)
     _updateFirestoreLocation(current);
   }
 
@@ -98,7 +95,7 @@ class CurrOrderService01 extends ValueNotifier<Order01?> {
     }
 
     /// If close to route → reuse
-    if (minDistance < 50) {
+    if (minDistance < 20) {
       order.routesRes.coordinates = coords.sublist(closestIndex);
       return false;
     }
