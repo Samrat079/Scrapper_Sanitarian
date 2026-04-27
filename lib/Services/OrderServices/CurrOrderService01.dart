@@ -99,11 +99,12 @@ class CurrOrderService01 extends ValueNotifier<Order01?> {
     /// If close to route → reuse
     if (minDistance < 20) {
       order.routesRes.coordinates = coords.sublist(closestIndex);
+      order.routesRes.distance = Path.from(order.routesRes.coordinates).distance;
       return false;
     }
 
     /// Too far → refetch
-    // print("$minDistance m Refetching");
+    print("$minDistance m Refetching");
     return true;
   }
 

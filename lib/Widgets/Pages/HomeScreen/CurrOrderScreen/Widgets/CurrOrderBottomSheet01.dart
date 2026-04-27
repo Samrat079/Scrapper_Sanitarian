@@ -33,8 +33,10 @@ class OrderAcceptBottomSheet01 extends StatelessWidget {
                 child: ListTile(
                   leading: Icon(Icons.add_road),
                   title: Text('Distance'),
+                  // subtitle: Text(
+                  //   '${(GeoLocator01().calDistance(order.routesRes.coordinates) / 1000).toStringAsFixed(2)} Km',
                   subtitle: Text(
-                    '${(GeoLocator01().calDistance(order.routesRes.coordinates) / 1000).toStringAsFixed(2)} Km',
+                    '${(order.routesRes.distance / 1000).toStringAsFixed(2)} Km',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),

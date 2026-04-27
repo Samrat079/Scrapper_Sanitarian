@@ -40,31 +40,24 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02> {
   /// Services
   final _mapController = MapController();
 
-  /// Subscriptions find dispose below
-  StreamSubscription? _locCameraSub;
-  final currPosStream = GeoLocator01().positionStream;
-
   /// Global key
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
   @override
   void initState() {
     super.initState();
-    updateCamera();
   }
 
   void updateCamera() {
-    _locCameraSub = currPosStream.listen((data) {
-      _mapController.move(LatLng(data.latitude, data.longitude), 16);
-      if (data.heading != null && data.heading! > 0) {
-        _mapController.rotateAroundPoint(data.heading);
-      }
+    GeoLocator01().addListener(() {
+      final loc = GeoLocator01().value!;
+      _mapController.move(LatLng(loc.latitude, loc.longitude), 16);
+      _mapController.rotateAroundPoint(loc.heading);
     });
   }
 
   @override
   void dispose() {
-    _locCameraSub?.cancel();
     super.dispose();
   }
 
@@ -104,6 +97,7 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02> {
             body: FlutterMap(
               mapController: _mapController,
               options: MapOptions(
+                onMapReady: updateCamera,
                 initialCenter: GeoLocator01().getCurrLatLng() ?? LatLng(0, 0),
                 initialZoom: 16,
               ),

@@ -21,9 +21,13 @@ class GeoLocator01 extends ValueNotifier<Position?> {
   /// Init calls the listeners
   Future<void> init() async {
     await checkPermission();
+
+    /// Keep this under 10 as we are handling
+    /// api throttling from maps
     final stream = Geolocator.getPositionStream(
-      locationSettings: const LocationSettings(distanceFilter: 50),
-    );
+      locationSettings: const LocationSettings(distanceFilter: 0),
+    ).share();
+
     positionStream = stream;
     updateCurrLocation();
     stream.listen((pos) {
@@ -46,12 +50,6 @@ class GeoLocator01 extends ValueNotifier<Position?> {
                 'currLocation': GeoPoint(data.latitude, data.longitude),
               }),
         );
-  }
-
-  double calDistance(List<LatLng> coordinates) {
-    final path = Path.from(coordinates);
-
-    return path.distance;
   }
 
   LatLng? getCurrLatLng() {

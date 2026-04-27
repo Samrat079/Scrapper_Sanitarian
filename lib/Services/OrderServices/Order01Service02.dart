@@ -45,9 +45,6 @@ class Order01Service02 extends ValueNotifier<List<Order01>> {
         });
 
     /// Listen to location updates
-    // _locSub = GeoLocator01().positionStream
-    //     .throttleTime(const Duration(seconds: 5))
-    //     .listen((_) => _onLocationUpdate());
     GeoLocator01().addListener(_onLocationUpdate);
   }
 
