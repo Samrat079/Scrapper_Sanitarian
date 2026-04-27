@@ -32,6 +32,10 @@ class CurrOrderService01 extends ValueNotifier<Order01?> {
         toFirestore: (model, _) => model.toJson(),
       );
 
+  /// Timer for debouncing firestore update
+  Timer? _firestoreTimer;
+
+
   void init() {
     _currOrderSub?.cancel();
 
@@ -48,7 +52,8 @@ class CurrOrderService01 extends ValueNotifier<Order01?> {
           notifyListeners();
         });
 
-    _locSub = GeoLocator01().positionStream.listen((_) => _onLocationUpdate());
+    // _locSub = GeoLocator01().positionStream.listen((_) => _onLocationUpdate());
+    GeoLocator01().addListener(_onLocationUpdate);
   }
 
   void _onLocationUpdate() {
@@ -105,7 +110,6 @@ class CurrOrderService01 extends ValueNotifier<Order01?> {
     return true;
   }
 
-  Timer? _firestoreTimer;
 
   void _updateFirestoreLocation(LatLng current) {
     _firestoreTimer?.cancel();

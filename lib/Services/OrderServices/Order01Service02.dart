@@ -45,9 +45,10 @@ class Order01Service02 extends ValueNotifier<List<Order01>> {
         });
 
     /// Listen to location updates
-    _locSub = GeoLocator01().positionStream
-        .throttleTime(const Duration(seconds: 5))
-        .listen((_) => _onLocationUpdate());
+    // _locSub = GeoLocator01().positionStream
+    //     .throttleTime(const Duration(seconds: 5))
+    //     .listen((_) => _onLocationUpdate());
+    GeoLocator01().addListener(_onLocationUpdate);
   }
 
   void _onLocationUpdate() {
@@ -75,7 +76,7 @@ class Order01Service02 extends ValueNotifier<List<Order01>> {
   /// stop listener
   void stop() {
     _orderSub?.cancel();
-    GeoLocator01().currPos.removeListener(_onLocationUpdate);
+    GeoLocator01().removeListener(_onLocationUpdate);
     _orderSub = null;
     _locSub = null;
     value = [];
