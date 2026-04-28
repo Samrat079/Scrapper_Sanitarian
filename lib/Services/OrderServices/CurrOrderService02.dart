@@ -7,16 +7,16 @@ import 'package:nominatim_flutter/model/response/nominatim_response.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:scrapper/Models/Orders/Order01.dart';
 import 'package:scrapper/Services/AppUserServices/AppUserService02.dart';
+import 'package:scrapper/Services/GeoLocatorService/GeoLocator02.dart';
 
-import '../GeoLocatorService/GeoLocator01.dart';
 import '../OSRMServices/OSRMService01.dart';
 
-class CurrOrderService01 extends ValueNotifier<Order01?> {
-  static final CurrOrderService01 _instance = CurrOrderService01._internal();
+class CurrOrderService02 extends ValueNotifier<Order01?> {
+  static final CurrOrderService02 _instance = CurrOrderService02._internal();
 
-  CurrOrderService01._internal() : super(null);
+  CurrOrderService02._internal() : super(null);
 
-  factory CurrOrderService01() => _instance;
+  factory CurrOrderService02() => _instance;
 
   /// Subscriptions
   /// For the order
@@ -51,7 +51,7 @@ class CurrOrderService01 extends ValueNotifier<Order01?> {
           notifyListeners();
         });
 
-    GeoLocator01().addListener(_onLocationUpdate);
+    GeoLocator02().addListener(_onLocationUpdate);
   }
 
   void _onLocationUpdate() {
@@ -65,7 +65,7 @@ class CurrOrderService01 extends ValueNotifier<Order01?> {
   }
 
   Future<void> _attachDistance(Order01 order) async {
-    final current = GeoLocator01().getCurrLatLng();
+    final current = GeoLocator02().getCurrLatLng();
     if (current == null) return;
 
     final shouldRefetch = _shouldRefetch(order, current);

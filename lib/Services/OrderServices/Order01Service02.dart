@@ -4,9 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:scrapper/Services/AppUserServices/AppUserService02.dart';
+import 'package:scrapper/Services/GeoLocatorService/GeoLocator02.dart';
 
 import '../../Models/Orders/Order01.dart';
-import '../GeoLocatorService/GeoLocator01.dart';
 import '../OSRMServices/OSRMService01.dart';
 
 class Order01Service02 extends ValueNotifier<List<Order01>> {
@@ -45,7 +45,7 @@ class Order01Service02 extends ValueNotifier<List<Order01>> {
         });
 
     /// Listen to location updates
-    GeoLocator01().addListener(_onLocationUpdate);
+    GeoLocator02().addListener(_onLocationUpdate);
   }
 
   void _onLocationUpdate() {
@@ -58,7 +58,7 @@ class Order01Service02 extends ValueNotifier<List<Order01>> {
 
   /// Calculates the distance from curr to destination
   Future<void> _attachDistances2(List<Order01> orders) async {
-    final current = GeoLocator01().getCurrLatLng();
+    final current = GeoLocator02().getCurrLatLng();
     if (current == null) return;
 
     final destinations = orders.map((o) => o.address.latLng).toList();
@@ -73,7 +73,7 @@ class Order01Service02 extends ValueNotifier<List<Order01>> {
   /// stop listener
   void stop() {
     _orderSub?.cancel();
-    GeoLocator01().removeListener(_onLocationUpdate);
+    GeoLocator02().removeListener(_onLocationUpdate);
     _orderSub = null;
     _locSub = null;
     value = [];

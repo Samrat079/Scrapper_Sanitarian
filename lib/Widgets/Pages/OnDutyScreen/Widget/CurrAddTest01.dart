@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:scrapper/Services/GeoLocatorService/GeoLocator01.dart';
+import 'package:scrapper/Services/GeoLocatorService/GeoLocator02.dart';
 import 'package:scrapper/Services/NominatimServices/NominatimServices01.dart';
 
 import '../../../../theme/theme_extensions.dart';
@@ -13,7 +13,7 @@ class CurrAddTest01 extends StatelessWidget {
   Widget build(BuildContext context) => SizedBox(
     width: MediaQuery.of(context).size.width * 0.3,
     child: ValueListenableBuilder(
-      valueListenable: GeoLocator01(),
+      valueListenable: GeoLocator02(),
       builder: (context, position, _) {
         // 🚫 Location not available
         if (position == null) {
@@ -34,7 +34,7 @@ class CurrAddTest01 extends StatelessWidget {
 
         return FutureBuilder(
           future: NominatimServices01().searchByLatLng(
-            LatLng(position.latitude, position.longitude),
+            LatLng(position.latitude ?? 0, position.longitude ?? 0),
           ),
           builder: (context, snapshot) {
             final lat = position.latitude;
@@ -86,7 +86,7 @@ class CurrAddTest01 extends StatelessWidget {
             if (!snapshot.hasData ||
                 snapshot.data?.name == null ||
                 snapshot.data!.name!.trim().isEmpty) {
-              text = "${lat.toStringAsFixed(2)}, ${lng.toStringAsFixed(2)}";
+              text = "${lat?.toStringAsFixed(2)}, ${lng?.toStringAsFixed(2)}";
             } else {
               text = snapshot.data!.name!;
             }

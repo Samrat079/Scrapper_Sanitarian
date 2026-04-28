@@ -4,13 +4,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:scrapper/Models/AppUser/AppUser02.dart';
 import 'package:scrapper/Models/Sanitarian/Sanitarian01.dart';
-import 'package:scrapper/Services/OrderServices/CurrOrderService01.dart';
+import 'package:scrapper/Services/GeoLocatorService/GeoLocator02.dart';
+import 'package:scrapper/Services/OrderServices/CurrOrderService02.dart';
 import 'package:scrapper/Services/OrderServices/Order01Service02.dart';
-
-import '../GeoLocatorService/GeoLocator01.dart';
 
 class AppUserService02 extends ValueNotifier<AppUser02> {
   /// is a singleton but only for having the current value
@@ -45,7 +43,7 @@ class AppUserService02 extends ValueNotifier<AppUser02> {
 
   /// init
   Future<void> init() async {
-    await GeoLocator01().init();
+    await GeoLocator02().init();
     _auth.authStateChanges().listen((user) async {
       _authUser = user;
 
@@ -62,8 +60,8 @@ class AppUserService02 extends ValueNotifier<AppUser02> {
       /// listeners
       if (isLoggedIn) {
         Order01Service02().init();
-        CurrOrderService01().init();
-        GeoLocator01().updateCurrLocation(user.uid);
+        CurrOrderService02().init();
+        GeoLocator02().updateCurrLocation(user.uid);
       }
     });
   }
@@ -113,8 +111,8 @@ class AppUserService02 extends ValueNotifier<AppUser02> {
 
     value = current;
     Order01Service02().init();
-    CurrOrderService01().init();
-    GeoLocator01().updateCurrLocation(user.uid);
+    CurrOrderService02().init();
+    GeoLocator02().updateCurrLocation(user.uid);
     return current;
   }
 
@@ -137,7 +135,7 @@ class AppUserService02 extends ValueNotifier<AppUser02> {
   Future<void> logout() async {
     /// Needs before or else they will be reinitialized
     Order01Service02().stop();
-    CurrOrderService01().stop();
+    CurrOrderService02().stop();
 
     /// This will call the reinitialise init
     await _auth.signOut();

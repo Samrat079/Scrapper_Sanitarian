@@ -27,7 +27,7 @@ class GeoLocator02 extends ValueNotifier<LocationData?> {
     /// Configure settings
     await _location.changeSettings(
       accuracy: LocationAccuracy.high,
-      interval: 1000, // ms
+      interval: 1000,
       distanceFilter: 5,
     );
 
@@ -45,7 +45,7 @@ class GeoLocator02 extends ValueNotifier<LocationData?> {
 
     locationHeadingStream = stream.map(
       (data) => LocationMarkerHeading(
-        heading: ((data.heading ?? 0) + 180) * (3.1415926535 / 180),
+        heading: ((data.heading ?? 0) + 180) * (pi / 180),
         accuracy: data.accuracy ?? 0,
       ),
     );
@@ -57,7 +57,7 @@ class GeoLocator02 extends ValueNotifier<LocationData?> {
     bool serviceEnabled = await _location.serviceEnabled();
 
     if (!serviceEnabled) {
-      serviceEnabled = await _location.requestService(); // 👈 popup
+      serviceEnabled = await _location.requestService();
       if (!serviceEnabled) return false;
     }
 

@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:scrapper/Services/OrderServices/CurrOrderService01.dart';
+import 'package:scrapper/Services/OrderServices/CurrOrderService02.dart';
 
 import '../CurrOrderScreen/CurrOrderScreen02.dart';
 import '../OnDutyScreen/OnDutyScreen01.dart';
@@ -10,7 +10,7 @@ class HomeScreen01 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: CurrOrderService01(),
+      valueListenable: CurrOrderService02(),
       builder: (context, order, _) {
         if (order == null) return OnDutyScreen01();
         return CurrOrderScreen02();

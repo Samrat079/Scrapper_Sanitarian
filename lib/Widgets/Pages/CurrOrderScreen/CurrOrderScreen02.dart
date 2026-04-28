@@ -7,10 +7,8 @@ import 'package:flutter_map_animations/flutter_map_animations.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:scrapper/Services/GeoLocatorService/GeoLocator01.dart';
 import 'package:scrapper/Services/MapLauncher/MapLauncher.dart';
 import 'package:scrapper/Services/OSRMServices/OSRMService01.dart';
-import 'package:scrapper/Services/OrderServices/CurrOrderService01.dart';
 import 'package:scrapper/Widgets/Custome/CenterColumn/CenterColumn04.dart';
 import 'package:scrapper/Widgets/Custome/Drawers/Drawer01.dart';
 import 'package:scrapper/Widgets/Custome/Intl/PriceText01.dart';
@@ -18,6 +16,8 @@ import 'package:scrapper/theme/theme_extensions.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 import '../../../../Models/RouteResponse/RouteResponse.dart';
+import '../../../Services/GeoLocatorService/GeoLocator02.dart';
+import '../../../Services/OrderServices/CurrOrderService02.dart';
 import 'Widgets/CurrOrderBottomSheet01.dart';
 import 'Widgets/CurrOrderMap01.dart';
 
@@ -47,24 +47,28 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02>
     cancelPreviousAnimations: true,
   );
 
-  void updateCamera() => GeoLocator01().addListener(() {
-    final loc = GeoLocator01().value;
+  void updateCamera() => GeoLocator02().addListener(() {
+    final loc = GeoLocator02().value;
     if (loc == null) return;
 
-    final latLng = LatLng(loc.latitude, loc.longitude);
+    final latLng = LatLng(loc.latitude ?? 0, loc.longitude ?? 0);
 
     _animatedMapController.animateTo(
       dest: latLng,
       zoom: 18,
-      rotation: 360 - loc.heading,
-      offset: Offset(0, 200)
+
+      /// All other methods of normalising has
+      /// failed
+      rotation: 360 - (loc.heading ?? 0),
+      duration: Duration(seconds: 1),
+      curve: Curves.easeInOut,
     );
   });
 
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: CurrOrderService01(),
+      valueListenable: CurrOrderService02(),
       builder: (context, order, _) {
         if (order == null) {
           return Scaffold(
