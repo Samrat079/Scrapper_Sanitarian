@@ -55,6 +55,7 @@ dependencies:
   sliding_up_panel: ^2.0.0+1
   duration: ^4.0.3
   map_launcher: ^4.5.0
+  location: ^8.0.1
 
 dev_dependencies:
   flutter_test:

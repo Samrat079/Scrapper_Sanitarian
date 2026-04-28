@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:location/location.dart' hide LocationAccuracy;
 import 'package:nominatim_flutter/model/response/nominatim_response.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:scrapper/Services/AppUserServices/AppUserService02.dart';
@@ -30,7 +31,8 @@ class GeoLocator01 extends ValueNotifier<Position?> {
   /// Init calls the listeners
   Future<void> init() async {
     /// For checking permissions
-    await checkPermission();
+    // await checkPermission();
+    await checkPermission02();
 
     /// Keep this under 10 as we are handling
     /// api throttling from maps
@@ -63,14 +65,11 @@ class GeoLocator01 extends ValueNotifier<Position?> {
 
     /// This updates the valueNotifier
     stream.listen((pos) => value = pos);
-
-    /// Service stream
-    // serviceStatusStream = Geolocator.getServiceStatusStream().listen(onData);
   }
 
   void updateCurrLocation(String uid) {
     final stream = Geolocator.getPositionStream(
-      locationSettings: const LocationSettings(
+      locationSettings: LocationSettings(
         distanceFilter: 1000,
         accuracy: LocationAccuracy.high,
       ),
@@ -95,25 +94,51 @@ class GeoLocator01 extends ValueNotifier<Position?> {
   }
 
   /// Function to check permissions called on init
-  Future<void> checkPermission() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      Geolocator.openLocationSettings();
-      return Future.error('Location services are disabled.');
-    }
-    permission = await Geolocator.checkPermission();
+  // Future<void> checkPermission() async {
+  //   bool serviceEnabled;
+  //   LocationPermission permission;
+  //
+  //   permission = await Geolocator.checkPermission();
+  //   if (permission == LocationPermission.denied) {
+  //     permission = await Geolocator.requestPermission();
+  //     if (permission == LocationPermission.denied) {
+  //       return Future.error('Location permissions are denied');
+  //     }
+  //   }
+  //   if (permission == LocationPermission.deniedForever) {
+  //     return Future.error(
+  //       'Location permissions are permanently denied, cannot request.',
+  //     );
+  //   }
+  //   serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  //   if (!serviceEnabled) {
+  //     Geolocator.openLocationSettings();
+  //     return Future.error('Location services are disabled.');
+  //   }
+  // }
+
+  Future<bool> checkPermission02() async {
+    var permission = await Geolocator.checkPermission();
+
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
-      }
+      if (permission == LocationPermission.denied) return false;
     }
+
     if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-        'Location permissions are permanently denied, cannot request.',
-      );
+      await Geolocator.openAppSettings();
+      return false;
     }
+
+    final location = Location();
+    bool serviceEnabled = await location.serviceEnabled();
+
+    if (!serviceEnabled) {
+      /// This shows the native location popup
+      serviceEnabled = await location.requestService();
+      if (!serviceEnabled) return false;
+    }
+
+    return true;
   }
 }

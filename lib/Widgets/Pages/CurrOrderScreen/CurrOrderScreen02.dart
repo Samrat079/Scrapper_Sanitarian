@@ -55,8 +55,9 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02>
 
     _animatedMapController.animateTo(
       dest: latLng,
-      zoom: 16,
+      zoom: 18,
       rotation: 360 - loc.heading,
+      offset: Offset(0, 200)
     );
   });
 
@@ -79,17 +80,18 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02>
         return Scaffold(
           key: _scaffoldKey,
           extendBodyBehindAppBar: true,
-          appBar: AppBar(
-            backgroundColor: Colors.transparent,
-            surfaceTintColor: Colors.transparent,
-            leading: IconButton.filled(
-              onPressed: () => _scaffoldKey.currentState!.openDrawer(),
-              icon: Icon(Icons.menu_outlined),
-              style: IconButton.styleFrom(
-                backgroundColor: context.colorScheme.surface,
-              ),
-            ),
+
+          /// The appbar as if a floating button
+          /// opens the drawer but needs a scaffold key
+          floatingActionButton: FloatingActionButton(
+            onPressed: () => _scaffoldKey.currentState!.openDrawer(),
+            backgroundColor: context.colorScheme.surface,
+            foregroundColor: context.colorScheme.onSurface,
+            child: Icon(Icons.menu_rounded),
           ),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.miniStartTop,
+
           drawer: Drawer01(),
 
           body: SlidingUpPanel(
@@ -102,7 +104,9 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02>
 
             /// Bottom sheet and its options
             parallaxEnabled: true,
-            borderRadius: BorderRadius.vertical(top: context.radiusMD.topLeft),
+            backdropTapClosesPanel: true,
+            parallaxOffset: 0.3,
+            borderRadius: BorderRadius.vertical(top: context.radiusXL.topLeft),
             color: context.colorScheme.surface,
             panelBuilder: (ScrollController controller) =>
                 OrderAcceptBottomSheet01(order: order, controller: controller),

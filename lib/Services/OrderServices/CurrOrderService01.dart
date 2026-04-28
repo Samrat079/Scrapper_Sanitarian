@@ -35,7 +35,6 @@ class CurrOrderService01 extends ValueNotifier<Order01?> {
   /// Timer for debouncing firestore update
   Timer? _firestoreTimer;
 
-
   void init() {
     _currOrderSub?.cancel();
 
@@ -97,9 +96,11 @@ class CurrOrderService01 extends ValueNotifier<Order01?> {
     }
 
     /// If close to route → reuse
-    if (minDistance < 20) {
+    if (minDistance < 50) {
       order.routesRes.coordinates = coords.sublist(closestIndex);
-      order.routesRes.distance = Path.from(order.routesRes.coordinates).distance;
+      order.routesRes.distance = Path.from(
+        order.routesRes.coordinates,
+      ).distance;
       return false;
     }
 
@@ -108,11 +109,11 @@ class CurrOrderService01 extends ValueNotifier<Order01?> {
     return true;
   }
 
-
   void _updateFirestoreLocation(LatLng current) {
     _firestoreTimer?.cancel();
 
-    _firestoreTimer = Timer(const Duration(seconds: 15), () {
+    _firestoreTimer = Timer(const Duration(seconds: 30), () {
+      print("Updating firestore");
       _ref.doc(value?.uid).update({
         'sanitarian.currLocation': GeoPoint(
           current.latitude,
