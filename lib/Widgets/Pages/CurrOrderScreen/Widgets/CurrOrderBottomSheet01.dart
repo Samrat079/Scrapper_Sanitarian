@@ -22,7 +22,7 @@ class OrderAcceptBottomSheet01 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CenterColumn04(
-      padding: context.paddingSM,
+      padding: context.paddingMD,
       scrollController: controller,
       children: [
         /// bottom sheet header
