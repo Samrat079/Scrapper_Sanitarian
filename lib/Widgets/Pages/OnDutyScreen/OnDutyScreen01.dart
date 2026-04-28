@@ -16,7 +16,7 @@ class OnDutyScreen01 extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         actionsPadding: context.paddingMD,
-        // actions: [CurrAddTest01()],
+        actions: [CurrAddTest01()],
       ),
       body: CenterColumn04(
         centerVertically: true,
@@ -31,9 +31,6 @@ class OnDutyScreen01 extends StatelessWidget {
             text3: 'Go on duty now!!!',
             highlight: context.colorScheme.primary,
           ),
-          context.gapMD,
-
-          LocationCard01(),
           context.gapMD,
 
           ElevatedButton(

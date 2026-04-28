@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
@@ -23,25 +25,12 @@ class GeoLocator01 extends ValueNotifier<Position?> {
   late final Stream<Position> positionStream;
   late final Stream<LocationMarkerPosition> locationPositionStream;
   late final Stream<LocationMarkerHeading> locationHeadingStream;
-  late final Stream<String> locationLabelStream;
-  late final Stream<ServiceStatus> serviceStatusStream;
-  late final Stream<LocationPermission> permissionStream;
+  late final StreamSubscription<ServiceStatus> serviceStatusStream;
 
   /// Init calls the listeners
   Future<void> init() async {
     /// For checking permissions
     await checkPermission();
-    serviceStatusStream = Geolocator.getServiceStatusStream()
-        .startWith(
-          await Geolocator.isLocationServiceEnabled()
-              ? ServiceStatus.enabled
-              : ServiceStatus.disabled,
-        )
-        .shareReplay(maxSize: 1);
-
-    permissionStream = Stream.fromFuture(
-      Geolocator.checkPermission(),
-    ).asBroadcastStream().shareReplay(maxSize: 1);
 
     /// Keep this under 10 as we are handling
     /// api throttling from maps
@@ -75,43 +64,8 @@ class GeoLocator01 extends ValueNotifier<Position?> {
     /// This updates the valueNotifier
     stream.listen((pos) => value = pos);
 
-    /// THis is a stream for the current location name stream
-    /// consider switching to nominatim response as it returns that
-    /// or make a customer place class
-
-    locationLabelStream = positionStream
-        .switchMap((pos) async* {
-          // GPS check
-          if (!await Geolocator.isLocationServiceEnabled()) {
-            yield "GPS is turned OFF";
-            return;
-          }
-
-          // Permission check
-          var permission = await Geolocator.checkPermission();
-
-          if (permission == LocationPermission.denied) {
-            yield "Location permission denied";
-            return;
-          }
-
-          if (permission == LocationPermission.deniedForever) {
-            yield "Permission permanently denied";
-            return;
-          }
-
-          yield "Fetching place...";
-
-          try {
-            final place = await NominatimServices01().searchByLatLng(
-              LatLng(pos.latitude, pos.longitude),
-            );
-            yield place.name ?? "Unknown location";
-          } catch (_) {
-            yield "Error fetching location";
-          }
-        })
-        .shareReplay(maxSize: 1);
+    /// Service stream
+    // serviceStatusStream = Geolocator.getServiceStatusStream().listen(onData);
   }
 
   void updateCurrLocation(String uid) {
