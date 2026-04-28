@@ -64,7 +64,7 @@ class CurrOrderMap01 extends StatelessWidget {
               Polyline(
                 points: order.routesRes.coordinates,
                 strokeWidth: 4,
-                color: context.colorScheme.surface,
+                color: Colors.black,
               ),
             ],
           ),

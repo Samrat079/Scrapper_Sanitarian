@@ -67,6 +67,11 @@ class ProfileScreen01 extends StatelessWidget {
                     title: const Text('Phone number'),
                     subtitle: Text(sanitarian.phoneNumber),
                   ),
+                  // ListTile(
+                  //   leading: const Icon(Icons.perm_identity),
+                  //   title: const Text('Uid'),
+                  //   subtitle: Text(sanitarian.uid),
+                  // ),
                   ListTile(
                     leading: const Icon(Icons.email_outlined),
                     title: const Text('Email'),
