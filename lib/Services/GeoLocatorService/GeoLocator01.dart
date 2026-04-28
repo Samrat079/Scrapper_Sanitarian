@@ -24,10 +24,24 @@ class GeoLocator01 extends ValueNotifier<Position?> {
   late final Stream<LocationMarkerPosition> locationPositionStream;
   late final Stream<LocationMarkerHeading> locationHeadingStream;
   late final Stream<String> locationLabelStream;
+  late final Stream<ServiceStatus> serviceStatusStream;
+  late final Stream<LocationPermission> permissionStream;
 
   /// Init calls the listeners
   Future<void> init() async {
+    /// For checking permissions
     await checkPermission();
+    serviceStatusStream = Geolocator.getServiceStatusStream()
+        .startWith(
+          await Geolocator.isLocationServiceEnabled()
+              ? ServiceStatus.enabled
+              : ServiceStatus.disabled,
+        )
+        .shareReplay(maxSize: 1);
+
+    permissionStream = Stream.fromFuture(
+      Geolocator.checkPermission(),
+    ).asBroadcastStream().shareReplay(maxSize: 1);
 
     /// Keep this under 10 as we are handling
     /// api throttling from maps
@@ -61,6 +75,10 @@ class GeoLocator01 extends ValueNotifier<Position?> {
     /// This updates the valueNotifier
     stream.listen((pos) => value = pos);
 
+    /// THis is a stream for the current location name stream
+    /// consider switching to nominatim response as it returns that
+    /// or make a customer place class
+
     locationLabelStream = positionStream
         .switchMap((pos) async* {
           // GPS check
@@ -82,24 +100,13 @@ class GeoLocator01 extends ValueNotifier<Position?> {
             return;
           }
 
-          // If position is null (shouldn't happen but safe)
-          if (pos == null) {
-            yield "Fetching location...";
-            return;
-          }
-
           yield "Fetching place...";
 
           try {
             final place = await NominatimServices01().searchByLatLng(
               LatLng(pos.latitude, pos.longitude),
             );
-
-            if (place == null) {
-              yield "Unable to find location";
-            } else {
-              yield place.name ?? "Unknown location";
-            }
+            yield place.name ?? "Unknown location";
           } catch (_) {
             yield "Error fetching location";
           }
