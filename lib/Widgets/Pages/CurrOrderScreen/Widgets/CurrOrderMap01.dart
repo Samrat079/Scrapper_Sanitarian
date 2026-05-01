@@ -11,13 +11,14 @@ import '../../../../../theme/theme_extensions.dart';
 class CurrOrderMap01 extends StatelessWidget {
   final Order01 order;
   final MapController _mapController;
-  final VoidCallback onMapReady;
+  final VoidCallback onMapReady, onGesture;
 
   const CurrOrderMap01({
     super.key,
     required this.order,
     required MapController mapController,
     required this.onMapReady,
+    required this.onGesture,
   }) : _mapController = mapController;
 
   @override
@@ -30,6 +31,9 @@ class CurrOrderMap01 extends StatelessWidget {
         onMapReady: onMapReady,
         initialCenter: GeoLocator02().getCurrLatLng() ?? LatLng(0, 0),
         initialZoom: 16,
+        onPositionChanged: (position, hasGesture) {
+          if (hasGesture) onGesture();
+        }
       ),
       children: [
         /// The tile

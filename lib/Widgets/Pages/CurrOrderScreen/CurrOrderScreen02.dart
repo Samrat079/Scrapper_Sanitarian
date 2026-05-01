@@ -47,9 +47,11 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02>
     cancelPreviousAnimations: true,
   );
 
+  bool recentered = true;
+
   void updateCamera() => GeoLocator02().addListener(() {
     final loc = GeoLocator02().value;
-    if (loc == null) return;
+    if (loc == null || !recentered) return;
 
     final latLng = LatLng(loc.latitude ?? 0, loc.longitude ?? 0);
     final double rotation = 360 - (loc.heading ?? 0);
@@ -97,9 +99,12 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02>
               ),
               context.gapMD,
               FloatingActionButton(
-                onPressed: () => _scaffoldKey.currentState!.openDrawer(),
+                /// this on pressed might call on build
+                onPressed: () => setState(() => recentered = true),
                 backgroundColor: context.colorScheme.surface,
-                foregroundColor: context.colorScheme.onSurface,
+                foregroundColor: recentered
+                    ? context.colorScheme.primary
+                    : context.colorScheme.onSurface,
                 child: Icon(Icons.route_outlined),
               ),
             ],
@@ -115,6 +120,7 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02>
               order: order,
               mapController: _animatedMapController.mapController,
               onMapReady: updateCamera,
+              onGesture: () => setState(() => recentered = false),
             ),
 
             /// Bottom sheet and its options
