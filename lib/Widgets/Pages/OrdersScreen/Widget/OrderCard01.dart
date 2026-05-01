@@ -24,6 +24,8 @@ class OrderCard01 extends StatelessWidget {
     padding: context.paddingMD,
     children: [
       PriceText01(price: data.price),
+
+      /// Distance and time
       SizedBox(
         height: 32,
         child: Row(
@@ -32,7 +34,8 @@ class OrderCard01 extends StatelessWidget {
             VerticalDivider(),
             Text(
               data.routesRes.duration.pretty(
-                abbreviated: true,
+                maxUnits: 2,
+                abbreviated: false,
                 tersity: DurationTersity.minute,
               ),
             ),

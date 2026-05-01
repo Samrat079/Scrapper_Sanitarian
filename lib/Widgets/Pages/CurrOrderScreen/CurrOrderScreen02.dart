@@ -12,6 +12,7 @@ import 'package:scrapper/Services/OSRMServices/OSRMService01.dart';
 import 'package:scrapper/Widgets/Custome/CenterColumn/CenterColumn04.dart';
 import 'package:scrapper/Widgets/Custome/Drawers/Drawer01.dart';
 import 'package:scrapper/Widgets/Custome/Intl/PriceText01.dart';
+import 'package:scrapper/Widgets/Pages/CurrOrderScreen/Widgets/CurrOrderOtpSheet01.dart';
 import 'package:scrapper/theme/theme_extensions.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
@@ -47,7 +48,9 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02>
     cancelPreviousAnimations: true,
   );
 
+  /// Variables
   bool recentered = true;
+  final currOrder = CurrOrderService02();
 
   void updateCamera() => GeoLocator02().addListener(() {
     final loc = GeoLocator02().value;
@@ -70,7 +73,7 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02>
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: CurrOrderService02(),
+      valueListenable: currOrder,
       builder: (context, order, _) {
         if (order == null) {
           return Scaffold(
@@ -98,8 +101,9 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02>
                 child: Icon(Icons.menu_rounded),
               ),
               context.gapMD,
+
+              /// Try to simplify the state in this
               FloatingActionButton(
-                /// this on pressed might call on build
                 onPressed: () => setState(() => recentered = true),
                 backgroundColor: context.colorScheme.surface,
                 foregroundColor: recentered
@@ -129,8 +133,14 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02>
             parallaxOffset: 0.3,
             borderRadius: BorderRadius.vertical(top: context.radiusXL.topLeft),
             color: context.colorScheme.surface,
-            panelBuilder: (ScrollController controller) =>
-                OrderAcceptBottomSheet01(order: order, controller: controller),
+            // panelBuilder: (ScrollController controller) =>
+            //     OrderAcceptBottomSheet01(
+            //       order: order,
+            //       controller: controller,
+            //       onCancel: currOrder.cancelCurrOrder,
+            //     ),
+
+            panelBuilder: (controller) => CurrOrderOtpSheet01(),
           ),
         );
       },

@@ -105,7 +105,7 @@ class CurrOrderService02 extends ValueNotifier<Order01?> {
     }
 
     /// Too far → refetch
-    print("$minDistance m Refetching");
+    debugPrint("$minDistance m Refetching");
     return true;
   }
 
@@ -113,7 +113,7 @@ class CurrOrderService02 extends ValueNotifier<Order01?> {
     _firestoreTimer?.cancel();
 
     _firestoreTimer = Timer(const Duration(seconds: 30), () {
-      print("Updating firestore");
+      debugPrint("Updating firestore");
       _ref.doc(value?.uid).update({
         'sanitarian.currLocation': GeoPoint(
           current.latitude,
@@ -122,6 +122,8 @@ class CurrOrderService02 extends ValueNotifier<Order01?> {
       });
     });
   }
+
+  bool verifyOtp(int otp) => value?.otp == otp;
 
   Future<void> cancelCurrOrder() async {
     final id = value?.uid;

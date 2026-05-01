@@ -13,13 +13,11 @@ import 'package:scrapper/Services/OrderServices/Order01Service02.dart';
 class AppUserService02 extends ValueNotifier<AppUser02> {
   /// is a singleton but only for having the current value
   static final AppUserService02 _instance = AppUserService02._internal();
-
   AppUserService02._internal() : super(AppUser02(auth: null, sanitarian: null));
-
   factory AppUserService02() => _instance;
 
+  /// auth and sanitarian listener
   final FirebaseAuth _auth = FirebaseAuth.instance;
-
   final CollectionReference<Sanitarian01> _users = FirebaseFirestore.instance
       .collection('sanitarians')
       .withConverter<Sanitarian01>(
@@ -27,15 +25,14 @@ class AppUserService02 extends ValueNotifier<AppUser02> {
         toFirestore: (Sanitarian01 c, _) => c.toJson(),
       );
 
+  /// Variables
   String? _verificationId;
-
   User? _authUser;
   Sanitarian01? _sanitarian;
 
+  /// Getter
   AppUser02 get current => AppUser02(auth: _authUser, sanitarian: _sanitarian);
-
   bool get isLoggedIn => _authUser != null && _sanitarian != null;
-
   bool get exists => current.exists;
 
   /// Position stream subscription
@@ -89,7 +86,7 @@ class AppUserService02 extends ValueNotifier<AppUser02> {
     return completer.future;
   }
 
-  /// 🔐 Verify OTP
+  ///  Verify OTP
   Future<AppUser02> verifyOtp(String otp) async {
     final credential = PhoneAuthProvider.credential(
       verificationId: _verificationId!,
@@ -112,6 +109,7 @@ class AppUserService02 extends ValueNotifier<AppUser02> {
     value = current;
     Order01Service02().init();
     CurrOrderService02().init();
+    GeoLocator02().init();
     GeoLocator02().updateCurrLocation(user.uid);
     return current;
   }
@@ -131,11 +129,12 @@ class AppUserService02 extends ValueNotifier<AppUser02> {
     return doc.data()!;
   }
 
-  /// 🚪 Logout
+  ///  Logout
   Future<void> logout() async {
     /// Needs before or else they will be reinitialized
     Order01Service02().stop();
     CurrOrderService02().stop();
+    GeoLocator02().dispose();
 
     /// This will call the reinitialise init
     await _auth.signOut();
