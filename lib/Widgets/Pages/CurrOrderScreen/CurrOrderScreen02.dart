@@ -52,18 +52,18 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02>
     if (loc == null) return;
 
     final latLng = LatLng(loc.latitude ?? 0, loc.longitude ?? 0);
+    final double rotation = 360 - (loc.heading ?? 0);
+    final double zoom = 18;
 
-    _animatedMapController.animateTo(
-      dest: latLng,
-      zoom: 18,
-
-      /// All other methods of normalising has
-      /// failed
-      rotation: 360 - (loc.heading ?? 0),
-      duration: Duration(seconds: 1),
-      curve: Curves.easeInOut,
-    );
+    animateTo(_animatedMapController, latLng, zoom, rotation);
   });
+
+  void animateTo(
+    AnimatedMapController controller,
+    LatLng destination,
+    double zoom,
+    double rotation,
+  ) => controller.animateTo(dest: destination, zoom: zoom, rotation: rotation);
 
   @override
   Widget build(BuildContext context) {
@@ -87,11 +87,22 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02>
 
           /// The appbar as if a floating button
           /// opens the drawer but needs a scaffold key
-          floatingActionButton: FloatingActionButton(
-            onPressed: () => _scaffoldKey.currentState!.openDrawer(),
-            backgroundColor: context.colorScheme.surface,
-            foregroundColor: context.colorScheme.onSurface,
-            child: Icon(Icons.menu_rounded),
+          floatingActionButton: Column(
+            children: [
+              FloatingActionButton(
+                onPressed: () => _scaffoldKey.currentState!.openDrawer(),
+                backgroundColor: context.colorScheme.surface,
+                foregroundColor: context.colorScheme.onSurface,
+                child: Icon(Icons.menu_rounded),
+              ),
+              context.gapMD,
+              FloatingActionButton(
+                onPressed: () => _scaffoldKey.currentState!.openDrawer(),
+                backgroundColor: context.colorScheme.surface,
+                foregroundColor: context.colorScheme.onSurface,
+                child: Icon(Icons.route_outlined),
+              ),
+            ],
           ),
           floatingActionButtonLocation:
               FloatingActionButtonLocation.miniStartTop,
