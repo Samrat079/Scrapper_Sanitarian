@@ -10,16 +10,17 @@ class OrdersScreen01 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final orderService = Order01Service02();
     void onAccept(String uid) =>
-        Order01Service02().acceptById(uid).then((_) => Navigator.pop(context));
+        orderService.acceptById(uid).then((_) => Navigator.pop(context));
 
-    void onReject(int index) => Order01Service02().rejectById(index);
-    void onDelete(String uid) => Order01Service02().deleteById(uid);
+    void onReject(int index) => orderService.rejectById(index);
+    void onDelete(String uid) => orderService.deleteById(uid);
 
     return Scaffold(
       appBar: AppBar(),
       body: ValueListenableBuilder<List<Order01>>(
-        valueListenable: Order01Service02(),
+        valueListenable: orderService,
         builder: (context, orders, _) {
           /// This is the empty state
           if (orders.isEmpty) {

@@ -56,7 +56,7 @@ class AppUserService02 extends ValueNotifier<AppUser02> {
 
       /// listeners
       if (isLoggedIn) {
-        Order01Service02().init();
+        // Order01Service02().init();
         CurrOrderService02().init();
         GeoLocator02().updateCurrLocation(user.uid);
       }
@@ -107,7 +107,7 @@ class AppUserService02 extends ValueNotifier<AppUser02> {
     }
 
     value = current;
-    Order01Service02().init();
+    // Order01Service02().init();
     CurrOrderService02().init();
     GeoLocator02().init();
     GeoLocator02().updateCurrLocation(user.uid);

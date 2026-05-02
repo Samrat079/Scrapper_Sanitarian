@@ -9,15 +9,17 @@ import '../../Models/Orders/Order01.dart';
 import '../OSRMServices/OSRMService01.dart';
 
 class Order01Service02 extends ValueNotifier<List<Order01>> {
-  static final Order01Service02 _instance = Order01Service02._internal();
+  // static final Order01Service02 _instance = Order01Service02._internal();
+  // Order01Service02._internal() : super([]);
 
-  Order01Service02._internal() : super([]);
+  Order01Service02() : super([]) {
+    _init();
+  }
 
-  factory Order01Service02() => _instance;
+  // factory Order01Service02() => _instance;
 
   /// Subscriptions
   StreamSubscription<QuerySnapshot<Order01>>? _orderSub;
-  StreamSubscription? _locSub;
 
   List<Order01> _cachedOrders = [];
 
@@ -29,7 +31,7 @@ class Order01Service02 extends ValueNotifier<List<Order01>> {
       );
 
   /// init
-  void init() {
+  void _init() {
     if (_orderSub != null) return;
 
     /// Listen to orders
@@ -74,7 +76,6 @@ class Order01Service02 extends ValueNotifier<List<Order01>> {
     _orderSub?.cancel();
     GeoLocator02().removeListener(_onLocationUpdate);
     _orderSub = null;
-    _locSub = null;
     value = [];
   }
 

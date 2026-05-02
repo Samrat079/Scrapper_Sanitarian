@@ -12,12 +12,11 @@ class OrderService04 extends ValueNotifier<Order01?> {
   /// Singleton
   OrderService04._internal() : super(null);
   static final OrderService04 _instance = OrderService04._internal();
-
   factory OrderService04() => _instance;
 
   /// Sub will be used for the listener
-  late final StreamSubscription? _sub;
-  late final DocumentReference<Order01>? _docRef;
+  StreamSubscription? _sub;
+  DocumentReference<Order01>? _docRef;
 
   /// Timer for debouncing firestore update
   Timer? _firestoreTimer;
@@ -117,7 +116,7 @@ class OrderService04 extends ValueNotifier<Order01?> {
     await _docRef?.update({
       'status': Order01Status.requested.name,
       'sanitarian': null,
-    });
+    }).then((_) => stop());
   }
 
   Future<void> completeOrder() async {
@@ -130,5 +129,6 @@ class OrderService04 extends ValueNotifier<Order01?> {
     _sub = null;
     _docRef = null;
     value = null;
+    notifyListeners();
   }
 }
