@@ -12,14 +12,15 @@ import 'package:scrapper/Services/OSRMServices/OSRMService01.dart';
 import 'package:scrapper/Widgets/Custome/CenterColumn/CenterColumn04.dart';
 import 'package:scrapper/Widgets/Custome/Drawers/Drawer01.dart';
 import 'package:scrapper/Widgets/Custome/Intl/PriceText01.dart';
-import 'package:scrapper/Widgets/Pages/CurrOrderScreen/Widgets/CurrOrderOtpSheet01.dart';
+import 'package:scrapper/Widgets/Pages/CurrOrderScreen/Widgets/OrderCompleteSheet01.dart';
+import 'package:scrapper/Widgets/Pages/CurrOrderScreen/Widgets/OrderOtpSheet01.dart';
 import 'package:scrapper/theme/theme_extensions.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 import '../../../../Models/RouteResponse/RouteResponse.dart';
 import '../../../Services/GeoLocatorService/GeoLocator02.dart';
 import '../../../Services/OrderServices/CurrOrderService02.dart';
-import 'Widgets/CurrOrderBottomSheet01.dart';
+import 'Widgets/CurrOrderSheet01.dart';
 import 'Widgets/CurrOrderMap01.dart';
 
 class CurrOrderScreen02 extends StatefulWidget {
@@ -29,10 +30,9 @@ class CurrOrderScreen02 extends StatefulWidget {
   State<CurrOrderScreen02> createState() => _CurrOrderScreen02State();
 }
 
+/// was able to make this simpler check currorderservice to know more
 class _CurrOrderScreen02State extends State<CurrOrderScreen02>
     with TickerProviderStateMixin {
-  /// was able to make this simpler check currorderservice to know more
-
   /// Tile Layer
   final tileUrl = "https://mt.google.com/vt/lyrs=m&x={x}&y={y}&z={z}";
   final packageName = "com.example.scrapper_sanitarian";
@@ -51,6 +51,9 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02>
   /// Variables
   bool recentered = true;
   final currOrder = CurrOrderService02();
+
+  /// Order step
+  OrderStep orderStep = OrderStep.accept;
 
   void updateCamera() => GeoLocator02().addListener(() {
     final loc = GeoLocator02().value;
@@ -87,8 +90,11 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02>
           );
         }
         return Scaffold(
+          drawer: Drawer01(),
           key: _scaffoldKey,
           extendBodyBehindAppBar: true,
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.miniStartTop,
 
           /// The appbar as if a floating button
           /// opens the drawer but needs a scaffold key
@@ -113,10 +119,6 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02>
               ),
             ],
           ),
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.miniStartTop,
-
-          drawer: Drawer01(),
 
           body: SlidingUpPanel(
             ///  widget for the maps, needs to be stateful else flicker
@@ -133,17 +135,44 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02>
             parallaxOffset: 0.3,
             borderRadius: BorderRadius.vertical(top: context.radiusXL.topLeft),
             color: context.colorScheme.surface,
-            // panelBuilder: (ScrollController controller) =>
-            //     OrderAcceptBottomSheet01(
-            //       order: order,
-            //       controller: controller,
-            //       onCancel: currOrder.cancelCurrOrder,
-            //     ),
+            panelBuilder: (ScrollController controller) {
+              switch (orderStep) {
+                case OrderStep.accept:
+                  return OrderAcceptSheet01(
+                    order: order,
+                    controller: controller,
+                    onCancel: currOrder.cancelCurrOrder,
+                    onComplete: () => setState(() => orderStep = OrderStep.otp),
+                  );
 
-            panelBuilder: (controller) => CurrOrderOtpSheet01(),
+                case OrderStep.otp:
+                  return OrderOtpSheet01(
+                    order: order,
+                    controller: controller,
+                    onGoBack: () =>
+                        setState(() => orderStep = OrderStep.accept),
+                    onSubmit: (data) {
+                      return print(data);
+                      setState(() => orderStep = OrderStep.complete);
+                    },
+                  );
+
+                case OrderStep.complete:
+                  return OrderCompleteSheet01(
+                    order: order,
+                    controller: controller,
+                    onComplete: () {
+                      // final logic (remove order, etc.)
+                    },
+                  );
+              }
+            },
           ),
         );
       },
     );
   }
 }
+
+/// Order step enum
+enum OrderStep { accept, otp, complete }

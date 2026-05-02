@@ -8,15 +8,17 @@ import '../../../../../theme/theme_extensions.dart';
 import '../../../Custome/CenterColumn/CenterColumn04.dart';
 import '../../../Custome/Intl/PriceText01.dart';
 
-class OrderAcceptBottomSheet01 extends StatelessWidget {
+class OrderAcceptSheet01 extends StatelessWidget {
   final Order01 order;
   final ScrollController controller;
-  final VoidCallback onCancel;
+  final VoidCallback onCancel, onComplete;
 
-  const OrderAcceptBottomSheet01({
+  const OrderAcceptSheet01({
     super.key,
     required this.order,
-    required this.controller, required this.onCancel,
+    required this.controller,
+    required this.onCancel,
+    required this.onComplete,
   });
 
   @override
@@ -94,17 +96,25 @@ class OrderAcceptBottomSheet01 extends StatelessWidget {
             leading: Icon(Icons.currency_rupee_outlined),
             title: PriceText01(price: order.price),
           ),
+          context.gapMD,
 
+          ///  complete order
+          ElevatedButton.icon(
+            onPressed: onComplete,
+            label: Text("Complete order"),
+            icon: Icon(Icons.check),
+          ),
           context.gapMD,
 
           /// Cancel
-          ElevatedButton(
+          ElevatedButton.icon(
             onPressed: onCancel,
             style: ElevatedButton.styleFrom(
               backgroundColor: context.colorScheme.errorContainer,
               foregroundColor: context.colorScheme.onErrorContainer,
             ),
-            child: const Text('Cancel Order'),
+            label: const Text('Cancel Order'),
+            icon: Icon(Icons.cancel_outlined),
           ),
         ],
       ),

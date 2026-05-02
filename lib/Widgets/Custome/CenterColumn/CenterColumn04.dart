@@ -21,6 +21,9 @@ class CenterColumn04 extends StatelessWidget {
     this.padding = const EdgeInsets.all(16),
 
     this.mainAxisAlignment = MainAxisAlignment.start,
+
+    /// Better to have it stretch and ask the elements
+    /// to take care of their own alignment
     this.crossAxisAlignment = CrossAxisAlignment.stretch,
 
     this.centerVertically = false,
