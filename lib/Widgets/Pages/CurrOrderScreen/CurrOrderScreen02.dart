@@ -7,9 +7,11 @@ import 'package:flutter_map_animations/flutter_map_animations.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:scrapper/Models/Orders/Order01.dart';
 import 'package:scrapper/Services/MapLauncher/MapLauncher.dart';
 import 'package:scrapper/Services/OSRMServices/OSRMService01.dart';
 import 'package:scrapper/Services/OrderServices/Order01Service02.dart';
+import 'package:scrapper/Services/OrderServices/OrderService03.dart';
 import 'package:scrapper/Widgets/Custome/CenterColumn/CenterColumn04.dart';
 import 'package:scrapper/Widgets/Custome/Drawers/Drawer01.dart';
 import 'package:scrapper/Widgets/Custome/Intl/PriceText01.dart';
@@ -25,7 +27,9 @@ import 'Widgets/CurrOrderSheet01.dart';
 import 'Widgets/CurrOrderMap01.dart';
 
 class CurrOrderScreen02 extends StatefulWidget {
-  const CurrOrderScreen02({super.key});
+  final String orderId;
+
+  const CurrOrderScreen02({super.key, required this.orderId});
 
   @override
   State<CurrOrderScreen02> createState() => _CurrOrderScreen02State();
@@ -34,6 +38,16 @@ class CurrOrderScreen02 extends StatefulWidget {
 /// was able to make this simpler check currorderservice to know more
 class _CurrOrderScreen02State extends State<CurrOrderScreen02>
     with TickerProviderStateMixin {
+  late final OrderService03 currOrder;
+
+  /// InitState
+  @override
+  void initState() {
+    super.initState();
+    // final currOrder = CurrOrderService02();
+    currOrder = OrderService03(widget.orderId);
+  }
+
   /// Tile Layer
   final tileUrl = "https://mt.google.com/vt/lyrs=m&x={x}&y={y}&z={z}";
   final packageName = "com.example.scrapper_sanitarian";
@@ -51,7 +65,6 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02>
 
   /// Variables
   bool reCentered = true;
-  final currOrder = CurrOrderService02();
 
   /// Order step
   OrderStep orderStep = OrderStep.accept;
@@ -140,7 +153,6 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02>
               /// This is a complex switch will need
               /// to change this in future
               switch (orderStep) {
-
                 case OrderStep.accept:
                   return OrderAcceptSheet01(
                     order: order,

@@ -31,6 +31,12 @@ class OrderCompleteSheet01 extends StatelessWidget {
             style: context.textTheme.titleLarge,
           ),
           context.gapMD,
+          Text(
+            "Order status ${order.status.name}",
+            textAlign: TextAlign.center,
+            style: context.textTheme.titleLarge,
+          ),
+          context.gapMD,
           ElevatedButton.icon(
             onPressed: onComplete,
             label: Text("Done"),

@@ -13,7 +13,7 @@ class HomeScreen01 extends StatelessWidget {
       valueListenable: CurrOrderService02(),
       builder: (context, order, _) {
         if (order == null) return OnDutyScreen01();
-        return CurrOrderScreen02();
+        return CurrOrderScreen02(orderId: order.uid!);
       },
     );
   }
