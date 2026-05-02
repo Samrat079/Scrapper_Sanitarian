@@ -4,72 +4,62 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:scrapper/Models/Orders/Order01.dart';
-import 'package:scrapper/Services/AppUserServices/AppUserService02.dart';
 import 'package:scrapper/Services/GeoLocatorService/GeoLocator02.dart';
 
 import '../OSRMServices/OSRMService01.dart';
 
-class CurrOrderService02 extends ValueNotifier<Order01?> {
-  static final CurrOrderService02 _instance = CurrOrderService02._internal();
-  CurrOrderService02._internal() : super(null);
-  factory CurrOrderService02() => _instance;
+class OrderService04 extends ValueNotifier<Order01?> {
+  /// Singleton
+  OrderService04._internal() : super(null);
+  static final OrderService04 _instance = OrderService04._internal();
 
-  /// Subscriptions
-  /// For the order
-  StreamSubscription<QuerySnapshot<Order01>>? _currOrderSub;
+  factory OrderService04() => _instance;
 
-  /// For the current order
-  CollectionReference<Order01> get _ref => FirebaseFirestore.instance
-      .collection('order01')
-      .withConverter(
-        fromFirestore: Order01.fromFirestore,
-        toFirestore: (model, _) => model.toJson(),
-      );
+  /// Sub will be used for the listener
+  late final StreamSubscription? _sub;
+  late final DocumentReference<Order01>? _docRef;
 
   /// Timer for debouncing firestore update
   Timer? _firestoreTimer;
 
-  void init() {
-    _currOrderSub?.cancel();
-
-    final uid = AppUserService02().current.uid;
-    _currOrderSub = _ref
-        .where('sanitarian.uid', isEqualTo: uid)
-        .where('status', isEqualTo: Order01Status.assigned.name)
-        .limit(1)
-        .snapshots()
-        .listen((snapshot) async {
-          if (snapshot.docs.isEmpty) return value = null;
-          value = snapshot.docs.first.data();
-          await _attachDistance(value!);
-          notifyListeners();
-        });
-
+  /// initialize the class with the order id
+  void init(String orderId) {
+    if (value?.uid == orderId) return;
+    stop();
+    _docRef = FirebaseFirestore.instance
+        .collection('order01')
+        .doc(orderId)
+        .withConverter(
+          fromFirestore: Order01.fromFirestore,
+          toFirestore: (model, _) => model.toJson(),
+        );
+    _sub = _docRef?.snapshots().listen(_onDocUpdate);
     GeoLocator02().addListener(_onLocationUpdate);
   }
 
   void _onLocationUpdate() {
     final curr = value;
     if (curr == null) return;
+    _processOrder(curr);
+  }
 
-    _attachDistance(curr).then((_) {
-      value = curr;
+  Future<void> _onDocUpdate(DocumentSnapshot<Order01> doc) async {
+    if (!doc.exists) {
+      value = null;
       notifyListeners();
-    });
+      return;
+    }
+    await _processOrder(doc.data()!);
   }
 
   Future<void> _attachDistance(Order01 order) async {
     final current = GeoLocator02().getCurrLatLng();
     if (current == null) return;
-
     final shouldRefetch = _shouldRefetch(order, current);
-
     if (!shouldRefetch) return;
-
     await OSRMService01()
         .getRouteGeoJson(current, order.address.latLng)
         .then((data) => order.routesRes = data);
-
     _updateFirestoreLocation(current);
   }
 
@@ -103,12 +93,18 @@ class CurrOrderService02 extends ValueNotifier<Order01?> {
     return true;
   }
 
+  Future<void> _processOrder(Order01 order) async {
+    await _attachDistance(order);
+    value = order;
+    notifyListeners();
+  }
+
   void _updateFirestoreLocation(LatLng current) {
     _firestoreTimer?.cancel();
 
     _firestoreTimer = Timer(const Duration(seconds: 30), () {
       debugPrint("Updating firestore");
-      _ref.doc(value?.uid).update({
+      _docRef?.update({
         'sanitarian.currLocation': GeoPoint(
           current.latitude,
           current.longitude,
@@ -117,26 +113,22 @@ class CurrOrderService02 extends ValueNotifier<Order01?> {
     });
   }
 
-  bool verifyOtp(int otp) => value?.otp == otp;
-
   Future<void> cancelCurrOrder() async {
-    final id = value?.uid;
-    value = null;
-    await _ref.doc(id).update({
+    await _docRef?.update({
       'status': Order01Status.requested.name,
       'sanitarian': null,
     });
   }
 
   Future<void> completeOrder() async {
-    final id = value?.uid;
-    value = null;
-    await _ref.doc(id).update({'status': Order01Status.completed.name});
+    await _docRef?.update({'status': Order01Status.completed.name});
   }
 
   void stop() {
-    _currOrderSub?.cancel();
-    _currOrderSub = null;
+    GeoLocator02().removeListener(_onLocationUpdate);
+    _sub?.cancel();
+    _sub = null;
+    _docRef = null;
     value = null;
   }
 }

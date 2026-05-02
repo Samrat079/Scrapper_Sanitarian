@@ -1,28 +1,16 @@
-import 'dart:async';
 
-import 'package:duration/duration.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_animations/flutter_map_animations.dart';
-import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:scrapper/Models/Orders/Order01.dart';
-import 'package:scrapper/Services/MapLauncher/MapLauncher.dart';
-import 'package:scrapper/Services/OSRMServices/OSRMService01.dart';
-import 'package:scrapper/Services/OrderServices/Order01Service02.dart';
 import 'package:scrapper/Services/OrderServices/OrderService03.dart';
 import 'package:scrapper/Widgets/Custome/CenterColumn/CenterColumn04.dart';
 import 'package:scrapper/Widgets/Custome/Drawers/Drawer01.dart';
-import 'package:scrapper/Widgets/Custome/Intl/PriceText01.dart';
 import 'package:scrapper/Widgets/Pages/CurrOrderScreen/Widgets/OrderCompleteSheet01.dart';
 import 'package:scrapper/Widgets/Pages/CurrOrderScreen/Widgets/OrderOtpSheet01.dart';
 import 'package:scrapper/theme/theme_extensions.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-import '../../../../Models/RouteResponse/RouteResponse.dart';
 import '../../../Services/GeoLocatorService/GeoLocator02.dart';
-import '../../../Services/OrderServices/CurrOrderService02.dart';
 import 'Widgets/CurrOrderSheet01.dart';
 import 'Widgets/CurrOrderMap01.dart';
 
@@ -44,7 +32,6 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02>
   @override
   void initState() {
     super.initState();
-    // final currOrder = CurrOrderService02();
     currOrder = OrderService03(widget.orderId);
   }
 
@@ -92,10 +79,13 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02>
     return ValueListenableBuilder(
       valueListenable: currOrder,
       builder: (context, order, _) {
+
+        /// Loading state
         if (order == null) {
           return Scaffold(
             appBar: AppBar(),
             body: CenterColumn04(
+              centerVertically: true,
               children: [
                 LinearProgressIndicator(),
                 Text('Looking for the best route'),
@@ -103,6 +93,8 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02>
             ),
           );
         }
+
+        /// Loaded state
         return Scaffold(
           drawer: Drawer01(),
           key: _scaffoldKey,

@@ -3,10 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:nominatim_flutter/model/response/nominatim_response.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:scrapper/Models/Orders/Order01.dart';
-import 'package:scrapper/Services/AppUserServices/AppUserService02.dart';
 import 'package:scrapper/Services/GeoLocatorService/GeoLocator02.dart';
 
 import '../OSRMServices/OSRMService01.dart';

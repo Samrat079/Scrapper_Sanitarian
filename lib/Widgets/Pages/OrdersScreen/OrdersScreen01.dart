@@ -1,14 +1,9 @@
-import 'package:duration/duration.dart';
 import 'package:flutter/material.dart';
 import 'package:scrapper/Models/Orders/Order01.dart';
 import 'package:scrapper/Services/OrderServices/Order01Service02.dart';
-import 'package:scrapper/Widgets/Custome/CardList01/CardList01.dart';
 import 'package:scrapper/Widgets/Custome/CenterColumn/CenterColumn04.dart';
-import 'package:scrapper/Widgets/Custome/Intl/KmText01.dart';
-import 'package:scrapper/Widgets/Custome/Intl/PriceText01.dart';
 import 'package:scrapper/Widgets/Pages/OrdersScreen/Widget/OrderCard01.dart';
 import 'package:scrapper/theme/theme_extensions.dart';
-import 'package:timeago/timeago.dart' as timeago;
 
 class OrdersScreen01 extends StatelessWidget {
   const OrdersScreen01({super.key});

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scrapper/Widgets/Custome/Drawers/Drawer01.dart';
 import 'package:scrapper/Widgets/Custome/RichText/RichText01.dart';
-import 'package:scrapper/Widgets/Pages/OnDutyScreen/Widget/LocationCard01.dart';
 import 'package:scrapper/theme/theme_extensions.dart';
 
 import '../../Custome/CenterColumn/CenterColumn04.dart';
