@@ -9,6 +9,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:scrapper/Services/MapLauncher/MapLauncher.dart';
 import 'package:scrapper/Services/OSRMServices/OSRMService01.dart';
+import 'package:scrapper/Services/OrderServices/Order01Service02.dart';
 import 'package:scrapper/Widgets/Custome/CenterColumn/CenterColumn04.dart';
 import 'package:scrapper/Widgets/Custome/Drawers/Drawer01.dart';
 import 'package:scrapper/Widgets/Custome/Intl/PriceText01.dart';
@@ -49,7 +50,7 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02>
   );
 
   /// Variables
-  bool recentered = true;
+  bool reCentered = true;
   final currOrder = CurrOrderService02();
 
   /// Order step
@@ -57,7 +58,7 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02>
 
   void updateCamera() => GeoLocator02().addListener(() {
     final loc = GeoLocator02().value;
-    if (loc == null || !recentered) return;
+    if (loc == null || !reCentered) return;
 
     final latLng = LatLng(loc.latitude ?? 0, loc.longitude ?? 0);
     final double rotation = 360 - (loc.heading ?? 0);
@@ -110,9 +111,9 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02>
 
               /// Try to simplify the state in this
               FloatingActionButton(
-                onPressed: () => setState(() => recentered = true),
+                onPressed: () => setState(() => reCentered = true),
                 backgroundColor: context.colorScheme.surface,
-                foregroundColor: recentered
+                foregroundColor: reCentered
                     ? context.colorScheme.primary
                     : context.colorScheme.onSurface,
                 child: Icon(Icons.route_outlined),
@@ -126,7 +127,7 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02>
               order: order,
               mapController: _animatedMapController.mapController,
               onMapReady: updateCamera,
-              onGesture: () => setState(() => recentered = false),
+              onGesture: () => setState(() => reCentered = false),
             ),
 
             /// Bottom sheet and its options
@@ -136,7 +137,10 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02>
             borderRadius: BorderRadius.vertical(top: context.radiusXL.topLeft),
             color: context.colorScheme.surface,
             panelBuilder: (ScrollController controller) {
+              /// This is a complex switch will need
+              /// to change this in future
               switch (orderStep) {
+
                 case OrderStep.accept:
                   return OrderAcceptSheet01(
                     order: order,
@@ -151,19 +155,16 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02>
                     controller: controller,
                     onGoBack: () =>
                         setState(() => orderStep = OrderStep.accept),
-                    onSubmit: (data) {
-                      return print(data);
-                      setState(() => orderStep = OrderStep.complete);
-                    },
+                    onSubmit: (data) => currOrder.completeOrder().then(
+                      (_) => setState(() => orderStep = OrderStep.complete),
+                    ),
                   );
 
                 case OrderStep.complete:
                   return OrderCompleteSheet01(
                     order: order,
                     controller: controller,
-                    onComplete: () {
-                      // final logic (remove order, etc.)
-                    },
+                    onComplete: () {},
                   );
               }
             },

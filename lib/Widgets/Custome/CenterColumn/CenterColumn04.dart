@@ -10,6 +10,8 @@ class CenterColumn04 extends StatelessWidget {
 
   /// Behavior
   final bool centerVertically;
+  final bool centerHorizontally;
+
   final ScrollPhysics? physics;
   final ScrollController? scrollController;
 
@@ -22,11 +24,12 @@ class CenterColumn04 extends StatelessWidget {
 
     this.mainAxisAlignment = MainAxisAlignment.start,
 
-    /// Better to have it stretch and ask the elements
-    /// to take care of their own alignment
+    /// Default stretch unless overridden
     this.crossAxisAlignment = CrossAxisAlignment.stretch,
 
     this.centerVertically = false,
+    this.centerHorizontally = false,
+
     this.physics,
     this.scrollController,
   });
@@ -39,7 +42,9 @@ class CenterColumn04 extends StatelessWidget {
         mainAxisAlignment: centerVertically
             ? MainAxisAlignment.center
             : mainAxisAlignment,
-        crossAxisAlignment: crossAxisAlignment,
+        crossAxisAlignment: centerHorizontally
+            ? CrossAxisAlignment.center
+            : crossAxisAlignment,
         children: children,
       ),
     );

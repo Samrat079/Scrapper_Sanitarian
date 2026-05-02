@@ -28,116 +28,121 @@ class OrderOtpSheet01 extends StatefulWidget {
 }
 
 class _OrderOtpSheet01State extends State<OrderOtpSheet01> {
-  /// This is the form key
-  final otpKey = GlobalKey<FormBuilderState>();
+  final controller = PinInputController();
 
-  /// Loading State
+  String? errorText;
   bool isLoading = false;
 
-  /// Submit handler
-  void submitHandler() async {
+  void handleOtp(String pin) async {
+    /// Reset previous error
+    setState(() => errorText = null);
+
+    if (pin.length < 6) {
+      setError("OTP must be 6 digits");
+      return;
+    }
+
+    final otp = int.tryParse(pin);
+    if (otp == null) {
+      setError("Invalid OTP");
+      return;
+    }
+
+    if (otp != widget.order.otp) {
+      setError("OTP doesn't match");
+      return;
+    }
+
     setState(() => isLoading = true);
 
     try {
-      if (otpKey.currentState?.saveAndValidate() ?? false) {
-        final formData = otpKey.currentState!.value;
-        final otp = int.parse(formData['Otp']);
-
-        if (otp != widget.order.otp) {
-          otpKey.currentState?.fields['Otp']?.invalidate(
-            "The otp doesn't match, please try again",
-          );
-          return;
-        }
-
-        await widget.onSubmit(otp);
-      }
+      await widget.onSubmit(otp);
     } finally {
       setState(() => isLoading = false);
     }
   }
 
+  void setError(String message) {
+    controller.triggerError(); // 🔥 shake + red
+    setState(() => errorText = message);
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    /// Better to wrap the ui with the form
     return SafeArea(
-      child: FormBuilder(
-        key: otpKey,
-        child: CenterColumn04(
-          centerVertically: true,
-          scrollController: widget.controller,
-          children: [
-            Icon(Icons.lock_outline_rounded, size: 82),
-            context.gapMD,
+      child: CenterColumn04(
+        centerVertically: true,
+        centerHorizontally: true,
+        scrollController: widget.controller,
+        children: [
+          Icon(Icons.lock_outline_rounded, size: 82),
+          context.gapMD,
 
+          Text(
+            "Verify otp",
+            textAlign: TextAlign.center,
+            style: context.textTheme.headlineLarge,
+          ),
+          context.gapLG,
+
+          /// OTP field
+          MaterialPinField(
+            length: 6,
+            pinController: controller,
+            onCompleted: handleOtp,
+            theme: MaterialPinTheme(cellSize: Size(40, 46)),
+          ),
+
+          context.gapSM,
+
+          /// Error text
+          if (errorText != null)
             Text(
-              "Verify otp",
-              textAlign: TextAlign.center,
-              style: context.textTheme.headlineLarge,
-            ),
-            context.gapLG,
-
-            /// Pin filed
-            FormBuilderField(
-              name: 'Otp',
-              validator: FormBuilderValidators.minLength(6),
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              builder: (field) {
-                return Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    MaterialPinField(
-                      length: 6,
-                      errorText: field.errorText,
-                      onChanged: (otp) => field.didChange(otp),
-                      theme: MaterialPinTheme(cellSize: Size(40, 46)),
-                    ),
-                    context.gapSM,
-
-                    /// This is the error text
-                    if (field.hasError)
-                      Text(
-                        field.errorText ?? '',
-                        style: TextStyle(
-                          fontStyle: FontStyle.italic,
-                          color: context.colorScheme.error,
-                        ),
-                      ),
-                    context.gapMD,
-
-                    /// hint
-                    Text(
-                      "Please ask the customer for the otp to complete this order",
-                      style: context.textTheme.labelSmall,
-                    ),
-                    context.gapMD,
-                  ],
-                );
-              },
-            ),
-
-            /// Loading state
-            if (isLoading)
-              Column(children: [LinearProgressIndicator(), context.gapMD]),
-
-            ElevatedButton.icon(
-              onPressed: isLoading ? null : submitHandler,
-              label: Text("Submit"),
-              icon: Icon(Icons.check),
-            ),
-            context.gapMD,
-
-            ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: context.colorScheme.surfaceContainerHigh,
-                foregroundColor: context.colorScheme.onSurface,
+              errorText!,
+              style: TextStyle(
+                color: context.colorScheme.error,
+                fontStyle: FontStyle.italic,
               ),
-              onPressed: widget.onGoBack,
-              label: Text("Go back"),
-              icon: Icon(Icons.exit_to_app),
             ),
-          ],
-        ),
+
+          context.gapMD,
+
+          Text(
+            "Please ask the customer for the otp to complete this order",
+            style: context.textTheme.labelSmall,
+          ),
+          context.gapSM,
+
+          if (isLoading)
+            Column(children: [LinearProgressIndicator(), context.gapMD]),
+
+          CenterColumn04(
+            children: [
+              ElevatedButton.icon(
+                onPressed: isLoading ? null : () => handleOtp(controller.text),
+                label: Text("Submit"),
+                icon: Icon(Icons.check),
+              ),
+              context.gapMD,
+
+              ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: context.colorScheme.onSurface,
+                  backgroundColor: context.colorScheme.surfaceContainerHigh,
+                ),
+                onPressed: widget.onGoBack,
+                label: Text("Go back"),
+                icon: Icon(Icons.exit_to_app),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
