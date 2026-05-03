@@ -9,14 +9,9 @@ import '../../Models/Orders/Order01.dart';
 import '../OSRMServices/OSRMService01.dart';
 
 class Order01Service02 extends ValueNotifier<List<Order01>> {
-  // static final Order01Service02 _instance = Order01Service02._internal();
-  // Order01Service02._internal() : super([]);
-
   Order01Service02() : super([]) {
     _init();
   }
-
-  // factory Order01Service02() => _instance;
 
   /// Subscriptions
   StreamSubscription<QuerySnapshot<Order01>>? _orderSub;

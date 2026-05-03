@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_map_animations/flutter_map_animations.dart';
 import 'package:latlong2/latlong.dart';
@@ -26,8 +25,10 @@ class CurrOrderScreen02 extends StatefulWidget {
 /// was able to make this simpler check currorderservice to know more
 class _CurrOrderScreen02State extends State<CurrOrderScreen02>
     with TickerProviderStateMixin {
-
   final currOrder = OrderService03();
+
+  /// Animation controller
+  late final AnimatedMapController _animatedMapController;
 
   /// Tile Layer
   final tileUrl = "https://mt.google.com/vt/lyrs=m&x={x}&y={y}&z={z}";
@@ -35,14 +36,6 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02>
 
   /// Global key
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
-
-  /// Moved on to animation controller which improved animations
-  late final _animatedMapController = AnimatedMapController(
-    vsync: this,
-    duration: const Duration(milliseconds: 300),
-    curve: Curves.easeIn,
-    cancelPreviousAnimations: true,
-  );
 
   /// Variables
   bool reCentered = true;
@@ -53,30 +46,52 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02>
   /// Geolocator
   final geo = GeoLocator02();
 
-  void updateCamera() => geo.addListener(() {
+  // ✅ Proper listener method (no anonymous function)
+  void _onLocationUpdate() {
+    if (!mounted) return;
+
     final loc = geo.value;
     if (loc == null || !reCentered) return;
 
     final latLng = LatLng(loc.latitude ?? 0, loc.longitude ?? 0);
     final double rotation = 360 - (loc.heading ?? 0);
-    final double zoom = 18;
+    const zoom = 18.0;
 
-    animateTo(_animatedMapController, latLng, zoom, rotation);
-  });
+    _animatedMapController.animateTo(
+      dest: latLng,
+      zoom: zoom,
+      rotation: rotation,
+    );
+  }
 
-  void animateTo(
-    AnimatedMapController controller,
-    LatLng destination,
-    double zoom,
-    double rotation,
-  ) => controller.animateTo(dest: destination, zoom: zoom, rotation: rotation);
+  /// The geolocation has to be listened
+  /// and disposed or else will have problem
+  @override
+  void initState() {
+    super.initState();
+
+    _animatedMapController = AnimatedMapController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeIn,
+      cancelPreviousAnimations: true,
+    );
+
+    geo.addListener(_onLocationUpdate);
+  }
+
+  @override
+  void dispose() {
+    geo.removeListener(_onLocationUpdate);
+    _animatedMapController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: currOrder,
       builder: (context, order, _) {
-
         /// Loading state
         if (order == null) {
           return Scaffold(
@@ -128,7 +143,7 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02>
             body: CurrOrderMap01(
               order: order,
               mapController: _animatedMapController.mapController,
-              onMapReady: updateCamera,
+              onMapReady: () {},
               onGesture: () => setState(() => reCentered = false),
             ),
 

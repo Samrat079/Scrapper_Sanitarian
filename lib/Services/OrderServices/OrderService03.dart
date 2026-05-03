@@ -144,7 +144,7 @@ class OrderService03 extends ValueNotifier<Order01?> {
   }
 
   void stop() {
-    // _currOrderSub?.cancel();
+    _currOrderSub?.cancel();
     _currOrderSub = null;
     geo.removeListener(_onLocationUpdate);
     value = null;
