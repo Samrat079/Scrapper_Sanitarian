@@ -26,14 +26,8 @@ class CurrOrderScreen02 extends StatefulWidget {
 /// was able to make this simpler check currorderservice to know more
 class _CurrOrderScreen02State extends State<CurrOrderScreen02>
     with TickerProviderStateMixin {
-  late final OrderService03 currOrder;
 
-  /// InitState
-  @override
-  void initState() {
-    super.initState();
-    currOrder = OrderService03(widget.orderId);
-  }
+  final currOrder = OrderService03();
 
   /// Tile Layer
   final tileUrl = "https://mt.google.com/vt/lyrs=m&x={x}&y={y}&z={z}";
@@ -168,7 +162,7 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02>
                   return OrderCompleteSheet01(
                     order: order,
                     controller: controller,
-                    onComplete: () {},
+                    onComplete: () => currOrder.stop(),
                   );
               }
             },

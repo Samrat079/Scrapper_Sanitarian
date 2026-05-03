@@ -9,9 +9,7 @@ import 'package:rxdart/rxdart.dart';
 
 class GeoLocator02 extends ValueNotifier<LocationData?> {
   static final GeoLocator02 _instance = GeoLocator02._internal();
-
   GeoLocator02._internal() : super(null);
-
   factory GeoLocator02() => _instance;
 
   final Location _location = Location();
