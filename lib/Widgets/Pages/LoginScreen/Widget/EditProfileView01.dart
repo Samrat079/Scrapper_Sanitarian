@@ -33,10 +33,11 @@ class EditProfileView01 extends StatelessWidget {
         ),
         context.gapMD,
         EditProfileForm01(
+          appUser: appUserService.current,
+          onCancel: () => Navigator.pop(context),
           onSubmit: (data) => appUserService
               .updateAppUser(data['displayName'])
               .then((_) => Navigator.pushReplacementNamed(context, '/profile')),
-          onCancel: () => Navigator.pop(context),
         ),
       ],
     );

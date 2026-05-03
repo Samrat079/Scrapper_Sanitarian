@@ -14,11 +14,10 @@ class ProfileScreen01 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final appUserService = AppUserService02();
     return Scaffold(
       appBar: AppBar(),
       // body: ValueListenableBuilder(
-      //   valueListenable: appUserService,
+      //   valueListenable: AppUserService02(),
       //   builder: (context, appUser, _) {
       body: Consumer<AppUserService03>(
         builder: (context, appUser, _) {
@@ -120,7 +119,7 @@ class ProfileScreen01 extends StatelessWidget {
                     leading: const Icon(Icons.logout_outlined),
                     title: const Text('Logout'),
                     onTap: () async {
-                      await appUserService.logout();
+                      await appUser.logout();
                       Navigator.pop(context);
                     },
                   ),
@@ -130,7 +129,7 @@ class ProfileScreen01 extends StatelessWidget {
                     leading: const Icon(Icons.delete_outline),
                     title: const Text('Delete profile'),
                     onTap: () async {
-                      await appUserService.delete();
+                      await appUser.delete();
                       Navigator.pop(context);
                     },
                   ),

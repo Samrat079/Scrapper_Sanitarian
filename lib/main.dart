@@ -16,7 +16,7 @@ import 'Services/OrderServices/OrderService03.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  await AppUserService02().init();
+  // await AppUserService02().init();
   // runApp(const MyApp());
   runApp(
     MultiProvider(

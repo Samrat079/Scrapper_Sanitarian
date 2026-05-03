@@ -22,10 +22,11 @@ class EditProfileScreen01 extends StatelessWidget {
           Text("Edit profile"),
           context.gapMD,
           EditProfileForm01(
+            appUser: appUserService.current,
+            onCancel: () => Navigator.pop(context),
             onSubmit: (data) => appUserService
                 .updateAppUser(data['displayName'])
                 .then((_) => Navigator.pop(context)),
-            onCancel: () => Navigator.pop(context),
           ),
         ],
       ),

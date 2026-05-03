@@ -8,11 +8,12 @@ import 'package:scrapper/theme/theme_extensions.dart';
 class EditProfileForm01 extends StatefulWidget {
   final Function(Map<String, dynamic>) onSubmit;
   final VoidCallback onCancel;
+  final AppUser02 appUser;
 
   const EditProfileForm01({
     super.key,
     required this.onSubmit,
-    required this.onCancel,
+    required this.onCancel, required this.appUser,
   });
 
   @override
@@ -22,7 +23,6 @@ class EditProfileForm01 extends StatefulWidget {
 class _EditProfileForm01State extends State<EditProfileForm01> {
   final _formKey = GlobalKey<FormBuilderState>();
   bool isLoading = false;
-  final AppUser02 currUser = AppUserService02().current;
 
   void submitHandler() async {
     if (_formKey.currentState?.saveAndValidate() ?? false) {
@@ -119,7 +119,7 @@ class _EditProfileForm01State extends State<EditProfileForm01> {
             name: 'displayName',
             validator: FormBuilderValidators.username(allowSpace: true),
             autovalidateMode: AutovalidateMode.onUserInteraction,
-            initialValue: currUser.sanitarian?.displayName,
+            initialValue: widget.appUser.sanitarian?.displayName,
             decoration: InputDecoration(
               prefixIcon: Icon(
                 Icons.person_outline,
