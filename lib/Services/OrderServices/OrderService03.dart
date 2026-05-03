@@ -11,16 +11,13 @@ import '../OSRMServices/OSRMService01.dart';
 
 class OrderService03 extends ValueNotifier<Order01?> {
   static final OrderService03 _instance = OrderService03._internal();
-
   OrderService03._internal() : super(null);
-
   factory OrderService03() => _instance;
 
-  /// Subscriptions
-  /// For the order
-  StreamSubscription<QuerySnapshot<Order01>>? _currOrderSub;
+  /// Subscription
+  StreamSubscription<DocumentSnapshot<Order01>>? _currOrderSub;
 
-  /// For the current order
+  /// Firestore ref
   CollectionReference<Order01> get _ref => FirebaseFirestore.instance
       .collection('order01')
       .withConverter(
@@ -28,39 +25,37 @@ class OrderService03 extends ValueNotifier<Order01?> {
         toFirestore: (model, _) => model.toJson(),
       );
 
-  /// Timer for debouncing firestore update
+  /// Timer
   Timer? _firestoreTimer;
 
   /// Geolocator
   final geo = GeoLocator02();
 
-  /// orderid
+  /// ordered
   String? _orderId;
 
-  void init() {
+  /// ✅ REQUIRED orderId
+  void init(String orderId) {
     _currOrderSub?.cancel();
 
-    final uid = AppUserService02().current.uid;
-    _currOrderSub = _ref
-        .where('sanitarian.uid', isEqualTo: uid)
-        .where('status', isEqualTo: Order01Status.assigned.name)
-        .limit(1)
-        .snapshots()
-        .listen((snapshot) async {
-          if (snapshot.docs.isEmpty) return;
-
-          final doc = snapshot.docs.first;
-
-          _orderId = doc.id;
-          value = doc.data();
-
-          await _attachDistance(value!);
-        });
+    /// prevent duplicate listeners
+    geo.removeListener(_onLocationUpdate);
+    _orderId = orderId;
+    _currOrderSub = _ref.doc(orderId).snapshots().listen((doc) async {
+      if (_orderId == null) return;
+      if (!doc.exists) return;
+      value = doc.data();
+      if (value != null) {
+        await _attachDistance(value!);
+      }
+      notifyListeners();
+    });
 
     geo.addListener(_onLocationUpdate);
   }
 
   void _onLocationUpdate() {
+    if (_orderId == null) return;
     final curr = value;
     if (curr == null) return;
 
@@ -71,16 +66,19 @@ class OrderService03 extends ValueNotifier<Order01?> {
   }
 
   Future<void> _attachDistance(Order01 order) async {
+    if (_orderId == null) return;
     final current = geo.getCurrLatLng();
     if (current == null) return;
 
     final shouldRefetch = _shouldRefetch(order, current);
-
     if (!shouldRefetch) return;
 
-    await OSRMService01()
-        .getRouteGeoJson(current, order.address.latLng)
-        .then((data) => order.routesRes = data);
+    final data = await OSRMService01().getRouteGeoJson(
+      current,
+      order.address.latLng,
+    );
+
+    order.routesRes = data;
 
     _updateFirestoreLocation(current);
   }
@@ -101,7 +99,6 @@ class OrderService03 extends ValueNotifier<Order01?> {
       }
     }
 
-    /// If close to route → reuse
     if (minDistance < 50) {
       order.routesRes.coordinates = coords.sublist(closestIndex);
       order.routesRes.distance = Path.from(
@@ -110,17 +107,24 @@ class OrderService03 extends ValueNotifier<Order01?> {
       return false;
     }
 
-    /// Too far → refetch
     debugPrint("$minDistance m Refetching");
     return true;
   }
 
   void _updateFirestoreLocation(LatLng current) {
+    final id = _orderId;
+    final curr = value;
+
+    if (id == null || curr == null) return;
+
+    /// ❗ Prevent update if order is no longer active
+    if (curr.status != Order01Status.assigned) return;
+
     _firestoreTimer?.cancel();
 
     _firestoreTimer = Timer(const Duration(seconds: 30), () {
       debugPrint("Updating firestore");
-      _ref.doc(_orderId).update({
+      _ref.doc(id).update({
         'sanitarian.currLocation': GeoPoint(
           current.latitude,
           current.longitude,
@@ -129,24 +133,32 @@ class OrderService03 extends ValueNotifier<Order01?> {
     });
   }
 
-  bool verifyOtp(int otp) => value?.otp == otp;
-
   Future<void> cancelCurrOrder() async {
-    value = null;
-    await _ref.doc(_orderId).update({
+    final id = _orderId;
+    if (id == null) return;
+    await _ref.doc(id).update({
       'status': Order01Status.requested.name,
       'sanitarian': null,
     });
   }
 
   Future<void> completeOrder() async {
-    await _ref.doc(_orderId).update({'status': Order01Status.completed.name});
+    final id = _orderId;
+    geo.removeListener(_onLocationUpdate);
+    if (id == null) return;
+
+    await _ref.doc(id).update({'status': Order01Status.completed.name});
   }
 
   void stop() {
     _currOrderSub?.cancel();
     _currOrderSub = null;
+
+    _firestoreTimer?.cancel();
+
     geo.removeListener(_onLocationUpdate);
+
+    _orderId = null;
     value = null;
   }
 }

@@ -119,6 +119,7 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02>
           floatingActionButton: Column(
             children: [
               FloatingActionButton(
+                heroTag: null,
                 onPressed: () => _scaffoldKey.currentState!.openDrawer(),
                 backgroundColor: context.colorScheme.surface,
                 foregroundColor: context.colorScheme.onSurface,
@@ -128,6 +129,7 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02>
 
               /// Try to simplify the state in this
               FloatingActionButton(
+                heroTag: null,
                 onPressed: () => setState(() => reCentered = true),
                 backgroundColor: context.colorScheme.surface,
                 foregroundColor: reCentered
@@ -161,7 +163,10 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02>
                   return OrderAcceptSheet01(
                     order: order,
                     controller: controller,
-                    onCancel: currOrder.cancelCurrOrder,
+                    onCancel: () async {
+                      await currOrder.cancelCurrOrder();
+                      currOrder.stop();
+                    },
                     onComplete: () => setState(() => orderStep = OrderStep.otp),
                   );
 

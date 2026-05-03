@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:scrapper/Services/AppUserServices/AppUserService02.dart';
 import 'package:scrapper/Services/GeoLocatorService/GeoLocator02.dart';
+import 'package:scrapper/Services/OrderServices/OrderService03.dart';
 
 import '../../Models/Orders/Order01.dart';
 import '../OSRMServices/OSRMService01.dart';
@@ -17,6 +18,8 @@ class Order01Service02 extends ValueNotifier<List<Order01>> {
   StreamSubscription<QuerySnapshot<Order01>>? _orderSub;
 
   List<Order01> _cachedOrders = [];
+
+  final geo = GeoLocator02();
 
   CollectionReference<Order01> get _ref => FirebaseFirestore.instance
       .collection('order01')
@@ -41,7 +44,7 @@ class Order01Service02 extends ValueNotifier<List<Order01>> {
         });
 
     /// Listen to location updates
-    GeoLocator02().addListener(_onLocationUpdate);
+    geo.addListener(_onLocationUpdate);
   }
 
   void _onLocationUpdate() {
@@ -54,7 +57,7 @@ class Order01Service02 extends ValueNotifier<List<Order01>> {
 
   /// Calculates the distance from curr to destination
   Future<void> _attachDistances2(List<Order01> orders) async {
-    final current = GeoLocator02().getCurrLatLng();
+    final current = geo.getCurrLatLng();
     if (current == null) return;
 
     final destinations = orders.map((o) => o.address.latLng).toList();
@@ -69,7 +72,7 @@ class Order01Service02 extends ValueNotifier<List<Order01>> {
   /// stop listener
   void stop() {
     _orderSub?.cancel();
-    GeoLocator02().removeListener(_onLocationUpdate);
+    geo.removeListener(_onLocationUpdate);
     _orderSub = null;
     value = [];
   }
@@ -82,10 +85,13 @@ class Order01Service02 extends ValueNotifier<List<Order01>> {
   }
 
   /// Accept by id
-  Future<void> acceptById(String uid) => _ref.doc(uid).update({
-    'status': Order01Status.assigned.name,
-    'sanitarian': AppUserService02().current.sanitarian?.toJson(),
-  });
+  Future<void> acceptById(String uid) {
+    OrderService03().init(uid);
+    return _ref.doc(uid).update({
+      'status': Order01Status.assigned.name,
+      'sanitarian': AppUserService02().current.sanitarian?.toJson(),
+    });
+  }
 
   void deleteById(String uid) => _ref.doc(uid).delete();
 }
