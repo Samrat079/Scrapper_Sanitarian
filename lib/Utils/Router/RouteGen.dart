@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:scrapper/Services/AppUserServices/AppUserService02.dart';
 import 'package:scrapper/Services/AppUserServices/AppUserService03.dart';
 import 'package:scrapper/Widgets/Pages/EditProfileScreen/EditProfileScreen01.dart';
 import 'package:scrapper/Widgets/Pages/HomeScreen/HomeScreen01.dart';

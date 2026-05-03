@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:scrapper/Services/AppUserServices/AppUserService02.dart';
 import 'package:scrapper/Services/AppUserServices/AppUserService03.dart';
 import 'package:scrapper/Widgets/Custome/CardList01/CardList01.dart';
 import 'package:scrapper/theme/theme_extensions.dart';

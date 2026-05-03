@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
 import 'package:provider/provider.dart';
-import 'package:scrapper/Services/AppUserServices/AppUserService02.dart';
 
 import '../../../Services/AppUserServices/AppUserService03.dart';
 import '../../../theme/theme_extensions.dart';
@@ -23,7 +21,7 @@ class Drawer01 extends StatelessWidget {
             onTap: () => Navigator.pushNamed(
               context,
               '/profile',
-              arguments: AppUserService02().current.sanitarian,
+              arguments: appUserService.current.sanitarian,
             ),
           ),
           ListTile(

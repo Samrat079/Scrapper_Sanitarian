@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
-import 'package:scrapper/Services/GeoLocatorService/GeoLocator02.dart';
 import 'package:scrapper/Services/NominatimServices/NominatimServices01.dart';
 
 import '../../../../Services/GeoLocatorService/GeoLocator03.dart';

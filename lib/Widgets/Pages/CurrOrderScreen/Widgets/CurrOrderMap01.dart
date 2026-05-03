@@ -3,7 +3,6 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:scrapper/Models/Orders/Order01.dart';
-import 'package:scrapper/Services/GeoLocatorService/GeoLocator02.dart';
 import 'package:scrapper/Services/GeoLocatorService/GeoLocator03.dart';
 
 import '../../../../../theme/theme_extensions.dart';
@@ -30,7 +29,7 @@ class CurrOrderMap01 extends StatelessWidget {
       mapController: _mapController,
       options: MapOptions(
         onMapReady: onMapReady,
-        initialCenter: GeoLocator02().getCurrLatLng() ?? LatLng(0, 0),
+        initialCenter: geoLocator.currentLatLng ?? LatLng(0, 0),
         initialZoom: 16,
         onPositionChanged: (position, hasGesture) {
           if (hasGesture) onGesture();

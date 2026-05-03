@@ -1,8 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as _;
 import 'package:provider/provider.dart';
-import 'package:scrapper/Services/AppUserServices/AppUserService02.dart';
 import 'package:scrapper/Services/OrderServices/OrderService04.dart';
 import 'package:scrapper/Utils/Router/RouteGen.dart';
 import 'package:scrapper/firebase_options.dart';
@@ -11,7 +9,6 @@ import 'package:scrapper/theme/app_theme.dart';
 import 'Services/AppUserServices/AppUserService03.dart';
 import 'Services/GeoLocatorService/GeoLocator03.dart';
 import 'Services/OrderServices/OrderListService03.dart';
-import 'Services/OrderServices/OrderService03.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
