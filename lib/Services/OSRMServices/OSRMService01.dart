@@ -5,12 +5,6 @@ import 'package:latlong2/latlong.dart';
 import '../../Models/RouteResponse/RouteResponse.dart';
 
 class OSRMService01 {
-  static final OSRMService01 _instance = OSRMService01._internal();
-
-  OSRMService01._internal();
-
-  factory OSRMService01() => _instance;
-
   /// Base URLs
   final String _routeUrl = 'http://router.project-osrm.org/route/v1';
   final String _tableUrl = 'http://router.project-osrm.org/table/v1';
@@ -32,23 +26,6 @@ class OSRMService01 {
 
     return (data['routes'][0]['distance'] as num).toDouble();
   }
-
-  // Future<RoutesResponse> getRoutesByLatLng(LatLng start, LatLng end) async {
-  //   final url = Uri.parse(
-  //     '$_routeUrl/driving/'
-  //         '${start.longitude},${start.latitude};'
-  //         '${end.longitude},${end.latitude}?overview=false',
-  //   );
-  //
-  //   final res = await http.get(url);
-  //   final data = jsonDecode(res.body);
-  //
-  //   if (data['routes'] == null || data['routes'].isEmpty) {
-  //     throw Exception("No route found");
-  //   }
-  //
-  //   return data['routes'];
-  // }
 
   /// This is able to send multiple distances
   Future<List<RoutesResponse>> distanceFromTable(
