@@ -11,7 +11,9 @@ import '../OSRMServices/OSRMService01.dart';
 
 class OrderService03 extends ValueNotifier<Order01?> {
   static final OrderService03 _instance = OrderService03._internal();
+
   OrderService03._internal() : super(null);
+
   factory OrderService03() => _instance;
 
   /// Subscriptions
@@ -29,6 +31,12 @@ class OrderService03 extends ValueNotifier<Order01?> {
   /// Timer for debouncing firestore update
   Timer? _firestoreTimer;
 
+  /// Geolocator
+  final geo = GeoLocator02();
+
+  /// orderid
+  String? _orderId;
+
   void init() {
     _currOrderSub?.cancel();
 
@@ -40,12 +48,16 @@ class OrderService03 extends ValueNotifier<Order01?> {
         .snapshots()
         .listen((snapshot) async {
           if (snapshot.docs.isEmpty) return;
-          value = snapshot.docs.first.data();
+
+          final doc = snapshot.docs.first;
+
+          _orderId = doc.id;
+          value = doc.data();
+
           await _attachDistance(value!);
-          notifyListeners();
         });
 
-    GeoLocator02().addListener(_onLocationUpdate);
+    geo.addListener(_onLocationUpdate);
   }
 
   void _onLocationUpdate() {
@@ -59,7 +71,7 @@ class OrderService03 extends ValueNotifier<Order01?> {
   }
 
   Future<void> _attachDistance(Order01 order) async {
-    final current = GeoLocator02().getCurrLatLng();
+    final current = geo.getCurrLatLng();
     if (current == null) return;
 
     final shouldRefetch = _shouldRefetch(order, current);
@@ -108,7 +120,7 @@ class OrderService03 extends ValueNotifier<Order01?> {
 
     _firestoreTimer = Timer(const Duration(seconds: 30), () {
       debugPrint("Updating firestore");
-      _ref.doc(value?.uid).update({
+      _ref.doc(_orderId).update({
         'sanitarian.currLocation': GeoPoint(
           current.latitude,
           current.longitude,
@@ -120,22 +132,21 @@ class OrderService03 extends ValueNotifier<Order01?> {
   bool verifyOtp(int otp) => value?.otp == otp;
 
   Future<void> cancelCurrOrder() async {
-    final id = value?.uid;
     value = null;
-    await _ref.doc(id).update({
+    await _ref.doc(_orderId).update({
       'status': Order01Status.requested.name,
       'sanitarian': null,
     });
   }
 
   Future<void> completeOrder() async {
-    final id = value?.uid;
-    await _ref.doc(id).update({'status': Order01Status.completed.name});
+    await _ref.doc(_orderId).update({'status': Order01Status.completed.name});
   }
 
   void stop() {
-    _currOrderSub?.cancel();
+    // _currOrderSub?.cancel();
     _currOrderSub = null;
+    geo.removeListener(_onLocationUpdate);
     value = null;
   }
 }

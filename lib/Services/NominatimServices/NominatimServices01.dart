@@ -5,13 +5,13 @@ import 'package:nominatim_flutter/nominatim_flutter.dart';
 import 'package:rxdart/rxdart.dart';
 
 class NominatimServices01 {
-  static final NominatimServices01 _instance = NominatimServices01._internal();
-
-  NominatimServices01._internal();
-
-  factory NominatimServices01() {
-    return _instance;
-  }
+  // static final NominatimServices01 _instance = NominatimServices01._internal();
+  //
+  // NominatimServices01._internal();
+  //
+  // factory NominatimServices01() {
+  //   return _instance;
+  // }
 
   final nominatim = NominatimFlutter.instance;
 
@@ -34,5 +34,6 @@ class NominatimServices01 {
   Future<NominatimResponse> searchByLatLng(LatLng latLng) => nominatim.reverse(
     reverseRequest: ReverseRequest(lat: latLng.latitude, lon: latLng.longitude),
   );
-
 }
+
+

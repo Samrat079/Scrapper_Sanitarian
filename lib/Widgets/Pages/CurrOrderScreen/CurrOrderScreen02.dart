@@ -50,8 +50,11 @@ class _CurrOrderScreen02State extends State<CurrOrderScreen02>
   /// Order step
   OrderStep orderStep = OrderStep.accept;
 
-  void updateCamera() => GeoLocator02().addListener(() {
-    final loc = GeoLocator02().value;
+  /// Geolocator
+  final geo = GeoLocator02();
+
+  void updateCamera() => geo.addListener(() {
+    final loc = geo.value;
     if (loc == null || !reCentered) return;
 
     final latLng = LatLng(loc.latitude ?? 0, loc.longitude ?? 0);
