@@ -88,7 +88,7 @@ class OrdersScreen01 extends StatelessWidget {
                 onDelete: () => orderService.deleteById(data.uid),
                 onReject: () => orderService.rejectById(data.uid),
                 onAccept: () {
-                  appUser.acceptOrder(
+                  orderService.accept(
                     data.uid!,
                     appUser.current.sanitarian?.toJson(),
                   );

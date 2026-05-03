@@ -72,6 +72,20 @@ class OrderListService03 extends ChangeNotifier {
     }
   }
 
+  Future<void> checkActiveOrder(String sanitarianUid) async {
+    final doc = await _ref
+        .where('sanitarian.uid', isEqualTo: sanitarianUid)
+        .where('status', whereIn: [Order01Status.assigned.name])
+        .limit(1)
+        .get();
+
+    if (doc.docs.isNotEmpty) {
+      final order = doc.docs.first.data();
+      if (order.uid == null) return;
+      orderService.init(order.uid!);
+    }
+  }
+
   void rejectById(String? uid) {
     if (uid == null) return;
     _orders = _orders.where((o) => o.uid != uid).toList();

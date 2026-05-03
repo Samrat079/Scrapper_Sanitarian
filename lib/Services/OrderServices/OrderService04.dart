@@ -19,9 +19,7 @@ class OrderService04 extends ChangeNotifier {
   Timer? _timer;
 
   Order01? _order;
-
   Order01? get order => _order;
-
   String? _orderId;
 
   CollectionReference<Order01> get _ref => FirebaseFirestore.instance

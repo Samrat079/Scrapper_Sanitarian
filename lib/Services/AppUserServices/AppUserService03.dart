@@ -21,6 +21,7 @@ import 'package:scrapper/Services/GeoLocatorService/GeoLocator02.dart';
 import 'package:scrapper/Services/OrderServices/OrderService03.dart';
 import 'package:scrapper/Services/OrderServices/Order01Service02.dart';
 
+import '../../Models/Orders/Order01.dart';
 import '../GeoLocatorService/GeoLocator03.dart';
 import '../OrderServices/OrderListService03.dart';
 import '../OrderServices/OrderService04.dart';
@@ -101,6 +102,7 @@ class AppUserService03 extends ChangeNotifier {
 
       /// 🔥 start order list automatically
       _orderList.init();
+      _orderList.checkActiveOrder(current.uid!);
     }
   }
 
@@ -154,14 +156,6 @@ class AppUserService03 extends ChangeNotifier {
     _orderList.init();
 
     return current;
-  }
-
-  /// ✅ Accept order (centralized)
-  Future<void> acceptOrder(String uid, Map<String, dynamic>? sanitarian) async {
-    await _orderList.accept(uid, sanitarian);
-
-    /// start active order tracking
-    _orderService.init(uid);
   }
 
   /// Update profile
