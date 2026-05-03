@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:scrapper/Services/AppUserServices/AppUserService02.dart';
+import 'package:scrapper/Services/AppUserServices/AppUserService03.dart';
 import 'package:scrapper/Widgets/Pages/EditProfileScreen/EditProfileScreen01.dart';
 import 'package:scrapper/Widgets/Pages/HomeScreen/HomeScreen01.dart';
 import 'package:scrapper/Widgets/Pages/OrdersScreen/OrdersScreen01.dart';
@@ -9,10 +11,14 @@ import '../../Widgets/Pages/LoginScreen/LoginScreen01.dart';
 import '../../Widgets/Pages/ProfileScreen/ProfileScreen01.dart';
 
 class RouteGen {
-  static Route<dynamic> generateRoute(RouteSettings settings) {
+  static Route<dynamic> generateRoute(
+    BuildContext context,
+    RouteSettings settings,
+  ) {
     final args = settings.arguments;
     final name = settings.name;
-    final isLoggedIn = AppUserService02().isLoggedIn;
+    // final isLoggedIn = AppUserService02().isLoggedIn;
+    final isLoggedIn = context.read<AppUserService03>().isLoggedIn;
 
     /// reduces boiler plate
     Route<dynamic> router<T>(Widget page) =>
@@ -31,7 +37,6 @@ class RouteGen {
     if (!isLoggedIn) return router(LoginScreen01());
 
     /// Protected route
-
     switch (name) {
       case '/profile':
         return router(ProfileScreen01());

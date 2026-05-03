@@ -2,7 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_intl_phone_field/flutter_intl_phone_field.dart';
+import 'package:provider/provider.dart';
 import 'package:scrapper/Services/AppUserServices/AppUserService02.dart';
+import 'package:scrapper/Services/AppUserServices/AppUserService03.dart';
 import 'package:scrapper/theme/theme_extensions.dart';
 
 import '../../../Custome/CenterColumn/CenterColumn04.dart';
@@ -20,6 +22,14 @@ class AddNumber01 extends StatefulWidget {
 class _AddNumber01State extends State<AddNumber01> {
   final _addNumberKey = GlobalKey<FormBuilderState>();
   bool isLoading = false;
+  late AppUserService03 appUser;
+
+  @override
+  void initState() {
+    super.initState();
+    // appUser = AppUserService02();
+    appUser = Provider.of<AppUserService03>(context, listen: false);
+  }
 
   void clear() => _addNumberKey.currentState!.reset();
 
@@ -28,7 +38,7 @@ class _AddNumber01State extends State<AddNumber01> {
     if (_addNumberKey.currentState?.saveAndValidate() ?? false) {
       final number = _addNumberKey.currentState?.fields['Phone']?.value;
 
-      AppUserService02()
+      appUser
           .sendOtp(number)
           .then(
             (_) => widget._controller.nextPage(

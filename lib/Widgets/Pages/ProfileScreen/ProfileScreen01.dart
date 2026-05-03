@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:scrapper/Services/AppUserServices/AppUserService02.dart';
+import 'package:scrapper/Services/AppUserServices/AppUserService03.dart';
 import 'package:scrapper/Widgets/Custome/CardList01/CardList01.dart';
 import 'package:scrapper/theme/theme_extensions.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -12,12 +14,15 @@ class ProfileScreen01 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appUserService = AppUserService02();
     return Scaffold(
       appBar: AppBar(),
-      body: ValueListenableBuilder(
-        valueListenable: AppUserService02(),
+      // body: ValueListenableBuilder(
+      //   valueListenable: appUserService,
+      //   builder: (context, appUser, _) {
+      body: Consumer<AppUserService03>(
         builder: (context, appUser, _) {
-          final sanitarian = appUser.sanitarian;
+          final sanitarian = appUser.current.sanitarian;
 
           if (sanitarian == null) {
             return const Center(child: Text('Not logged in'));
@@ -115,7 +120,7 @@ class ProfileScreen01 extends StatelessWidget {
                     leading: const Icon(Icons.logout_outlined),
                     title: const Text('Logout'),
                     onTap: () async {
-                      await AppUserService02().logout();
+                      await appUserService.logout();
                       Navigator.pop(context);
                     },
                   ),
@@ -125,7 +130,7 @@ class ProfileScreen01 extends StatelessWidget {
                     leading: const Icon(Icons.delete_outline),
                     title: const Text('Delete profile'),
                     onTap: () async {
-                      await AppUserService02().delete();
+                      await appUserService.delete();
                       Navigator.pop(context);
                     },
                   ),

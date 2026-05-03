@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:provider/provider.dart';
 import 'package:scrapper/Services/AppUserServices/AppUserService02.dart';
+import 'package:scrapper/Services/AppUserServices/AppUserService03.dart';
 import 'package:scrapper/theme/theme_extensions.dart';
 
 import '../../../Custome/CenterColumn/CenterColumn04.dart';
@@ -23,12 +25,20 @@ class _AddOtp01State extends State<AddOtp01> {
 
   void clear() => _otpController.currentState!.reset();
   bool isLoading = false;
+  late AppUserService03 appUserService;
+
+  @override
+  void initState() {
+    super.initState();
+    // appUserService = AppUserService02();
+    appUserService = Provider.of<AppUserService03>(context, listen: false);
+  }
 
   void submitHandler() async {
     setState(() => isLoading = true);
     if (_otpController.currentState?.saveAndValidate() ?? false) {
       final otp = _otpController.currentState?.fields['Otp']?.value;
-      AppUserService02()
+      appUserService
           .verifyOtp(otp)
           .then(
             (_) => widget._controller.nextPage(
@@ -66,8 +76,6 @@ class _AddOtp01State extends State<AddOtp01> {
 
           FormBuilderField(
             name: 'Otp',
-            validator: FormBuilderValidators.minLength(6),
-            autovalidateMode: AutovalidateMode.onUserInteraction,
             builder: (field) {
               return Column(
                 mainAxisSize: MainAxisSize.min,

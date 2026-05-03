@@ -89,7 +89,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       initialRoute: '/',
-      onGenerateRoute: RouteGen.generateRoute,
+      /// Have to send context to it or else it cant get
+      /// the AppUserService03
+      onGenerateRoute: (settings) => RouteGen.generateRoute(context, settings),
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.system,
