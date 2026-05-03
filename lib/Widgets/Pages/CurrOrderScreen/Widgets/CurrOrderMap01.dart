@@ -4,6 +4,7 @@ import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:scrapper/Models/Orders/Order01.dart';
 import 'package:scrapper/Services/GeoLocatorService/GeoLocator02.dart';
+import 'package:scrapper/Services/GeoLocatorService/GeoLocator03.dart';
 
 import '../../../../../theme/theme_extensions.dart';
 
@@ -11,13 +12,14 @@ class CurrOrderMap01 extends StatelessWidget {
   final Order01 order;
   final MapController _mapController;
   final VoidCallback onMapReady, onGesture;
+  final GeoLocator03 geoLocator;
 
   const CurrOrderMap01({
     super.key,
     required this.order,
     required MapController mapController,
     required this.onMapReady,
-    required this.onGesture,
+    required this.onGesture, required this.geoLocator,
   }) : _mapController = mapController;
 
   @override
@@ -56,8 +58,8 @@ class CurrOrderMap01 extends StatelessWidget {
         /// This is the curr location marker and uses
         /// the geolocator streams
         CurrentLocationLayer(
-          positionStream: GeoLocator02().locationPositionStream,
-          headingStream: GeoLocator02().locationHeadingStream,
+          positionStream: geoLocator.locationPositionStream,
+          headingStream: geoLocator.locationHeadingStream,
         ),
 
         /// Polylines

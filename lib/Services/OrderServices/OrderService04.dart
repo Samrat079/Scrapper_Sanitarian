@@ -97,7 +97,7 @@ class OrderService04 extends ChangeNotifier {
     });
   }
 
-  Future<void> cancel() async {
+  Future<void> cancelCurrOrder() async {
     if (_orderId == null) return;
 
     await _ref.doc(_orderId!).update({
@@ -106,12 +106,14 @@ class OrderService04 extends ChangeNotifier {
     });
   }
 
-  Future<void> complete() async {
+  Future<void> completeCurrOrder() async {
     if (_orderId == null) return;
-
     await _ref.doc(_orderId!).update({'status': Order01Status.completed.name});
+  }
 
-    stop();
+  void _updateOrder(Order01? order) {
+    order = order;
+    notifyListeners();
   }
 
   void stop() {

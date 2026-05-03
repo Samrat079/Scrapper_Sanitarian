@@ -1,28 +1,47 @@
 import 'dart:async';
+import 'dart:math';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
-import 'package:rxdart/rxdart.dart';
+import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 
 class GeoLocator03 extends ChangeNotifier {
-  GeoLocator03();
-
   final Location _location = Location();
 
-  Stream<LocationData>? _positionStreamSub;
-  StreamSubscription<LocationData>? _listener;
-
   LocationData? _current;
+
+  StreamSubscription<LocationData>? _listener;
 
   LocationData? get current => _current;
 
   LatLng? get currentLatLng {
-    if (_current == null) return null;
-    return LatLng(_current!.latitude!, _current!.longitude!);
+    final lat = _current?.latitude;
+    final lng = _current?.longitude;
+    if (lat == null || lng == null) return null;
+    return LatLng(lat, lng);
   }
+
+  /// 🔥 CORE STREAM (single source)
+  Stream<LocationData> get _rawStream =>
+      _location.onLocationChanged.asBroadcastStream();
+
+  /// ---------------- POSITION STREAM ----------------
+  Stream<LocationMarkerPosition> get locationPositionStream => _rawStream.map(
+    (data) => LocationMarkerPosition(
+      latitude: data.latitude ?? 0,
+      longitude: data.longitude ?? 0,
+      accuracy: data.accuracy ?? 0,
+    ),
+  );
+
+  /// ---------------- HEADING STREAM ----------------
+  Stream<LocationMarkerHeading> get locationHeadingStream => _rawStream.map(
+    (data) => LocationMarkerHeading(
+      heading: ((data.heading ?? 0) + 180) * (pi / 180),
+      accuracy: data.accuracy ?? 0,
+    ),
+  );
 
   Future<void> init() async {
     final hasPermission = await _checkPermission();
@@ -34,10 +53,9 @@ class GeoLocator03 extends ChangeNotifier {
       distanceFilter: 5,
     );
 
-    final stream = _location.onLocationChanged.share();
-
     _listener?.cancel();
-    _listener = stream.listen((pos) {
+
+    _listener = _rawStream.listen((pos) {
       _current = pos;
       notifyListeners();
     });
