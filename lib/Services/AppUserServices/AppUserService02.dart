@@ -13,8 +13,17 @@ import 'package:scrapper/Services/OrderServices/Order01Service02.dart';
 class AppUserService02 extends ValueNotifier<AppUser02> {
   /// is a singleton but only for having the current value
   static final AppUserService02 _instance = AppUserService02._internal();
+
   AppUserService02._internal() : super(AppUser02(auth: null, sanitarian: null));
+
   factory AppUserService02() => _instance;
+
+  /// Getter
+  AppUser02 get current => AppUser02(auth: _authUser, sanitarian: _sanitarian);
+
+  bool get isLoggedIn => _authUser != null && _sanitarian != null;
+
+  bool get exists => current.exists;
 
   /// auth and sanitarian listener
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -30,17 +39,14 @@ class AppUserService02 extends ValueNotifier<AppUser02> {
   User? _authUser;
   Sanitarian01? _sanitarian;
 
-  /// Getter
-  AppUser02 get current => AppUser02(auth: _authUser, sanitarian: _sanitarian);
-  bool get isLoggedIn => _authUser != null && _sanitarian != null;
-  bool get exists => current.exists;
-
-  /// Position stream subscription
-  Stream<Position>? geo;
+  /// Services
+  final geo = GeoLocator02();
+  final order01Service02 = Order01Service02();
+  final orderService03 = OrderService03();
 
   /// init
   Future<void> init() async {
-    await GeoLocator02().init();
+    await geo.init();
     _auth.authStateChanges().listen((user) async {
       _authUser = user;
 
@@ -56,9 +62,7 @@ class AppUserService02 extends ValueNotifier<AppUser02> {
 
       /// listeners
       if (isLoggedIn) {
-        // Order01Service02().init();
-        // OrderService03().init();
-        GeoLocator02().updateCurrLocation(user.uid);
+        geo.updateCurrLocation(user.uid);
       }
     });
   }
@@ -109,8 +113,8 @@ class AppUserService02 extends ValueNotifier<AppUser02> {
     value = current;
     // Order01Service02().init();
     // OrderService03().init();
-    GeoLocator02().init();
-    GeoLocator02().updateCurrLocation(user.uid);
+    geo.init();
+    geo.updateCurrLocation(user.uid);
     return current;
   }
 
@@ -132,13 +136,12 @@ class AppUserService02 extends ValueNotifier<AppUser02> {
   ///  Logout
   Future<void> logout() async {
     /// Needs before or else they will be reinitialized
-    Order01Service02().stop();
-    OrderService03().stop();
-    GeoLocator02().dispose();
+    order01Service02.stop();
+    orderService03.stop();
+    geo.dispose();
 
     /// This will call the reinitialise init
     await _auth.signOut();
-    geo = null;
 
     /// removes local state
     _authUser = null;
