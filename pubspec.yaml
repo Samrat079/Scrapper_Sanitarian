@@ -57,6 +57,7 @@ dependencies:
   location: ^8.0.1
 
   geolocator: any
+  provider: ^6.1.5+1
 dev_dependencies:
   flutter_test:
     sdk: flutter
