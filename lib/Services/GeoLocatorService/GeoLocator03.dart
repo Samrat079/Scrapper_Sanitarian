@@ -61,8 +61,8 @@ class GeoLocator03 extends ChangeNotifier {
 
     await _location.changeSettings(
       accuracy: LocationAccuracy.high,
-      interval: 0,
-      distanceFilter: 0,
+      interval: 200,
+      distanceFilter: 10,
     );
 
     _listener?.cancel();

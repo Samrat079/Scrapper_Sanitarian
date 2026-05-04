@@ -17,6 +17,7 @@ class OrderService04 extends ChangeNotifier {
   Timer? _timer;
 
   Order01? _order;
+
   Order01? get order => _order;
   String? _orderId;
 
@@ -66,13 +67,16 @@ class OrderService04 extends ChangeNotifier {
     final current = geo.currentLatLng;
     if (current == null) return;
 
+    final shouldRefetch = _shouldRefetch(_order!, current);
+    if (!shouldRefetch) {
+      notifyListeners(); // update trimmed route
+      return;
+    }
+    debugPrint("calling osrm");
     final data = await OSRMService01().getRouteGeoJson(
       current,
       _order!.address.latLng,
     );
-
-    debugPrint("calling osrm");
-
     _order?.routesRes = data;
     notifyListeners();
 
@@ -110,9 +114,31 @@ class OrderService04 extends ChangeNotifier {
     await _ref.doc(_orderId!).update({'status': Order01Status.completed.name});
   }
 
-  void _updateOrder(Order01? order) {
-    order = order;
-    notifyListeners();
+  bool _shouldRefetch(Order01 order, LatLng current) {
+    final coords = order.routesRes.coordinates;
+    if (coords.isEmpty) return true;
+
+    double minDistance = double.infinity;
+    int closestIndex = 0;
+
+    for (int i = 0; i < coords.length; i++) {
+      final d = Distance().as(LengthUnit.Meter, current, coords[i]);
+
+      if (d < minDistance) {
+        minDistance = d;
+        closestIndex = i;
+      }
+    }
+
+    if (minDistance < 50) {
+      order.routesRes.coordinates = coords.sublist(closestIndex);
+      order.routesRes.distance = Path.from(
+        order.routesRes.coordinates,
+      ).distance;
+      return false;
+    }
+
+    return true;
   }
 
   void stop() {
