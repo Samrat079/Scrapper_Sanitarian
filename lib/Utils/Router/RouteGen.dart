@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:scrapper/Services/AppUserServices/AppUserService03.dart';
 import 'package:scrapper/Widgets/Pages/EditProfileScreen/EditProfileScreen01.dart';
 import 'package:scrapper/Widgets/Pages/HomeScreen/HomeScreen01.dart';
+import 'package:scrapper/Widgets/Pages/MyOrdersScreen/MyOrdersScreen01.dart';
 import 'package:scrapper/Widgets/Pages/OrdersScreen/OrdersScreen01.dart';
 
 import '../../Widgets/Pages/ErrorScreen/ErrorScreen01.dart';
@@ -39,6 +40,8 @@ class RouteGen {
     switch (name) {
       case '/profile':
         return router(ProfileScreen01());
+      case '/my_orders':
+        return router(MyOrdersScreen01());
       case '/edit_profile':
         return router(EditProfileScreen01());
       case '/orders':

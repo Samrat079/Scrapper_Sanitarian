@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:scrapper/Models/AppUser/AppUser02.dart';
+import 'package:scrapper/Widgets/Custome/CenterColumn/CenterColumn04.dart';
 import 'package:scrapper/theme/theme_extensions.dart';
 
 class EditProfileForm01 extends StatefulWidget {
@@ -37,9 +38,7 @@ class _EditProfileForm01State extends State<EditProfileForm01> {
   Widget build(BuildContext context) {
     return FormBuilder(
       key: _formKey,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+      child: CenterColumn04(
         children: [
           /// Photo URL
           // FormBuilderTextField(

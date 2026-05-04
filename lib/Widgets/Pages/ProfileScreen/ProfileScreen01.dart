@@ -15,9 +15,6 @@ class ProfileScreen01 extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      // body: ValueListenableBuilder(
-      //   valueListenable: AppUserService02(),
-      //   builder: (context, appUser, _) {
       body: Consumer<AppUserService03>(
         builder: (context, appUser, _) {
           final sanitarian = appUser.current.sanitarian;
@@ -94,10 +91,11 @@ class ProfileScreen01 extends StatelessWidget {
               CardList01(
                 padding: context.paddingSM,
                 children: [
-                  const ListTile(
+                  ListTile(
                     title: Text('My Orders'),
                     leading: Icon(Icons.book_outlined),
                     trailing: Icon(Icons.arrow_forward_ios_outlined),
+                    onTap: () => Navigator.pushNamed(context, '/my_orders'),
                   ),
                 ],
               ),

@@ -1,10 +1,10 @@
 import 'package:duration/duration.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../Models/Orders/Order01.dart';
-import '../../../../theme/theme_extensions.dart';
-import '../../../Custome/CardList01/CardList01.dart';
-import '../../../Custome/Intl/PriceText01.dart';
+import '../../../Models/Orders/Order01.dart';
+import '../../../theme/theme_extensions.dart';
+import '../CardList01/CardList01.dart';
+import '../Intl/PriceText01.dart';
 
 class OrderCard01 extends StatelessWidget {
   final Order01 data;

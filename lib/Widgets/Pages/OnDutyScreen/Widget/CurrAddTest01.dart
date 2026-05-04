@@ -6,48 +6,42 @@ import 'package:scrapper/Services/NominatimServices/NominatimServices01.dart';
 import '../../../../Services/GeoLocatorService/GeoLocator03.dart';
 import '../../../../theme/theme_extensions.dart';
 
-class CurrAddTest01 extends StatefulWidget {
+class CurrAddTest01 extends StatelessWidget {
   const CurrAddTest01({super.key});
 
   @override
-  State<CurrAddTest01> createState() => _CurrAddTest01State();
-}
-
-class _CurrAddTest01State extends State<CurrAddTest01> {
-  Future<String>? _addressFuture;
-  LatLng? _lastLatLng;
-
-  void _updateAddress(GeoLocator03 geo) {
-    final pos = geo.currentLatLng;
-    if (pos == null) {
-      _addressFuture = null;
-      return;
-    }
-
-    /// Debouncing
-    if (_lastLatLng != null &&
-        _lastLatLng!.latitude == pos.latitude &&
-        _lastLatLng!.longitude == pos.longitude) {
-      return;
-    }
-
-    _lastLatLng = pos;
-
-    _addressFuture = NominatimServices01()
-        .searchByLatLng(pos)
-        .then((res) {
-          if (res.name == null || res.name!.trim().isEmpty) {
-            return "${pos.latitude.toStringAsFixed(2)}, ${pos.longitude.toStringAsFixed(2)}";
-          }
-          return res.name!;
-        })
-        .catchError((_) {
-          return "${pos.latitude.toStringAsFixed(2)}, ${pos.longitude.toStringAsFixed(2)}";
-        });
-  }
-
-  @override
   Widget build(BuildContext context) {
+    Future<String>? addressFuture;
+    LatLng lastLatLng = LatLng(0, 0);
+    final Distance distance = const Distance();
+    final nominatim = context.read<NominatimServices01>();
+
+    void updateAddress(GeoLocator03 geo) {
+      final pos = geo.currentLatLng;
+      if (pos == null) {
+        addressFuture = null;
+        return;
+      }
+
+      /// Debouncing
+      final double meters = distance(lastLatLng, pos);
+      if (meters < 500) return;
+
+      lastLatLng = pos;
+
+      addressFuture = nominatim
+          .searchByLatLng(pos)
+          .then((res) {
+            if (res.name == null || res.name!.trim().isEmpty) {
+              return "${pos.latitude.toStringAsFixed(2)}, ${pos.longitude.toStringAsFixed(2)}";
+            }
+            return res.name!;
+          })
+          .catchError((_) {
+            return "${pos.latitude.toStringAsFixed(2)}, ${pos.longitude.toStringAsFixed(2)}";
+          });
+    }
+
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.3,
       child: Consumer<GeoLocator03>(
@@ -72,10 +66,10 @@ class _CurrAddTest01State extends State<CurrAddTest01> {
           }
 
           /// 🔄 Update future only when position changes
-          _updateAddress(geo);
+          updateAddress(geo);
 
           return FutureBuilder<String>(
-            future: _addressFuture,
+            future: addressFuture,
             builder: (context, snapshot) {
               /// ⏳ Loading
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -102,8 +96,8 @@ class _CurrAddTest01State extends State<CurrAddTest01> {
 
               /// ❌ Error fallback
               if (snapshot.hasError || !snapshot.hasData) {
-                final lat = position.latitude ?? 0;
-                final lng = position.longitude ?? 0;
+                final lat = position.latitude;
+                final lng = position.longitude;
 
                 return Row(
                   children: [

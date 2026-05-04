@@ -10,11 +10,11 @@ class EditProfileScreen01 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final appUserService = AppUserService02();
     final appUserService = context.read<AppUserService03>();
     return Scaffold(
       appBar: AppBar(),
       body: CenterColumn04(
+        centerHorizontally: true,
         centerVertically: true,
         children: [
           Text("Edit profile"),

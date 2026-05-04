@@ -26,8 +26,7 @@ class _AddNumber01State extends State<AddNumber01> {
   @override
   void initState() {
     super.initState();
-    // appUser = AppUserService02();
-    appUser = Provider.of<AppUserService03>(context, listen: false);
+    appUser = context.read<AppUserService03>();
   }
 
   void clear() => _addNumberKey.currentState!.reset();
