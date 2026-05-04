@@ -57,30 +57,7 @@ class OrderService04 extends ChangeNotifier {
 
   void _onLocationUpdate() {
     if (_order == null) return;
-
     _attachDistance();
-  }
-
-  Future<void> _attachDistance() async {
-    if (_order == null) return;
-
-    final current = geo.currentLatLng;
-    if (current == null) return;
-
-    final shouldRefetch = _shouldRefetch(_order!, current);
-    if (!shouldRefetch) {
-      notifyListeners(); // update trimmed route
-      return;
-    }
-    debugPrint("calling osrm");
-    final data = await OSRMService01().getRouteGeoJson(
-      current,
-      _order!.address.latLng,
-    );
-    _order?.routesRes = data;
-    notifyListeners();
-
-    _updateFirestore(current);
   }
 
   void _updateFirestore(LatLng current) {
@@ -114,15 +91,37 @@ class OrderService04 extends ChangeNotifier {
     await _ref.doc(_orderId!).update({'status': Order01Status.completed.name});
   }
 
+  Future<void> _attachDistance() async {
+    if (_order == null) return;
+
+    final current = geo.currentLatLng;
+    if (current == null) return;
+
+    final shouldRefetch = _shouldRefetch(_order!, current);
+    if (!shouldRefetch) {
+      notifyListeners();
+      return;
+    }
+    debugPrint("calling osrm");
+    final data = await OSRMService01().getRouteGeoJson(
+      current,
+      _order!.address.latLng,
+    );
+    _order?.routesRes = data;
+    notifyListeners();
+
+    _updateFirestore(current);
+  }
+
   bool _shouldRefetch(Order01 order, LatLng current) {
     final coords = order.routesRes.coordinates;
-    if (coords.isEmpty) return true;
+    if (coords.length < 2) return true;
 
     double minDistance = double.infinity;
     int closestIndex = 0;
 
-    for (int i = 0; i < coords.length; i++) {
-      final d = Distance().as(LengthUnit.Meter, current, coords[i]);
+    for (int i = 0; i < coords.length - 1; i++) {
+      final d = _distanceToSegment(current, coords[i], coords[i + 1]);
 
       if (d < minDistance) {
         minDistance = d;
@@ -135,10 +134,29 @@ class OrderService04 extends ChangeNotifier {
       order.routesRes.distance = Path.from(
         order.routesRes.coordinates,
       ).distance;
+
       return false;
     }
-
     return true;
+  }
+
+  double _distanceToSegment(LatLng p, LatLng v, LatLng w) {
+    final l2 = Distance().as(LengthUnit.Meter, v, w);
+    if (l2 == 0) return Distance().as(LengthUnit.Meter, p, v);
+
+    final t =
+        ((p.latitude - v.latitude) * (w.latitude - v.latitude) +
+            (p.longitude - v.longitude) * (w.longitude - v.longitude)) /
+        (l2 * l2);
+
+    final tClamped = t.clamp(0.0, 1.0);
+
+    final projection = LatLng(
+      v.latitude + (w.latitude - v.latitude) * tClamped,
+      v.longitude + (w.longitude - v.longitude) * tClamped,
+    );
+
+    return Distance().as(LengthUnit.Meter, p, projection);
   }
 
   void stop() {
