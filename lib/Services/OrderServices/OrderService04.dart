@@ -71,6 +71,8 @@ class OrderService04 extends ChangeNotifier {
       _order!.address.latLng,
     );
 
+    debugPrint("calling osrm");
+
     _order?.routesRes = data;
     notifyListeners();
 
@@ -84,6 +86,7 @@ class OrderService04 extends ChangeNotifier {
     _timer?.cancel();
 
     _timer = Timer(const Duration(seconds: 30), () {
+      debugPrint("updating firestore");
       _ref.doc(_orderId!).update({
         'sanitarian.currLocation': GeoPoint(
           current.latitude,

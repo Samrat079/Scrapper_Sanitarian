@@ -54,6 +54,7 @@ class GeoLocator03 extends ChangeNotifier {
   Future<void> _init() async {
     if (_initialized) return;
     _initialized = true;
+    debugPrint("Geolocator03: initializing this class");
 
     final hasPermission = await _checkPermission();
     if (!hasPermission) return;
