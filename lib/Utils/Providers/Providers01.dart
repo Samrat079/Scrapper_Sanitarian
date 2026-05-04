@@ -13,7 +13,7 @@ import '../../Services/OrderServices/OrderService04.dart';
 final List<SingleChildStatelessWidget> providers01 = [
   /// GeoLocation, everyone needs it
   /// try to restructure it to not need init
-  ChangeNotifierProvider(create: (context) => GeoLocator03()..init()),
+  ChangeNotifierProvider(create: (context) => GeoLocator03()),
 
   /// Map launcher, doesn't has any change
   Provider(create: (context) => MapLaunch()),

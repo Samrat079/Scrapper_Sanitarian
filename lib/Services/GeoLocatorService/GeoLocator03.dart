@@ -6,14 +6,21 @@ import 'package:location/location.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 
 class GeoLocator03 extends ChangeNotifier {
+  /// Constructor, this is made to not need init
+  GeoLocator03() {
+    _init();
+  }
+
+  /// Location package
   final Location _location = Location();
 
+  /// Curr location
   LocationData? _current;
 
+  LocationData? get current => _current;
   StreamSubscription<LocationData>? _listener;
 
-  LocationData? get current => _current;
-
+  /// If a single value is needed use this
   LatLng? get currentLatLng {
     final lat = _current?.latitude;
     final lng = _current?.longitude;
@@ -21,7 +28,7 @@ class GeoLocator03 extends ChangeNotifier {
     return LatLng(lat, lng);
   }
 
-  /// 🔥 CORE STREAM (single source)
+  /// base stream
   Stream<LocationData> get _rawStream =>
       _location.onLocationChanged.asBroadcastStream();
 
@@ -42,14 +49,19 @@ class GeoLocator03 extends ChangeNotifier {
     ),
   );
 
-  Future<void> init() async {
+  bool _initialized = false;
+
+  Future<void> _init() async {
+    if (_initialized) return;
+    _initialized = true;
+
     final hasPermission = await _checkPermission();
     if (!hasPermission) return;
 
     await _location.changeSettings(
       accuracy: LocationAccuracy.high,
-      interval: 1000,
-      distanceFilter: 5,
+      interval: 0,
+      distanceFilter: 0,
     );
 
     _listener?.cancel();

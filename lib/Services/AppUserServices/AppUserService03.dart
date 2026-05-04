@@ -82,7 +82,7 @@ class AppUserService03 extends ChangeNotifier {
     notifyListeners();
 
     if (isLoggedIn) {
-      await _geo.init();
+      _geo;
 
       /// 🔥 start order list automatically
       _orderList.init();
@@ -136,7 +136,7 @@ class AppUserService03 extends ChangeNotifier {
 
     notifyListeners();
 
-    await _geo.init();
+    _geo;
     _orderList.init();
 
     return current;
