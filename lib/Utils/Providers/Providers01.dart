@@ -11,18 +11,16 @@ import '../../Services/OrderServices/OrderListService03.dart';
 import '../../Services/OrderServices/OrderService04.dart';
 
 final List<SingleChildStatelessWidget> providers01 = [
+
+  /// no args providers
+  Provider(create: (context) => MapLaunch()),
+  Provider(create: (context) => NominatimServices01()),
+  Provider(create: (context) => OSRMService01()),
+
   /// GeoLocation, everyone needs it
   /// try to restructure it to not need init
   ChangeNotifierProvider(create: (context) => GeoLocator03()),
 
-  /// Map launcher, doesn't has any change
-  Provider(create: (context) => MapLaunch()),
-
-  /// Nominatim service, doesm't has changes
-  Provider(create: (context) => NominatimServices01()),
-
-  /// OSRM service
-  Provider(create: (context) => OSRMService01()),
 
   /// Unable to add address02services as it needs constructor values
   /// not sure how to do that, consider revisiting later

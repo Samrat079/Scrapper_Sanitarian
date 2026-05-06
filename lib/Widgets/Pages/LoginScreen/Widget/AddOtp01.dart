@@ -90,16 +90,16 @@ class _AddOtp01State extends State<AddOtp01> {
 
         context.gapXL,
 
-        /// 🔥 OTP FIELD (controller-based)
-        CenterColumn04(centerHorizontally: true, children: [
-
-          MaterialPinField(
-            length: 6,
-            pinController: otpController,
-            onCompleted: submitOtp,
-            theme: MaterialPinTheme(cellSize: const Size(40, 46)),
-          ),
-          context.gapSM,
+        CenterColumn04(
+          centerHorizontally: true,
+          children: [
+            MaterialPinField(
+              length: 6,
+              pinController: otpController,
+              onCompleted: submitOtp,
+              theme: MaterialPinTheme(cellSize: const Size(40, 46)),
+            ),
+            context.gapSM,
 
             if (errorText != null)
               Text(
@@ -109,7 +109,8 @@ class _AddOtp01State extends State<AddOtp01> {
                   fontStyle: FontStyle.italic,
                 ),
               ),
-          ],),
+          ],
+        ),
 
         if (isLoading) const LinearProgressIndicator(),
         context.gapMD,
