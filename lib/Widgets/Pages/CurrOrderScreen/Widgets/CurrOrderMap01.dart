@@ -24,7 +24,7 @@ class CurrOrderMap01 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tileUrl = "https://mt.google.com/vt/lyrs=m&x={x}&y={y}&z={z}";
-    final packageName = "com.example.scrapper_sanitarian";
+    final packageName = "app.samrat079.scrapper_sanitarian";
     return FlutterMap(
       mapController: _mapController,
       options: MapOptions(
