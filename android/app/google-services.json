@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:326837888335:android:2058464068770da6a2913a",
+        "mobilesdk_app_id": "1:326837888335:android:2064bbf860be9f1fa2913a",
         "android_client_info": {
-          "package_name": "com.example.scrapper"
+          "package_name": "app.samrat079.scrapper"
         }
       },
       "oauth_client": [],
@@ -26,9 +26,9 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:326837888335:android:8099bb38ed57cee5a2913a",
+        "mobilesdk_app_id": "1:326837888335:android:399958e10bfecd13a2913a",
         "android_client_info": {
-          "package_name": "com.example.scrapper_partner"
+          "package_name": "app.samrat079.scrapper_sanitarian"
         }
       },
       "oauth_client": [],
