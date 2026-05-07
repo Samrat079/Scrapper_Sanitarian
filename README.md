@@ -1,4 +1,4 @@
-# scrapper
+# Scrapper Sanitarian
 
 Sanitation app with flutter
 
